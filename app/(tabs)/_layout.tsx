@@ -1,37 +1,48 @@
-import { Tabs } from 'expo-router';
-import React from 'react';
+import {Tabs} from "expo-router";
+import React from "react";
+import FontAwesome from "@expo/vector-icons/FontAwesome";
+import {useColorScheme, View} from "react-native";
+import CustomDarkTheme from "@/theme/CustomDarkTheme";
+import CustomDefaultTheme from "@/theme/CustomDefaultTheme";
 
-import { TabBarIcon } from '@/components/navigation/TabBarIcon';
-import { Colors } from '@/constants/Colors';
-import { useColorScheme } from '@/hooks/useColorScheme';
+export default () => {
+    const colorScheme = useColorScheme()
+    const currentTheme = colorScheme === 'dark' ? CustomDarkTheme : CustomDefaultTheme
 
-export default function TabLayout() {
-  const colorScheme = useColorScheme();
-
-  return (
-    <Tabs
-      screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
-        headerShown: false,
-      }}>
-      <Tabs.Screen
-        name="index"
-        options={{
-          title: 'Home',
-          tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon name={focused ? 'home' : 'home-outline'} color={color} />
-          ),
-        }}
-      />
-      <Tabs.Screen
-        name="explore"
-        options={{
-          title: 'Explore',
-          tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon name={focused ? 'code-slash' : 'code-slash-outline'} color={color} />
-          ),
-        }}
-      />
-    </Tabs>
-  );
+    return(
+        <Tabs
+            screenOptions={{
+                headerShown: false,
+                tabBarStyle: {
+                    position: 'absolute',
+                    bottom: 25,
+                    left: 20,
+                    right: 20,
+                    elevation: 0,
+                    backgroundColor: currentTheme.colors.background,
+                    borderRadius: 15,
+                    borderStyle: 'solid',
+                    borderWidth: 1,
+                    borderColor: currentTheme.colors.primary,
+                    height: 50
+                }
+            }}>
+            <Tabs.Screen name="home" options={{tabBarLabel: 'Home', tabBarIcon: () => <FontAwesome name="home" color={currentTheme.colors.primary} size={24} /> }} />
+            <Tabs.Screen name='category' options={{tabBarLabel: 'Overview', tabBarIcon: () => <FontAwesome name="dashboard" color={currentTheme.colors.primary} size={24} /> }}/>
+            <Tabs.Screen name='expense' options={{tabBarLabel: 'Add', tabBarIcon: () => (
+                        <View style={{
+                            width: 30,
+                            height: 30,
+                            borderRadius: 25,
+                            backgroundColor: currentTheme.colors.primary,
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                        }}>
+                            <FontAwesome name={'plus'} color={currentTheme.colors.background} size={24} />
+                        </View>
+                    )}}/>
+            <Tabs.Screen name='profile' options={{tabBarLabel: 'Profile', tabBarIcon: () => <FontAwesome name="user" color={currentTheme.colors.primary} size={24} /> }}/>
+            <Tabs.Screen name='settings' options={{tabBarLabel: 'Settings', tabBarIcon: () => <FontAwesome name="cog" color={currentTheme.colors.primary} size={24} /> }}/>
+        </Tabs>
+    )
 }
