@@ -63,7 +63,6 @@ export function formPreference(item : any) : userPreference {
     return new userPreference(preferenceData)
 }
 
-
 export async function determineSpendingRoom(expenses : Expense[], incomes : Expense[]) : Promise<number> {
     const expenseSum : number = expenses.reduce((sum, current) => sum + current.amount, 0)
     const incomeSum : number = incomes.reduce((sum, current) => sum + current.amount, 0)
@@ -73,4 +72,3 @@ export async function determineSpendingRoom(expenses : Expense[], incomes : Expe
     }
     return spendingRoom
 }
-
