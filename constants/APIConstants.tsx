@@ -1,4 +1,4 @@
-export const API_BASE_URL = 'https://betterbudgetapiv1.azurewebsites.net'
+export const API_BASE_URL = 'https://better-budget-api-v2.vercel.app'
 export const CATEGORY_BASE_URL = `${API_BASE_URL}/Category`
 export const DATE_BASE_URL = `${API_BASE_URL}/Dates`
 export const EXPENSE_BASE_URL = `${API_BASE_URL}/Expense`

@@ -12,8 +12,8 @@ import {
 import { TextInput } from 'react-native-paper'
 import Title from "@/app/general/Title"
 import Logo from "@/app/general/Logo"
-import {getAuth} from "@react-native-firebase/auth"
-import {FirebaseError} from "@firebase/app"
+import { supabase } from '@/lib/supabase'
+
 import {useState, useContext} from "react"
 import { styles_login } from '@/styles/styles_login'
 import CustomDarkTheme from "@/theme/CustomDarkTheme";
@@ -24,6 +24,8 @@ import {genericFailureMessage} from "@/constants/MessagesConstants";
 import {User} from "@/models/user";
 import {Link} from "expo-router";
 import CustomButton from "@/app/general/CustomButton";
+import {getTeamById} from "@/api/TeamController";
+import {Team} from "@/models/team";
 
 function Login() : React.JSX.Element {
     const [loading, setLoading] = useState(false)
@@ -36,30 +38,42 @@ function Login() : React.JSX.Element {
     const currentTheme = colorScheme === 'dark' ? CustomDarkTheme : CustomDefaultTheme
     const styles = styles_login(currentTheme)
 
-    const signUp = async () : Promise<void> => {
-        setLoading(true)
-        if(!password || !email){
-            console.log(`email: ${email}, password: ${password}`)
-            setLoading(false)
-            return
+    const signUp = async (): Promise<void> => {
+        setLoading(true);
+        if (!password || !email) {
+            console.log(`email: ${email}, password: ${password}`);
+            setLoading(false);
+            return;
         }
-        try{
-            const userCredential = await getAuth().createUserWithEmailAndPassword(email, password)
-            const user : User = await getUser(userCredential.user.email)
-            const success : boolean = await insertUser(user)
-            if(success){
-                login(user)
-                alert('Check your emails!')
-            }else{
-                alert(genericFailureMessage)
+        try {
+            const { data, error } = await supabase.auth.signUp({
+                email,
+                password,
+            });
+
+            if (error) {
+                alert('Registration failed: ' + error.message);
+                return;
             }
-        }catch(e: any){
-            const err = e as FirebaseError
-            alert('Registration failed: ' + err.message)
-        }finally{
-            setLoading(false)
+
+            const user: User = await getUser(data.user?.email);
+            const team: Team = await getTeamById(user.teamId);
+            const success: boolean = await insertUser(user);
+
+            if (success) {
+                login(user, team);
+                alert('Check your email to confirm your account!');
+            } else {
+                alert(genericFailureMessage);
+            }
+        } catch (e: any) {
+            console.error(e);
+            alert('An unexpected error occurred.');
+        } finally {
+            setLoading(false);
         }
-    }
+    };
+
 
     return (
         <SafeAreaView style={{backgroundColor: currentTheme.colors.background, flex: 1}}>

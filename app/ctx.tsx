@@ -1,27 +1,73 @@
-import React, { createContext, useState } from 'react'
-import { User } from '@/models/user'
-import { Team } from '@/models/team'
+import React, { createContext, useEffect, useState } from 'react';
+import { supabase } from '@/lib/supabase';
+import { User } from '@/models/user';
+import { Team } from '@/models/team';
+import { getUser } from '@/api/UserController'; // ensure this fetches User by email
 
-export const AuthContext = createContext(null)
-
-export const AuthProvider = ({ children }) => {
-    const [user, setUser] = useState(null) // This holds the user state
-    const [team, setTeam] = useState(null) // This holds the team state
-
-    const login = (userData : User, teamData : Team) => {
-        setUser(userData) // Set the user object on login
-        setTeam(teamData) // Set the team object on login
-    }
-
-    const logout = () => {
-        setUser(null) // Clear the user object on logout
-        setTeam(null) // Clear the team object on logout
-    }
-
-    return (
-        <AuthContext.Provider value={{ user, login, logout }}>
-            {children}
-        </AuthContext.Provider>
-    )
+interface AuthContextType {
+    user: User | null;
+    team: Team | null;
+    login: (userData: User, teamData: Team) => void;
+    logout: () => Promise<void>;
 }
 
+export const AuthContext = createContext<AuthContextType | null>(null);
+
+export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
+    const [user, setUser] = useState<User | null>(null);
+    const [team, setTeam] = useState<Team | null>(null);
+
+    const login = (userData: User, teamData: Team) => {
+        setUser(userData);
+        setTeam(teamData);
+    };
+
+    const logout = async () => {
+        await supabase.auth.signOut();
+        setUser(null);
+        setTeam(null);
+    };
+
+    useEffect(() => {
+        const restoreSession = async () => {
+            const { data } = await supabase.auth.getSession();
+            const session = data.session;
+            if (session?.user?.email) {
+                try {
+                    const userData = await getUser(session.user.email);
+                    setUser(userData);
+                } catch (error) {
+                    console.error('Failed to restore user from Supabase session:', error);
+                }
+            }
+        };
+
+        restoreSession();
+
+        const { data: listener } = supabase.auth.onAuthStateChange(async (event, session) => {
+            if (event === 'SIGNED_OUT') {
+                setUser(null);
+                setTeam(null);
+            }
+
+            if (event === 'SIGNED_IN' && session?.user?.email) {
+                try {
+                    const userData = await getUser(session.user.email);
+                    setUser(userData);
+                } catch (error) {
+                    console.error('Failed to load user on sign in:', error);
+                }
+            }
+        });
+
+        return () => {
+            listener.subscription.unsubscribe();
+        };
+    }, []);
+
+    return (
+        <AuthContext.Provider value={{ user, team, login, logout }}>
+            {children}
+        </AuthContext.Provider>
+    );
+};

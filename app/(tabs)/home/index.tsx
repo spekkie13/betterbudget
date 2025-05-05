@@ -2,7 +2,7 @@ import {ActivityIndicator, ScrollView, Text, useColorScheme, View} from 'react-n
 import Title from '@/app/general/Title'
 import Logo from '@/app/general/Logo'
 import SubTitle from '@/app/general/SubTitle'
-import React, {useCallback, useContext, useState} from 'react'
+import React, {useCallback, useContext, useEffect, useState} from 'react'
 import Preferences from '@/models/preferences'
 import {AuthContext} from "@/app/ctx"
 import CategoryInfoPanel from "@/app/(tabs)/category/CategoryInfoPanel";
@@ -16,6 +16,7 @@ import {genericFailureMessage} from "@/constants/MessagesConstants";
 import {Expense} from "@/models/expense";
 import CustomButton from "@/app/general/CustomButton";
 import {styles_home} from "@/styles/styles_home";
+import {supabase} from "@/lib/supabase";
 
 const HomeScreen = () => {
     const cardsShown: string = Preferences.get('Cards on Home Page')

@@ -1,19 +1,10 @@
 import * as React from "react"
 import {SafeAreaView} from "react-native-safe-area-context"
-import {
-    ActivityIndicator,
-    Text,
-    KeyboardAvoidingView,
-    ScrollView,
-    useColorScheme,
-    View,
-    TouchableOpacity
-} from "react-native"
+import {ActivityIndicator, Text, KeyboardAvoidingView, ScrollView, useColorScheme, View, TouchableOpacity} from "react-native"
 import { TextInput } from "react-native-paper"
 import Title from "@/app/general/Title"
 import Logo from "@/app/general/Logo"
-import {getAuth} from "@react-native-firebase/auth"
-import {useState, useContext} from "react"
+import {useState, useContext, useEffect} from "react"
 import { styles_login } from '@/styles/styles_login'
 import CustomDarkTheme from "@/theme/CustomDarkTheme";
 import CustomDefaultTheme from "@/theme/CustomDefaultTheme";
@@ -22,6 +13,8 @@ import {AuthContext} from "@/app/ctx";
 import {Link, router} from 'expo-router'
 import {errorLoginMessage, genericFailureMessage} from "@/constants/MessagesConstants";
 import CustomButton from "@/app/general/CustomButton";
+import {supabase} from "@/lib/supabase";
+import {getTeamById} from "@/api/TeamController";
 
 function Login() : React.JSX.Element {
     const [loading, setLoading] = useState(false)
@@ -36,26 +29,47 @@ function Login() : React.JSX.Element {
     const currentTheme = colorScheme === 'dark' ? CustomDarkTheme : CustomDefaultTheme
     const styles = styles_login(currentTheme)
 
+    useEffect(() => {
+        (async () => {
+            const { data, error } = await supabase.from("User").select("*").limit(1);
+            console.log('TEST DATA:', data);
+            console.log('TEST ERROR:', error);
+        })();
+    }, []);
+
     const signIn = async (): Promise<void> => {
-        setLoading(true)
-        if(!password || !email){
-            setLoading(false)
-            ShowMessage(errorLoginMessage)
-            return
+        setLoading(true);
+        if (!password || !email) {
+            setLoading(false);
+            ShowMessage(errorLoginMessage);
+            return;
         }
+
         try {
-            const userCredential = await getAuth().signInWithEmailAndPassword(email, password)
-            const user = await getUser(userCredential.user.email)
-            console.log(user)
-            login(user)
-            router.replace('/home/')
+            const { data, error } = await supabase.auth.signUp({
+                email: 'tspek9@gmail.com',
+                password: '2.Qaswe1234'
+            });
+            console.log('Sign-up result:', data, error);
+
+
+            if (error || !data.user) {
+                ShowMessage(errorLoginMessage);
+                return;
+            }
+
+            const user = await getUser(data.user.email);
+            const team = await getTeamById(user.teamId)
+            login(user, team);
+            router.replace("/home/");
         } catch (error) {
-            console.log('something went wrong logging in: ', error)
-            alert(genericFailureMessage)
+            console.log("Something went wrong logging in: ", error);
+            alert(genericFailureMessage);
         } finally {
-            setLoading(false)
+            setLoading(false);
         }
-    }
+    };
+
 
     const ShowMessage = (message: string) => {
         setSubmissionMessage(message)

@@ -69,7 +69,7 @@ const AddCategory = () => {
         }else{
             ShowErrorMessage(genericFailureMessage)
         }
-        await insertNewPeriodBudget(user.userId, Number.parseFloat(budget), cat, firstBudgetDate)
+        await insertNewPeriodBudget(user.id, Number.parseFloat(budget), cat, firstBudgetDate)
         Alert.alert('inserted x new budget along with the newly created category')
     }
 
