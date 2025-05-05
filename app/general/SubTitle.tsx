@@ -1,0 +1,18 @@
+import {styles_subtitle} from "@/styles/styles_subtitle"
+import {Text, useColorScheme, View} from 'react-native'
+import CustomDarkTheme from "@/theme/CustomDarkTheme"
+import CustomDefaultTheme from "@/theme/CustomDefaultTheme"
+
+const subTitle = ({text}) => {
+    const colorScheme = useColorScheme()
+    const currentTheme = colorScheme === 'dark' ? CustomDarkTheme : CustomDefaultTheme
+    const styles = styles_subtitle(currentTheme)
+
+    return (
+        <View style={styles.subTitle}>
+            <Text style={styles.subTitleText}>{text}</Text>
+        </View>
+    )
+}
+
+export default subTitle
