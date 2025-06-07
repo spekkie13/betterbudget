@@ -1,23 +1,23 @@
-export class User implements IUser {
-    id: number
-    name: string
-    username: string
-    email: string
-    teamId: number
-
-    constructor(data : IUser){
-        this.id = data.id
-        this.name = data.name
-        this.username = data.username
-        this.email = data.email
-        this.teamId = data.teamId
-    }
+export interface IUser {
+    id: number;
+    email: string;
+    username: string;
+    name: string;
+    teamId?: number;
 }
 
-interface IUser {
-    id: number
-    name: string
-    username: string
-    email: string
-    teamId: number
+export class User implements IUser {
+    id: number;
+    email: string;
+    username: string;
+    name: string;
+    teamId?: number;
+
+    constructor(data: IUser) {
+        this.id = data.id;
+        this.email = data.email;
+        this.username = data.username;
+        this.name = data.name;
+        this.teamId = data.teamId;
+    }
 }

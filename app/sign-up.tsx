@@ -1,13 +1,6 @@
 import * as React from "react"
 import {SafeAreaView} from "react-native-safe-area-context"
-import {
-    ActivityIndicator,
-    KeyboardAvoidingView,
-    ScrollView,
-    Text, TouchableOpacity,
-    useColorScheme,
-    View
-} from "react-native"
+import { ActivityIndicator, KeyboardAvoidingView, ScrollView, Text, TouchableOpacity, useColorScheme, View } from "react-native"
 
 import { TextInput } from 'react-native-paper'
 import Title from "@/app/general/Title"
@@ -18,7 +11,7 @@ import {useState, useContext} from "react"
 import { styles_login } from '@/styles/styles_login'
 import CustomDarkTheme from "@/theme/CustomDarkTheme";
 import CustomDefaultTheme from "@/theme/CustomDefaultTheme";
-import {getUser, insertUser} from "@/api/UserController";
+import {getUser, createNewUser} from "@/api/UserController";
 import {AuthContext} from "@/app/ctx";
 import {genericFailureMessage} from "@/constants/MessagesConstants";
 import {User} from "@/models/user";
@@ -41,7 +34,6 @@ function Login() : React.JSX.Element {
     const signUp = async (): Promise<void> => {
         setLoading(true);
         if (!password || !email) {
-            console.log(`email: ${email}, password: ${password}`);
             setLoading(false);
             return;
         }
@@ -58,7 +50,7 @@ function Login() : React.JSX.Element {
 
             const user: User = await getUser(data.user?.email);
             const team: Team = await getTeamById(user.teamId);
-            const success: boolean = await insertUser(user);
+            const success: boolean = await createNewUser(user);
 
             if (success) {
                 login(user, team);

@@ -3,7 +3,7 @@ import {Stack} from "expo-router";
 
 const Navigation = () => {
     return (
-        <Stack screenOptions={{ headerShown: false }}>
+        <Stack initialRouteName="index" screenOptions={{headerShown: false}}>
             <Stack.Screen name="index" />
         </Stack>
     )

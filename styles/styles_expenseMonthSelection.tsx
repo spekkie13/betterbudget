@@ -12,8 +12,8 @@ export const styles_expenseMonthSelection = (theme) => StyleSheet.create({
     },
     dateItem: {
         padding: 10,
+        lineHeight: 25,
         backgroundColor: theme.colors.background,
-        marginBottom: 10,
         color: theme.colors.text,
     },
     touchable: {
@@ -22,8 +22,10 @@ export const styles_expenseMonthSelection = (theme) => StyleSheet.create({
     headerText: {
         color: theme.colors.text,
         fontWeight: "bold",
-        fontSize: 18,
-        paddingTop: Padding_SMALL
+        fontSize: 16,
+        lineHeight: 20,
+        paddingTop: Padding_SMALL,
+        height: 40
     },
     buttonView: {
         flex: 1,

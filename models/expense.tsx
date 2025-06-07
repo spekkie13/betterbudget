@@ -1,38 +1,29 @@
-import {DateObj} from "@/models/dateObj";
-
-export class Expense implements IExpense{
-  id: number
-  date: DateObj
-  amount: number
-  description: string
-  categoryId: number
-  isRecurring: boolean
-  userId: number
-
-  constructor(
-      data: IExpense
-  ) {
-    this.id = data.id
-    this.date = data.date
-    this.amount = data.amount
-    this.description = data.description
-    this.categoryId = data.categoryId
-    this.isRecurring = data.isRecurring
-    this.userId = data.userId
-  }
-
-  public ToString() : string {
-    return `Expense - Id: ${this.id}, Date: ${this.date}, Amount: ${this.amount}, Description: ${this.description}, CategoryId: ${this.categoryId}, Is recurring: ${this.isRecurring}, User ID: ${this.userId})`
-  }
-
+export interface IExpense {
+  id: number,
+  description: string;
+  amount: number;
+  date: string;
+  userId: number;
+  categoryId: number;
+  isRecurring: boolean;
 }
 
-interface IExpense {
-  id: number,
-  date: DateObj,
-  amount: number,
-  description: string,
-  categoryId: number,
-  isRecurring: boolean,
-  userId: number
+export class Expense implements IExpense {
+  id: number;
+  description: string;
+  amount: number;
+  date: string;
+  userId: number;
+  categoryId: number;
+  isRecurring: boolean;
+
+  constructor(data: IExpense) {
+    this.id = data.id;
+    this.description = data.description;
+    this.amount = data.amount;
+    this.date = data.date;
+    this.userId = data.userId;
+    this.categoryId = data.categoryId;
+    this.isRecurring = data.isRecurring;
+  }
 }

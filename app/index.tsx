@@ -4,10 +4,7 @@ import {useContext} from "react";
 
 const StartPage = () => {
     const { user } = useContext(AuthContext)
-
     const href = user ? "/(tabs)/home" : "/sign-in"
-//    const href = "/(tabs)/home"
-
     return <Redirect href={href}/>
 }
 

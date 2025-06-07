@@ -1,65 +1,72 @@
-import {Modal, Text, TouchableOpacity, useColorScheme, View} from "react-native"
-import {styles_categoryDeleteModal} from "@/styles/styles_categoryDeleteModal"
-import {deleteCategoryById, fetchCategories} from "@/api/CategoryController"
-import {fetchPeriodBudgetByCategoryId, updatePeriodBudgets} from "@/api/PeriodBudgetController"
-import {fetchExpensesByCategoryId, updateExpenses} from "@/api/ExpenseController"
-import {PeriodBudget} from "@/models/periodBudget"
-import {useContext, useEffect, useState} from "react"
-import {AuthContext} from "@/app/ctx"
-import CustomDarkTheme from "@/theme/CustomDarkTheme"
-import CustomDefaultTheme from "@/theme/CustomDefaultTheme"
+import React, { useContext, useEffect, useState } from "react";
+import { Modal, Text, TouchableOpacity, useColorScheme, View } from "react-native";
+import { styles_categoryDeleteModal } from "@/styles/styles_categoryDeleteModal";
+import { deleteCategoryById, getCategories } from "@/api/CategoryController";
+import { getBudgetByCategory, updateBudgets } from "@/api/BudgetController";
+import { getExpensesByCategory, updateExpenses } from "@/api/ExpenseController";
+import { Budget } from "@/models/budget";
+import { AuthContext } from "@/app/ctx";
+import CustomDarkTheme from "@/theme/CustomDarkTheme";
+import CustomDefaultTheme from "@/theme/CustomDefaultTheme";
 
 const CategoryDeleteModal = ({ visible, onClose, categoryId, message }) => {
-    const { user } = useContext(AuthContext)
-    const [category, setCategory] = useState(null)
-    const [expenses, setExpenses] = useState([])
-
-    const colorScheme = useColorScheme()
-    const currentTheme = colorScheme === 'dark' ? CustomDarkTheme : CustomDefaultTheme
-    const styles = styles_categoryDeleteModal(currentTheme)
+    const { user } = useContext(AuthContext);
+    const [category, setCategory] = useState(null);
+    const [expenses, setExpenses] = useState([]);
+    const colorScheme = useColorScheme();
+    const styles = styles_categoryDeleteModal(
+        colorScheme === "dark" ? CustomDarkTheme : CustomDefaultTheme
+    );
 
     useEffect(() => {
-        const fetchData = async () => {
-            const cat = await fetchCategories(categoryId)
-            const exp = await fetchExpensesByCategoryId(user.id, categoryId)
+        const loadCategoryData = async () => {
+            const [cat, exp] = await Promise.all([
+                getCategories(categoryId),
+                getExpensesByCategory(user.id, categoryId),
+            ]);
+            setCategory(cat);
+            setExpenses(exp);
+        };
 
-            setExpenses(exp)
-            setCategory(cat)
-        }
-
-        fetchData()
-    }, [])
+        if (visible) loadCategoryData();
+    }, [visible]);
 
     const deleteCategory = async () => {
-        if (category.name === 'Overig')
-            onClose()
+        if (!category) return;
 
-        if (expenses.length > 0){
-            const categories = await fetchCategories(user.id)
-            const overigCategory = categories.find(c => c.name === 'Overig')
-            const newId : number = overigCategory.id
+        const isOtherCategory = category.name === "Overig";
+        if (isOtherCategory) return onClose();
 
-            const updateExpenseStatus = await updateExpenses(expenses, newId)
-            if (updateExpenseStatus) {
-                const budgetsToUpdate : PeriodBudget[] = await fetchPeriodBudgetByCategoryId(user.id, category.id)
-                const updateBudgetStatus = await updatePeriodBudgets(budgetsToUpdate,  newId)
-                if (updateBudgetStatus) {
-                    await deleteCategoryById(category.id)
+        if (expenses.length > 0) {
+            const categories = await deleteCategoryById(user.id);
+            const otherCategory = categories.find((c) => c.name === "Overig");
+            if (!otherCategory) return;
+
+            const newCategoryId = otherCategory.id;
+
+            const expenseUpdated = await updateExpenses(expenses, newCategoryId);
+            if (expenseUpdated) {
+                const budgets: Budget[] = await getBudgetByCategory(user.id, category.id);
+                const budgetsUpdated = await updateBudgets(budgets, newCategoryId);
+                if (budgetsUpdated) {
+                    await deleteCategoryById(category.id);
                 }
             }
-        }else{
-            await deleteCategoryById(category.id)
+        } else {
+            await deleteCategoryById(category.id);
         }
-        onClose()
-    }
 
-    return(
+        onClose();
+    };
+
+    return (
         <Modal
-            transparent={true}
+            transparent
             visible={visible}
             animationType="slide"
-            onRequestClose={onClose}>
-            <TouchableOpacity style={styles.backdrop} onPress={onClose}>
+            onRequestClose={onClose}
+        >
+            <TouchableOpacity style={styles.backdrop} onPress={onClose} activeOpacity={1}>
                 <View style={styles.modalView}>
                     <Text style={styles.modalText}>{message}</Text>
                     <View style={styles.buttonView}>
@@ -73,7 +80,7 @@ const CategoryDeleteModal = ({ visible, onClose, categoryId, message }) => {
                 </View>
             </TouchableOpacity>
         </Modal>
-    )
-}
+    );
+};
 
-export default CategoryDeleteModal
+export default CategoryDeleteModal;

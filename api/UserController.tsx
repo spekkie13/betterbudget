@@ -8,25 +8,23 @@ export async function getUser(email: string): Promise<User> {
 
     try {
         const response: Response = await fetch(request)
-
         if (!response.ok) {
-            throw new Error(`Failed to fetch user: ${response.status} ${response.statusText}`)
+            console.log(`Failed to fetch user: ${response.status} ${response.statusText}`)
         }
 
         const data = await response.json()
 
         if (!data || !data.email || !data.id) {
-            throw new Error("Invalid user data received from API")
+            console.log("Invalid user data received from API")
         }
 
         const userData = {
             email: data.email,
             id: data.id,
-            name: data.name,
+            name: data.Name,
             username: data.username,
             teamId: data.teamId,
         }
-
         return new User(userData)
     } catch (error) {
         console.error("getUser error:", error)
@@ -34,7 +32,7 @@ export async function getUser(email: string): Promise<User> {
     }
 }
 
-export async function insertUser(user: User): Promise<boolean> {
+export async function createNewUser(user: User): Promise<boolean> {
     const request: RequestInfo = formRequestWithBody(USER_BASE_URL, 'POST', user)
 
     try {

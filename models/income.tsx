@@ -1,26 +1,20 @@
-import {Category} from "@/models/category"
+export interface IIncome {
+    id: number;
+    amount: number;
+    date: Date;
+    userId: number;
+}
 
-export class Income {
-    category: Category
-    amount: number
-    description: string
-    description2: string
-    incomeDate: Date
-    isRecurring: boolean
+export class Income implements IIncome {
+    id: number;
+    amount: number;
+    date: Date;
+    userId: number;
 
-    constructor(
-        _category: Category,
-        _description: string,
-        _description2: string,
-        _amount: number,
-        _date: Date,
-        _isRecurring: boolean)
-    {
-        this.category = _category
-        this.description = _description
-        this.description2 = _description2
-        this.amount = _amount
-        this.incomeDate = _date
-        this.isRecurring = _isRecurring
+    constructor(data: IIncome) {
+        this.id = data.id;
+        this.amount = data.amount;
+        this.date = data.date;
+        this.userId = data.userId;
     }
 }

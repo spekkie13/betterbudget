@@ -1,5 +1,4 @@
 TO DO:
--> Investigate the weird bug with add expense sometimes causing a month selection page to pop up for a category
 -> Unify handling decimal place separator comma doesn't work but a dot does
 
 -> Add page to add/edit category budgets

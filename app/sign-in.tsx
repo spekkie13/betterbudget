@@ -4,7 +4,7 @@ import {ActivityIndicator, Text, KeyboardAvoidingView, ScrollView, useColorSchem
 import { TextInput } from "react-native-paper"
 import Title from "@/app/general/Title"
 import Logo from "@/app/general/Logo"
-import {useState, useContext, useEffect} from "react"
+import {useState, useContext} from "react"
 import { styles_login } from '@/styles/styles_login'
 import CustomDarkTheme from "@/theme/CustomDarkTheme";
 import CustomDefaultTheme from "@/theme/CustomDefaultTheme";
@@ -29,14 +29,6 @@ function Login() : React.JSX.Element {
     const currentTheme = colorScheme === 'dark' ? CustomDarkTheme : CustomDefaultTheme
     const styles = styles_login(currentTheme)
 
-    useEffect(() => {
-        (async () => {
-            const { data, error } = await supabase.from("User").select("*").limit(1);
-            console.log('TEST DATA:', data);
-            console.log('TEST ERROR:', error);
-        })();
-    }, []);
-
     const signIn = async (): Promise<void> => {
         setLoading(true);
         if (!password || !email) {
@@ -47,11 +39,9 @@ function Login() : React.JSX.Element {
 
         try {
             const { data, error } = await supabase.auth.signUp({
-                email: 'tspek9@gmail.com',
-                password: '2.Qaswe1234'
+                email: email,
+                password: password,
             });
-            console.log('Sign-up result:', data, error);
-
 
             if (error || !data.user) {
                 ShowMessage(errorLoginMessage);

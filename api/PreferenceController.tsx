@@ -1,0 +1,77 @@
+import {USER_PREFERENCES_BASE_URL} from '@/constants/APIConstants'
+import {formRequestNoBody} from "@/api/ApiHelpers";
+import {UserPreference} from "@/models/userPreference";
+
+export async function getUserPreferences(userId: number){
+    const url = `${USER_PREFERENCES_BASE_URL}?userId=${userId}`
+    const request: RequestInfo = formRequestNoBody(url, 'GET')
+    const response = await fetch(request)
+    const data = await response.json()
+
+    let preferences : UserPreference[] = []
+    for (const item of data){
+        const preference = formPreference(item)
+        preferences.push(preference)
+    }
+
+    return preferences
+}
+
+export async function getUserPreferenceByName(userId: number, name: string){
+    const url = `${USER_PREFERENCES_BASE_URL}?userId=${userId}&preferenceName=${name}`
+    const request: RequestInfo = formRequestNoBody(url, 'GET')
+    const response = await fetch(request)
+    const data = await response.json()
+    return formPreference(data)
+}
+
+export async function updateUserPreference(id: number, pref: Partial<UserPreference>) {
+    const response = await fetch(`/api/userpreferences?id=${id}`, {
+        method: "PUT",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+            numberValue: pref.numberValue,
+            stringValue: pref.stringValue,
+            dateValue: pref.dateValue,
+        }),
+    });
+
+    if (!response.ok) {
+        throw new Error(`Failed to update preference with ID ${id}`);
+    }
+
+    return await response.json();
+}
+
+export async function updateAllPreferences(userId : number, preferences: UserPreference[]) {
+    const requests = preferences.map((pref) =>
+        fetch(`/api/userpreferences/${pref.id}`, {
+        method: "PUT",
+            headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+            numberValue: pref.numberValue,
+            stringValue: pref.stringValue,
+            dateValue: pref.dateValue,
+        }),
+    })
+    );
+
+    // Option 1: Parallel updates
+    await Promise.all(requests);
+}
+
+export function formPreference(item : any) : UserPreference {
+    const preferenceData = {
+        id: item.id,
+        userId: item.userId,
+        name: item.name,
+        stringValue: item.stringValue,
+        numberValue: item.numberValue,
+        dateValue: item.dateValue
+    }
+    return new UserPreference(preferenceData)
+}

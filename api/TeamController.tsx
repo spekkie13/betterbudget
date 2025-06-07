@@ -2,22 +2,31 @@ import {Team} from '@/models/team'
 import {TEAM_BASE_URL} from "@/constants/APIConstants"
 import {formRequestNoBody} from "@/api/ApiHelpers";
 
-export async function getTeams() : Promise<Team[]> {
-    const request: RequestInfo = formRequestNoBody(TEAM_BASE_URL, 'GET');
-
-    return fetch(request)
-        .then(res => res.json())
-        .then(data => {
-            const teams: Team[] = data.map(item => new Team(item))
-            return teams
-        })}
-
 export async function getTeamById(teamId: number) : Promise<Team>{
-    const TeamData = {
-        id: teamId,
-        name: 'name'
+    const url = `${TEAM_BASE_URL}?teamId=${teamId}`;
+    const request: RequestInfo = formRequestNoBody(url, 'GET')
+
+    try {
+        const response: Response = await fetch(request)
+
+        if (!response.ok) {
+            console.log(`Failed to fetch team: ${response.status} ${response.statusText}`)
+        }
+
+        const data = await response.json()
+        if (!data || !data[0].team.id) {
+            console.log("Invalid team data received from API")
+        }
+
+        const TeamData = {
+            id: data[0].team.id,
+            name: data[0].team.name
+        }
+        return new Team(TeamData)
+    } catch (error) {
+        console.error("getTeam error:", error)
+        throw error
     }
-    return new Team(TeamData)
 }
 
 export async function updateTeam(teamId: number) {

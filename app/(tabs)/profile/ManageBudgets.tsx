@@ -7,10 +7,10 @@ import Title from "@/app/general/Title";
 import CustomButton from "@/app/general/CustomButton";
 import {useContext, useEffect, useState} from "react";
 import {AuthContext} from "@/app/ctx";
-import {fetchCategories} from "@/api/CategoryController";
+import {getCategories} from "@/api/CategoryController";
 import { Category } from "@/models/category"
-import {PeriodBudget} from "@/models/periodBudget";
-import {fetchMostRecentPeriodBudgetByCategoryId} from "@/api/PeriodBudgetController";
+import {Budget} from "@/models/budget";
+import {getMostRecentBudgetByCategory} from "@/api/BudgetController";
 
 const ManageBudgets = () => {
     const colorScheme = useColorScheme();
@@ -22,10 +22,10 @@ const ManageBudgets = () => {
     useEffect(() => {
 
         const fetchData = async () => {
-            let categories: Category[] = await fetchCategories(user.id);
-            let budgets : PeriodBudget[] = [];
+            let categories: Category[] = await getCategories(user.id);
+            let budgets : Budget[] = [];
             for(let i = 0; i < categories.length; i++){
-                budgets.push(await fetchMostRecentPeriodBudgetByCategoryId(user.id, categories[i].id))
+                budgets.push(await getMostRecentBudgetByCategory(user.id, categories[i].id))
             }
             setBudgets(budgets);
             setCategories(categories);

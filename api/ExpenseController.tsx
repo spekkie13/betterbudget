@@ -1,55 +1,39 @@
 import {Expense} from '@/models/expense'
 import {EXPENSE_BASE_URL} from "@/constants/APIConstants"
-import {DateObj} from "@/models/dateObj"
-import {formExpense, formRequestNoBody, formRequestWithBody} from "@/api/ApiHelpers";
-import {dbExpense} from "@/models/dbExpense";
+import {formRequestNoBody, formRequestWithBody} from "@/api/ApiHelpers";
 
-export async function fetchAllExpenses() : Promise<Expense[]> {
-    const request : RequestInfo = formRequestNoBody(EXPENSE_BASE_URL, 'GET')
+export async function getExpensesByUser(userId: number) : Promise<Expense[]>{
+    const url = `${EXPENSE_BASE_URL}?userId=${userId}`
+    const request: RequestInfo = formRequestNoBody(url, 'GET')
     const response = await fetch(request)
     const data = await response.json()
+
     return data.map((item : any) => {
         return formExpense(item)
     })
 }
 
-export async function fetchAllExpensesByUser(userId: number) : Promise<Expense[]>{
-    const url = `${EXPENSE_BASE_URL}/${userId}`
+export async function getExpensesByCategoryAndDate(userId: number, id: number, periodId: number): Promise<Expense[]> {
+    const url = `${EXPENSE_BASE_URL}?userId=${userId}&categoryId=${id}&periodId=${periodId}`
     const request: RequestInfo = formRequestNoBody(url, 'GET')
     const response = await fetch(request)
-    const data = await response.json()
-    return data.map((item : any) => {
-        return formExpense(item)
-    })
-}
-
-export async function fetchExpensesByCategoryIdAndDate(userId: number, id: number, dateObj: DateObj): Promise<Expense[]> {
-    const url = `${EXPENSE_BASE_URL}/${userId}/${id}/${dateObj.month}-${dateObj.year}`
-    const request: RequestInfo = formRequestNoBody(url, 'GET')
-
     try {
-        return fetch(request)
-            .then((res : Response) : Promise<any> => res.json())
-            .then((res : any) : any => {
-                return res.map((item : any) => {
-                    return formExpense(item)
-                })
-            })
-            .catch((Error : any) => console.log(Error))
+        const data = await response.json()
+        return data.map((item: any) => formExpense(item))
     } catch (error) {
         console.error('Failed to fetch expenses:', error)
         throw error // Re-throw the error after logging it
     }
 }
 
-export async function fetchExpensesByCategoryId(userId: number, categoryId: number) : Promise<Expense[]> {
-    const url = `${EXPENSE_BASE_URL}/${encodeURIComponent(userId)}/${encodeURIComponent(categoryId)}`
+export async function getExpensesByCategory(userId: number, categoryId: number) : Promise<Expense[]> {
+    const url = `${EXPENSE_BASE_URL}?userId=${encodeURIComponent(userId)}&categoryId=${encodeURIComponent(categoryId)}`
     const request: RequestInfo = formRequestNoBody(url, 'GET')
 
     try {
         const response : Response = await fetch(request)
         if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`)
+            console.error(Error)
         }
 
         return fetch(request)
@@ -66,14 +50,24 @@ export async function fetchExpensesByCategoryId(userId: number, categoryId: numb
     }
 }
 
-export async function addNewExpense(expense: dbExpense) : Promise<boolean> {
-    const request : RequestInfo = formRequestWithBody(EXPENSE_BASE_URL, 'POST', expense)
+export async function createNewExpense(expense: Expense) : Promise<boolean> {
+    const { id, date, ...rest } = expense
+    const parsedDate = new Date(date).toISOString()
+    const [Day, Month, Year] = parsedDate.split('/').map(Number);
+    const actualDate = new Date(Date.UTC(Year, Month - 1, Day));
+
+    const payload = {
+        ...rest,
+        actualDate,
+    }
+
+    const request : RequestInfo = formRequestWithBody(EXPENSE_BASE_URL, 'POST', payload)
     const response : Response = await fetch(request)
     return await response.json()
 }
 
 export async function checkForExistingExpenses(userId: number, categoryId: number) : Promise<Expense[]>{
-    const url = `${EXPENSE_BASE_URL}/${userId}/${categoryId}`
+    const url = `${EXPENSE_BASE_URL}?userId=${userId}&categoryId=${categoryId}`
     const request : RequestInfo = formRequestNoBody(url, 'GET')
 
     const response : Response = await fetch(request)
@@ -86,7 +80,7 @@ export async function checkForExistingExpenses(userId: number, categoryId: numbe
 export async function updateExpenses(expenses : Expense[], newCategoryId: number) : Promise<boolean>{
     try {
         const promises : Promise<Response>[] = expenses.map((obj : Expense) =>
-            fetch(`${EXPENSE_BASE_URL}/${obj.id}`, {
+            fetch(`${EXPENSE_BASE_URL}?id=${obj.id}`, {
                 method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json',
@@ -101,4 +95,16 @@ export async function updateExpenses(expenses : Expense[], newCategoryId: number
         console.error('Error updating home ID:', error)
         return false
     }
+}
+
+export function formExpense(item : any) : Expense {
+    return new Expense({
+        id: item.id,
+        description: item.description,
+        amount: Number.parseFloat(item.amount),
+        date: item.date,
+        userId: parseInt(item.userId),
+        categoryId: parseInt(item.categoryId),
+        isRecurring: item.isRecurring,
+    })
 }

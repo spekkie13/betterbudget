@@ -2,9 +2,9 @@ import {Text, TouchableOpacity, useColorScheme, View} from 'react-native'
 import { TextInput } from 'react-native-paper'
 import React, {useContext, useEffect, useState} from 'react'
 import Title from '@/app/general/Title'
-import {addNewExpense, fetchAllExpensesByUser} from "@/api/ExpenseController"
+import {createNewExpense} from "@/api/ExpenseController"
 import {Expense} from "@/models/expense"
-import {fetchCategories} from "@/api/CategoryController"
+import {getCategories} from "@/api/CategoryController"
 import RNPickerSelect from 'react-native-picker-select'
 import {Category} from "@/models/category"
 import {pickerSelectStyles, styles_AddExpense} from "@/styles/styles_addExpense"
@@ -12,10 +12,6 @@ import {AuthContext} from "@/app/ctx"
 import {Link} from "expo-router"
 import CustomDarkTheme from "@/theme/CustomDarkTheme"
 import CustomDefaultTheme from "@/theme/CustomDefaultTheme"
-import {DateObj} from "@/models/dateObj";
-import {FetchDateByMonthAndYear} from "@/api/DateController";
-import {Create} from "@/helpers/ExpenseHelpers";
-import {FetchIncomes} from "@/api/IncomeController";
 import {genericFailureMessage, successCreateMessage} from "@/constants/MessagesConstants";
 import CustomButton from "@/app/general/CustomButton";
 
@@ -41,7 +37,7 @@ const AddExpense = () => {
 
     useEffect(() => {
         const fetchData = async () => {
-            const Categories : Category[] = await fetchCategories(user.id)
+            const Categories : Category[] = await getCategories(user.id)
             const formattedItems = Categories.map(item => ({
                 label: item.name,
                 value: item.id
@@ -57,30 +53,22 @@ const AddExpense = () => {
             ShowErrorMessage("Please fill in the required information")
             return
         }else{
-            const selectedDate : DateObj = await FetchDateByMonthAndYear(Number.parseInt(date.split('-')[1]), Number.parseInt(date.split('-')[2]))
-            const helpDate = {
-                id: selectedDate.id,
-                day: Number.parseInt(date.split('-')[0]),
-                month: selectedDate.month,
-                year: selectedDate.year,
-            }
-            const newExpenseId = await genExpenseId()
+            const [day, month, year] = date.split("-").map(Number);
             const data = {
-                id: newExpenseId,
-                date: new DateObj(helpDate),
-                amount: Number.parseFloat(amount),
+                id: 0,
                 description: description,
-                categoryId: selectedValue,
-                isRecurring: false,
-                userId: user.id,
+                categoryId: Number(selectedValue),
+                amount: parseFloat(amount),
+                date: new Date(year, month - 1, day).toISOString(),
+                userId: Number(user.id),
+                isRecurring: false
             }
             const expense = new Expense(data)
-            const newExpense = Create(expense)
-            const success = await addNewExpense(newExpense)
+            const success = await createNewExpense(expense)
 
             if (success) {
                 ShowSuccessMessage(successCreateMessage)
-                setSelectedValue(null)
+                setSelectedValue('')
                 setDate('')
                 setDescription('')
                 setAmount('')
@@ -124,7 +112,6 @@ const AddExpense = () => {
                 </View>
             )}
             <View style={{alignItems: 'center'}}>
-                {/*/!*TODO: FIND CALENDAR PICKER???*!/*/}
                 <View style={styles.view}>
                     <TextInput
                         style={styles.input}
@@ -168,7 +155,7 @@ const AddExpense = () => {
                     <RNPickerSelect
                         onValueChange={(value) => setSelectedValue(value)}
                         items={pickerItems}
-                        placeholder={{label: 'Select a category...', value: null}}
+                        placeholder={{label: 'Select a category...', value: ''}}
                         style={pickerSelectStyles(currentTheme)}/>
                 </View>
                 <View style={{width: '100%', justifyContent: 'center', alignItems: 'center'}}>
@@ -187,15 +174,6 @@ const AddExpense = () => {
             </View>
         </View>
     )
-
-    async function genExpenseId() : Promise<number> {
-        const expenses : Expense[] = await fetchAllExpensesByUser(user.id)
-        const incomes : Expense[] = await FetchIncomes(user.id)
-
-        const allItems : Expense[] = expenses.concat(incomes)
-        const highestId : number = Math.max(...allItems.map(item => item.id))
-        return highestId + 1
-    }
 }
 
 export default AddExpense

@@ -1,126 +1,126 @@
-import { ActivityIndicator, ScrollView, Text, TouchableOpacity, useColorScheme, View } from 'react-native';
-import { DateObj } from '@/models/dateObj';
-import { FetchDistinctDates } from '@/api/DateController';
-import { ConvertDateToMonthName } from '@/helpers/DateHelpers';
 import React, { useContext, useEffect, useState } from 'react';
-import { categoryNameOther } from '@/constants/OtherConstants';
-import Title from '@/app/general/Title';
+import { ActivityIndicator, ScrollView, Text, TouchableOpacity, useColorScheme, View } from 'react-native';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
-import CategoryDeleteModal from '@/app/(tabs)/category/CategoryDeleteModal';
-import { checkForExistingExpenses } from '@/api/ExpenseController';
 import { Link, useLocalSearchParams, useRouter } from 'expo-router';
+
+import { AuthContext } from '@/app/ctx';
+import { categoryNameOther } from '@/constants/OtherConstants';
 import { styles_expenseMonthSelection } from '@/styles/styles_expenseMonthSelection';
 import CustomDarkTheme from '@/theme/CustomDarkTheme';
 import CustomDefaultTheme from '@/theme/CustomDefaultTheme';
-import { AuthContext } from '@/app/ctx';
+
+import Title from '@/app/general/Title';
 import CustomButton from '@/app/general/CustomButton';
+import CategoryDeleteModal from '@/app/(tabs)/category/CategoryDeleteModal';
+import CategoryEditModal from '@/app/(tabs)/category/CategoryEditModal';
+
+import { ConvertMonthToName } from '@/helpers/DateHelpers';
+import { getDistinctPeriods } from '@/api/PeriodController';
+import { checkForExistingExpenses } from '@/api/ExpenseController';
+
+import { Period } from '@/models/period';
 
 const MonthSelection = () => {
-    const [dates, setDates] = useState<DateObj[]>([]);
-    const [groupedDates, setGroupedDates] = useState<Map<number, number[]>>(new Map());
-    const [deleteModalVisible, setDeleteModalVisible] = useState(false);
-    const [editModalVisible, setEditModalVisible] = useState(false);
-    const [deleteMessage, setDeleteMessage] = useState('');
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
-    const router = useRouter();
     const { user } = useContext(AuthContext);
-    const { categoryId, categoryName } = useLocalSearchParams<{ categoryId: string; categoryName: string; }>();
+    const router = useRouter();
+    const { categoryId, categoryName } = useLocalSearchParams<{ categoryId: string; categoryName: string }>();
+
+    const [groupedDates, setGroupedDates] = useState<Map<number, number[]>>(new Map());
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<Error | null>(null);
+    const [deleteMessage, setDeleteMessage] = useState('');
+
+    const [editModalVisible, setEditModalVisible] = useState(false);
+    const [deleteModalVisible, setDeleteModalVisible] = useState(false);
 
     const colorScheme = useColorScheme();
     const currentTheme = colorScheme === 'dark' ? CustomDarkTheme : CustomDefaultTheme;
     const styles = styles_expenseMonthSelection(currentTheme);
 
     useEffect(() => {
-        FetchDistinctDates(user.id, Number.parseInt(categoryId)).then((data: DateObj[]): void => {
-            const grouped = new Map<number, Set<number>>();
-
-            // Group dates by year and month
-            data.forEach(({ year, month }) => {
-                if (!grouped.has(year)) {
-                    grouped.set(year, new Set());
-                }
-                grouped.get(year)!.add(month);
-            });
-
-            // Convert to a sorted Map
-            const sortedGrouped = new Map(
-                Array.from(grouped.entries())
-                    .sort(([yearA], [yearB]) => yearB - yearA) // Sort years descending
-                    .map(([year, months]) => [
-                        year,
-                        Array.from(months).sort((a, b) => b - a), // Sort months descending
-                    ])
-            );
-
-            setGroupedDates(sortedGrouped);
-        });
-
-        const fetchDeleteMessage = async () => {
+        const loadData = async () => {
             try {
-                let message: string;
-                const existingExpenses = await checkForExistingExpenses(user.id, Number.parseInt(categoryId));
+                const categoryNumId = Number.parseInt(categoryId);
+                const periods: Period[] = await getDistinctPeriods(user.id, categoryNumId);
+                const grouped = new Map<number, number[]>();
 
-                if (categoryName === categoryNameOther) {
-                    message = 'Unable to delete this home';
-                } else if (existingExpenses.length > 0) {
-                    message =
-                        'There are existing expenses in this home, are you sure you want to delete this home?';
-                } else {
-                    message = 'Are you sure you want to delete this home?';
+                periods.forEach(({ startDate }) => {
+                    const date = new Date(startDate);
+                    const year = date.getFullYear();
+                    const month = date.getMonth() + 1;
+
+                    if (!grouped.has(year)) grouped.set(year, []);
+                    if (!grouped.get(year)!.includes(month)) {
+                        grouped.get(year)!.push(month);
+                    }
+                });
+
+                for (const months of grouped.values()) {
+                    months.sort((a, b) => b - a); // descending months
                 }
+
+                setGroupedDates(new Map([...grouped.entries()].sort((a, b) => b[0] - a[0]))); // descending years
+
+                const expenses = await checkForExistingExpenses(user.id, categoryNumId);
+                const message = categoryName === categoryNameOther
+                    ? 'Unable to delete this home'
+                    : expenses.length > 0
+                        ? 'There are existing expenses in this home, are you sure you want to delete this home?'
+                        : 'Are you sure you want to delete this home?';
+
                 setDeleteMessage(message);
-            } catch (error) {
-                console.error(error);
-                setError(error);
+            } catch (err) {
+                console.error(err);
+                setError(err as Error);
             } finally {
                 setLoading(false);
             }
         };
-        fetchDeleteMessage();
+
+        loadData();
     }, []);
 
+    const handleEdit = () => setEditModalVisible(true);
+    const handleDelete = () => setDeleteModalVisible(true);
 
-    function Edit() {
-        setEditModalVisible(true);
-    }
+    const closeAndNavigateBack = () => {
+        setEditModalVisible(false);
+        setDeleteModalVisible(false);
+        router.back();
+    };
 
-    function Delete() {
-        setDeleteModalVisible(true);
-    }
-
-    if (loading) {
-        return <ActivityIndicator />;
-    }
-
-    if (error) {
-        return <Text>Error: {error.message}</Text>;
-    }
+    if (loading) return <ActivityIndicator />;
+    if (error) return <Text style={{ color: 'red' }}>Error: {error.message}</Text>;
 
     return (
         <View style={styles.container}>
             <Title text={categoryName} />
+
             <ScrollView contentContainerStyle={styles.scrollView}>
                 {Array.from(groupedDates.entries()).map(([year, months]) => (
                     <View key={year}>
                         <Text style={styles.headerText}>{year}</Text>
-                        {months.map((month) => (
-                            <Link key={month} href={`/(tabs)/category/${categoryId}/0/${month}/${year}`}>
-                                <Text style={styles.dateItem}>
-                                    - {ConvertDateToMonthName(new DateObj({ id: 0, year: year, month: month - 1, day: 1 }))}
-                                </Text>
+                        {months.map(month => (
+                            <Link
+                                key={month}
+                                href={`/(tabs)/category/${categoryId}/${month}/${year}`}
+                                style={{ height: 30 }}
+                            >
+                                <Text style={styles.dateItem}>- {ConvertMonthToName(month)}</Text>
                             </Link>
                         ))}
                     </View>
                 ))}
+
                 <View style={styles.buttonView}>
-                    <TouchableOpacity onPress={Edit} style={styles.touchable}>
+                    <TouchableOpacity onPress={handleEdit} style={styles.touchable}>
                         <View style={styles.view}>
                             <FontAwesome name="pencil" size={20} style={styles.icon} />
                             <Text style={styles.text}>Edit Category</Text>
                         </View>
                     </TouchableOpacity>
-                    <TouchableOpacity onPress={Delete} style={styles.touchable}>
+
+                    <TouchableOpacity onPress={handleDelete} style={styles.touchable}>
                         <View style={styles.view}>
                             <FontAwesome name="trash" size={20} style={styles.icon} />
                             <Text style={styles.text}>Delete</Text>
@@ -128,15 +128,19 @@ const MonthSelection = () => {
                     </TouchableOpacity>
 
                     <CategoryDeleteModal
-                        onClose={() => {
-                            setDeleteModalVisible(false);
-                            router.back();
-                        }}
                         visible={deleteModalVisible}
+                        onClose={closeAndNavigateBack}
                         categoryId={categoryId}
                         message={deleteMessage}
                     />
+
+                    <CategoryEditModal
+                        visible={editModalVisible}
+                        onClose={closeAndNavigateBack}
+                        categoryId={categoryId}
+                    />
                 </View>
+
                 <Link href="/(tabs)/category">
                     <CustomButton text="Back" color="" />
                 </Link>

@@ -1,69 +1,95 @@
-import {ActivityIndicator, Text, useColorScheme, View} from 'react-native'
-import preferences from '@/models/preferences'
-import {styles_categoryCard} from "@/styles/styles_categoryCard"
-import React, {useContext, useEffect, useState} from "react"
-import {FetchDistinctDates} from "@/api/DateController"
-import {RecentPeriodResult} from "@/models/recentPeriodResult"
-import {fetchRecentPeriodResult} from "@/api/RecentPeriodResultsController"
-import {PeriodBudget} from "@/models/periodBudget"
-import {fetchPeriodBudgetByCategoryIdAndDate} from "@/api/PeriodBudgetController"
-import {GetPercentageSpent} from "@/helpers/GeneralHelpers"
-import {AuthContext} from "@/app/ctx"
-import {Link} from "expo-router"
-import CustomDarkTheme from "@/theme/CustomDarkTheme"
-import CustomDefaultTheme from "@/theme/CustomDefaultTheme"
+import { ActivityIndicator, Text, useColorScheme, View } from 'react-native';
+import { styles_categoryCard } from "@/styles/styles_categoryCard";
+import React, { useContext, useEffect, useState } from "react";
+import { getMostRecentPeriod } from "@/api/PeriodController";
+import { getMostRecentResult } from "@/api/ResultController";
+import { getBudgetByCategoryAndDate } from "@/api/BudgetController";
+import { GetPercentageSpent } from "@/helpers/GeneralHelpers";
+import { AuthContext } from "@/app/ctx";
+import { Link } from "expo-router";
+import CustomDarkTheme from "@/theme/CustomDarkTheme";
+import CustomDefaultTheme from "@/theme/CustomDefaultTheme";
+import { Category } from "@/models/category";
+import { getUserPreferenceByName } from "@/api/PreferenceController";
+import { Budget } from "@/models/budget";
+import { Result } from "@/models/periodresult";
 
-const CategoryCard = ({category}) => {
-  const valuta = preferences.get('Valuta') || ""
-  const { user } = useContext(AuthContext)
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState(null)
-  const [recentPeriods, setRecentPeriods] = useState(null)
-  const [recentBudget, setRecentBudget] = useState(0)
+type Props = {
+    category: Category;
+};
 
-  const colorScheme = useColorScheme()
-  const currentTheme = colorScheme === 'dark' ? CustomDarkTheme : CustomDefaultTheme
-  const styles = styles_categoryCard(currentTheme)
+const CategoryCard: React.FC<Props> = ({ category }) => {
+    const { user } = useContext(AuthContext);
+    const colorScheme = useColorScheme();
+    const currentTheme = colorScheme === 'dark' ? CustomDarkTheme : CustomDefaultTheme;
+    const styles = styles_categoryCard(currentTheme);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try{
-          let distinctPeriods = await FetchDistinctDates(user.id, category.id)
-          let idx = distinctPeriods.length - 1
-          let periodResult : RecentPeriodResult = await fetchRecentPeriodResult(user?.id, category.id, distinctPeriods[idx])
-          let periodBudget : PeriodBudget = await fetchPeriodBudgetByCategoryIdAndDate(user?.id, category.id, distinctPeriods[idx])
-          setRecentPeriods(periodResult)
-          setRecentBudget(periodBudget.budget)
-      }catch (err) {
-        console.log(err)
-        setError(err)
-      }finally {
-        setLoading(false)
-      }
-    }
+    const [state, setState] = useState<{
+        loading: boolean;
+        error: any;
+        result: Result | null;
+        budget: Budget | null;
+        valuta: string;
+    }>({
+        loading: true,
+        error: null,
+        result: null,
+        budget: null,
+        valuta: "$",
+    });
 
-    fetchData()
-  }, [])
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const [period, valutaPref] = await Promise.all([
+                    getMostRecentPeriod(user.id, category.id),
+                    getUserPreferenceByName(user.id, "Valuta")
+                ]);
 
-  if (loading){
-    return <ActivityIndicator />
-  }
+                const [result, rawBudget] = await Promise.all([
+                    getMostRecentResult(user.id, category.id, period.id),
+                    getBudgetByCategoryAndDate(user.id, category.id, period.id)
+                ]);
 
-  if (error){
-    return <Text>Error: {error.message}</Text>
-  }
+                const budgetInstance = new Budget(rawBudget); // assume rawBudget matches Budget constructor
 
-  return (
-      <Link
-          style={styles.categoryCard}
-          href={`/(tabs)/expense/${category.id}/${category.name}`}>
-          <View style={styles.categoryCard}>
-            <Text style={styles.categoryName}>{category.name || ''}</Text>
-            <Text style={styles.spent}>{valuta || ''} {Number.parseFloat(recentPeriods.spent ? recentPeriods.spent : 0).toFixed(2) || ''} / {valuta || ''} {recentBudget.toFixed(2) || ''}</Text>
-            <Text style={styles.status}>Status: {GetPercentageSpent(recentPeriods.spent ? recentPeriods.spent : 0, recentBudget).toFixed(2) || ''}%</Text>
-          </View>
-      </Link>
-  )
-}
+                setState({
+                    loading: false,
+                    error: null,
+                    result,
+                    budget: budgetInstance,
+                    valuta: valutaPref?.stringValue || "$"
+                });
+            } catch (err) {
+                console.error(err);
+                setState(prev => ({ ...prev, loading: false, error: err }));
+            }
+        };
 
-export default CategoryCard
+        fetchData();
+    }, []);
+
+    const { loading, error, result, budget, valuta } = state;
+    const spent = result?.totalSpent ?? 0;
+    const budgetAmount = budget?.amount ?? 0;
+    const percentage = GetPercentageSpent(spent, budgetAmount);
+
+    if (loading) return <ActivityIndicator />;
+    if (error) return <Text style={{ color: "#FFFFFF" }}>Error: {error.message}</Text>;
+
+    return (
+        <Link href={`/(tabs)/expense/${category.id}/${category.name}`}>
+            <View style={styles.categoryCard}>
+                <Text style={styles.categoryName}>{category.name}</Text>
+                <Text style={styles.spent}>
+                    {valuta} {spent.toFixed(2)} / {valuta} {budgetAmount.toFixed(2)}
+                </Text>
+                <Text style={styles.status}>
+                    Status: {percentage.toFixed(2)}%
+                </Text>
+            </View>
+        </Link>
+    );
+};
+
+export default CategoryCard;

@@ -1,146 +1,139 @@
-import {Alert, Button, Text, useColorScheme, View, TouchableOpacity} from "react-native"
-import { TextInput } from 'react-native-paper'
-import {useContext, useState} from "react"
-import Title from "@/app/general/Title"
-import {Category} from "@/models/category"
-import {addNewCategory} from "@/api/CategoryController"
-import {insertNewPeriodBudget} from "@/api/PeriodBudgetController"
-import {DateObj} from "@/models/dateObj"
-import {genericFailureMessage, successCreateMessage} from "@/constants/MessagesConstants"
-import {AuthContext} from "@/app/ctx"
-import {Link} from "expo-router"
-import {createStyles} from "@/styles/styles_addCategory"
-import CustomDarkTheme from "@/theme/CustomDarkTheme"
-import CustomDefaultTheme from "@/theme/CustomDefaultTheme"
-import * as React from "react";
+import React, { useContext, useState } from "react";
+import { Text, useColorScheme, View, TouchableOpacity } from "react-native";
+import { TextInput } from "react-native-paper";
+import { Link } from "expo-router";
+
+import Title from "@/app/general/Title";
 import CustomButton from "@/app/general/CustomButton";
 
+import { AuthContext } from "@/app/ctx";
+
+import { genericFailureMessage, successCreateMessage } from "@/constants/MessagesConstants";
+import { createStyles } from "@/styles/styles_addCategory";
+import CustomDarkTheme from "@/theme/CustomDarkTheme";
+import CustomDefaultTheme from "@/theme/CustomDefaultTheme";
+import {CATEGORY_WITH_BUDGET_BASE_URL} from "@/constants/APIConstants";
+import {getNextPeriod} from "@/api/PeriodController";
+import {checkIfCategoryExists} from "@/api/CategoryController";
+
 const AddCategory = () => {
-    const [category, SetCategory] = useState('')
-    const [budget, SetBudget] = useState('')
-    const { user } = useContext(AuthContext)
+    const [category, setCategory] = useState("");
+    const [budget, setBudget] = useState("");
+    const [successMessage, setSuccessMessage] = useState("");
+    const [errorMessage, setErrorMessage] = useState("");
+    const [showSuccess, setShowSuccess] = useState(false);
+    const [showError, setShowError] = useState(false);
 
-    const [successSubmissionMessage, setSuccessSubmissionMessage] = useState('')
-    const [successMessageVisible, setSuccessMessageVisible] = useState(false)
+    const { user } = useContext(AuthContext);
+    const colorScheme = useColorScheme();
+    const theme = colorScheme === "dark" ? CustomDarkTheme : CustomDefaultTheme;
+    const styles = createStyles(theme);
 
-    const [errorSubmissionMessage, setErrorSubmissionMessage] = useState('')
-    const [errorMessageVisible, setErrorMessageVisible] = useState(false)
-
-    const colorScheme = useColorScheme()
-    const currentTheme = colorScheme === 'dark' ? CustomDarkTheme : CustomDefaultTheme
-    const styles = createStyles(currentTheme)
-
-    async function addCategory() : Promise<void>{
-        if(!category || !budget){
-            ShowErrorMessage("Please fill in the required information")
-            return
+    const showTemporaryMessage = (type: "success" | "error", message: string) => {
+        if (type === "success") {
+            setSuccessMessage(message);
+            setShowSuccess(true);
+            setTimeout(() => setShowSuccess(false), 3000);
+        } else {
+            setErrorMessage(message);
+            setShowError(true);
+            setTimeout(() => setShowError(false), 3000);
         }
-        const categoryData = {
-            id: 0,
-            name: category,
-            color: currentTheme.colors.background,
-            icon: '',
-            userId: user.id
-        }
-        const cat : Category = new Category(categoryData)
+    };
 
-        const currentDate = new Date()
-        let newDay = currentDate.getDate()
-        let newMonth = currentDate.getMonth() + 1
-        let newYear = currentDate.getFullYear()
-
-        if(newMonth + 1 == 13){
-            newMonth = 1
-            newYear = newYear + 1
-        }
-        const periodBudgetData = {
-            id: 0,
-            day: newDay,
-            month: newMonth,
-            year: newYear,
-            userId: user.id
+    const handleAddCategory = async (): Promise<void> => {
+        if (!category || !budget) {
+            showTemporaryMessage("error", "Please fill in the required information");
+            return;
         }
 
-        let firstBudgetDate : DateObj = new DateObj(periodBudgetData)
 
-        const addCategoryStatus = await addNewCategory(cat)
-        if(addCategoryStatus){
-            ShowSuccessMessage(successCreateMessage)
-        }else{
-            ShowErrorMessage(genericFailureMessage)
+        const exists = await checkIfCategoryExists(category, user.id);
+        if (exists) {
+            showTemporaryMessage("error", "The category already exists!");
+        } else {
+            const period = await getNextPeriod();
+
+            const payload = {
+                category: {
+                    name: category,
+                    color: theme.colors.background,
+                    icon: "N/A",
+                    userId: user.id,
+                },
+                budget: {
+                    amount: parseInt(budget),
+                    userId: user.id,
+                    periodId: period.id,
+                },
+            };
+
+            try {
+                const response = await fetch(`${CATEGORY_WITH_BUDGET_BASE_URL}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload),
+                });
+
+                if (!response.ok) {
+                    console.error("Failed to create category and budget")
+                }
+
+                const data = await response.json();
+                console.log(data);
+                showTemporaryMessage("success", successCreateMessage);
+            } catch (error) {
+                console.error("Error in handleAddCategory:", error);
+                showTemporaryMessage("error", genericFailureMessage);
+            }
         }
-        await insertNewPeriodBudget(user.id, Number.parseFloat(budget), cat, firstBudgetDate)
-        Alert.alert('inserted x new budget along with the newly created category')
-    }
-
-    const ShowSuccessMessage = (message: string) => {
-        setSuccessSubmissionMessage(message)
-        setSuccessMessageVisible(true)
-        setTimeout(() => {
-            setSuccessMessageVisible(false)
-        }, 3000)
-    }
-
-    const ShowErrorMessage = (message: string) => {
-        setErrorSubmissionMessage(message)
-        setErrorMessageVisible(true)
-        setTimeout(() => {
-            setErrorMessageVisible(false)
-        }, 3000)
-    }
+    };
 
     return (
         <View style={styles.container}>
-            <Title text={'Add category'}/>
-            {successMessageVisible && (
-                <View>
-                    <Text style={{color: currentTheme.colors.successColor}}>
-                        {successSubmissionMessage}
-                    </Text>
-                </View>
+            <Title text="Add category" />
+
+            {showSuccess && (
+                <Text style={{ color: theme.colors.successColor }}>{successMessage}</Text>
             )}
-            {errorMessageVisible && (
-                <View>
-                    <Text style={{color: currentTheme.colors.failureColor}}>
-                        {errorSubmissionMessage}
-                    </Text>
-                </View>
+
+            {showError && (
+                <Text style={{ color: theme.colors.failureColor }}>{errorMessage}</Text>
             )}
+
             <View style={styles.textView}>
                 <TextInput
                     style={styles.input}
-                    label={'category name'}
-                    textAlign={'center'}
+                    label="Category name"
+                    textAlign="center"
                     value={category}
-                    onChangeText={text => {
-                        SetCategory(text)
-                    }}
+                    onChangeText={setCategory}
                 />
             </View>
+
             <View style={styles.textView}>
                 <TextInput
                     style={styles.input}
+                    label="Budget"
                     value={budget}
-                    onChangeText={SetBudget}
-                    autoCapitalize="none"
+                    onChangeText={setBudget}
                     keyboardType="numeric"
-                    label='budget'
-                    placeholderTextColor={currentTheme.colors.textColor}/>
+                    autoCapitalize="none"
+                    placeholderTextColor={theme.colors.textColor}
+                />
             </View>
-            <View style={{width: '100%', justifyContent: 'center', alignItems: 'center'}}>
-                <TouchableOpacity
-                    onPress={addCategory}
-                    style={styles.buttonView}>
-                    <CustomButton text={'ADD'} color=""/>
+
+            <View style={{ width: "100%", alignItems: "center" }}>
+                <TouchableOpacity onPress={handleAddCategory} style={styles.buttonView}>
+                    <CustomButton text="Add" color="" />
                 </TouchableOpacity>
-                <View>
-                    <Link href={"/(tabs)/expense/"}>
-                        <CustomButton text={'BACK'} color=""/>
-                    </Link>
-                </View>
+
+                <Link href="/(tabs)/expense/">
+                    <CustomButton text="Back" color="" />
+                </Link>
             </View>
         </View>
-    )
-}
+    );
+};
 
-export default AddCategory
+export default AddCategory;

@@ -5,13 +5,12 @@ import CustomDarkTheme from "@/theme/CustomDarkTheme";
 import CustomDefaultTheme from "@/theme/CustomDefaultTheme";
 import Title from "@/app/general/Title";
 import CustomButton from "@/app/general/CustomButton";
-import Preferences from "@/models/preferences";
 import ManageCategoryModal from "@/app/(tabs)/profile/ManageCategoryModal";
 import { useContext, useEffect, useState } from "react";
-import { fetchCategories, fetchSelectedCategories } from "@/api/CategoryController";
+import { getCategories, getSelectedCategories } from "@/api/CategoryController";
 import { AuthContext } from "@/app/ctx";
-import CategoryInfoCard from "@/app/(tabs)/category/CategoryInfoCard";
-import { updatePreferences } from "@/api/UserPreferenceController";
+import {getUserPreferenceByName, updateAllPreferences } from "@/api/PreferenceController";
+import CategoryCard from "@/app/(tabs)/category/CategoryCard";
 
 const ManageCategories = () => {
     const colorScheme = useColorScheme();
@@ -23,18 +22,24 @@ const ManageCategories = () => {
     const { user } = useContext(AuthContext);
     const [items, setItems] = useState([]);
 
-    const categoriesShown = Number.parseInt(Preferences.get("Cards on Home Page"));
+    let categoriesShown = 0;
     const categoryList = [];
 
     useEffect(() => {
-        const getCategories = async () => {
-            const categoryList = await fetchCategories(user.id);
-            const selectedCategories = await fetchSelectedCategories(user.id);
+        const loadCategories = async () => {
+            const categoryList = await getCategories(user.id);
+            const selectedCategories = await getSelectedCategories(user.id);
             setSelectedItems(selectedCategories);
             setItems(categoryList);
         };
 
-        getCategories();
+        const fetchPreferences = async () => {
+            let cardsPreference = await getUserPreferenceByName(user.id, "Cards")
+            categoriesShown = cardsPreference.numberValue
+        }
+
+        loadCategories();
+        fetchPreferences()
     }, []);
 
     // Filter out selected items from the available items
@@ -87,7 +92,7 @@ const ManageCategories = () => {
                                     </Text>
                                 </View>
                             ) : (
-                                <CategoryInfoCard category={selectedItems[index]} />
+                                <CategoryCard category={selectedItems[index]} />
                             )}
                         </TouchableOpacity>
                     );
@@ -117,7 +122,7 @@ const ManageCategories = () => {
             <View style={{ alignItems: "center", marginTop: 5 }}>
                 <TouchableOpacity
                     onPress={async () => {
-                        await updatePreferences(user.id, selectedItems);
+                        await updateAllPreferences(user.id, selectedItems);
                     }}
                     style={{ marginBottom: 5 }}
                 >

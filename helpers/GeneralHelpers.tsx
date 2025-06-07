@@ -5,4 +5,3 @@ export function GetPercentageSpent(spent : number, budget : number) : number {
         return spent / budget * 100
     }
 }
-
