@@ -41,7 +41,7 @@ export function formPeriod(item: any): Period {
 
 export async function getNextPeriod() {
     const dateStr = new Date().toISOString()
-    const [startDay, startMonth, startYear] = dateStr.split('/').map(Number);
+    const [startDay, startMonth, startYear] = dateStr.split('-').map(Number);
     const startDate = new Date(Date.UTC(startYear, startMonth - 1, 1));
     const endDate = new Date(Date.UTC(startYear, startMonth, 0));
     console.log(startDay)

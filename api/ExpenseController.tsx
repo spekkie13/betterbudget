@@ -51,17 +51,7 @@ export async function getExpensesByCategory(userId: number, categoryId: number) 
 }
 
 export async function createNewExpense(expense: Expense) : Promise<boolean> {
-    const { id, date, ...rest } = expense
-    const parsedDate = new Date(date).toISOString()
-    const [Day, Month, Year] = parsedDate.split('/').map(Number);
-    const actualDate = new Date(Date.UTC(Year, Month - 1, Day));
-
-    const payload = {
-        ...rest,
-        actualDate,
-    }
-
-    const request : RequestInfo = formRequestWithBody(EXPENSE_BASE_URL, 'POST', payload)
+    const request : RequestInfo = formRequestWithBody(EXPENSE_BASE_URL, 'POST', expense)
     const response : Response = await fetch(request)
     return await response.json()
 }

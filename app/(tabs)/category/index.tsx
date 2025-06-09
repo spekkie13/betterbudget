@@ -8,7 +8,7 @@ import {
 } from 'react-native';
 import React, { useContext } from 'react';
 import { AuthContext } from '@/app/ctx';
-import { Link } from 'expo-router';
+import {Link, useRouter} from 'expo-router';
 import { styles_categoryOverview } from '@/styles/styles_categoryOverview';
 import CustomDarkTheme from '@/theme/CustomDarkTheme';
 import CustomDefaultTheme from '@/theme/CustomDefaultTheme';
@@ -19,6 +19,7 @@ import CategoriesList from "@/app/(tabs)/category/CategoriesList";
 
 const CategoryOverviewScreen = () => {
     const { user } = useContext(AuthContext);
+    const router = useRouter();
     const { categories, loading, error } = useCategories({ userId: user.id });
     const cardsShown = categories.length
 
@@ -26,6 +27,11 @@ const CategoryOverviewScreen = () => {
     const currentTheme =
         colorScheme === 'dark' ? CustomDarkTheme : CustomDefaultTheme;
     const styles = styles_categoryOverview(currentTheme);
+
+    if (!user) {
+        router.replace('/')
+        return;
+    }
 
     if (loading) return <ActivityIndicator />;
     if (error) return <Text>{error}</Text>;
