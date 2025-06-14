@@ -48,7 +48,7 @@ const HomeScreen = () => {
             }
 
             fetchData()
-        }, [user?.id])
+        }, [user])
     )
 
     if (loading)

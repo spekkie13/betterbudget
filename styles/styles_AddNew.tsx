@@ -4,6 +4,7 @@ import {Padding_LARGE} from "@/constants/UIConstants";
 export const styles_AddNew = (theme) => StyleSheet.create({
     container: {
         paddingTop: Padding_LARGE,
+        alignItems: "center",
         backgroundColor: theme.colors.background,
         flex: 1
     },

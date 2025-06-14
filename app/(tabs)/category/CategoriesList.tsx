@@ -1,7 +1,7 @@
 import React from "react";
 import { View } from "react-native";
-import CategoryCard from "@/app/(tabs)/category/CategoryCard";
 import { Category } from "@/models/category";
+import {LinkedCategoryCard} from "@/app/(tabs)/category/LinkedCategoryCard";
 
 interface CategoryListProps {
     categories: Category[];
@@ -19,11 +19,11 @@ const CategoryList: React.FC<CategoryListProps> = ({ categories, max }) => {
                 style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: 10 }}
             >
                 <View style={{ flex: 1, marginRight: 5 }}>
-                    <CategoryCard category={categoriesToRender[i]} />
+                    <LinkedCategoryCard category={categoriesToRender[i]} />
                 </View>
                 {categoriesToRender[i + 1] && (
                     <View style={{ flex: 1 }}>
-                        <CategoryCard category={categoriesToRender[i + 1]} />
+                        <LinkedCategoryCard category={categoriesToRender[i + 1]} />
                     </View>
                 )}
             </View>

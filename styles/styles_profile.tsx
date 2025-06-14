@@ -5,6 +5,7 @@ export const styles_profile = (theme) => StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: theme.colors.background,
+        padding: 20,
         paddingTop: Padding_MEDIUM
     },
     messageText: {

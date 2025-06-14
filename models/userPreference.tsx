@@ -24,4 +24,4 @@ export class UserPreference implements IUserPreference {
         this.userId = data.userId;
     }
 }
-3
+

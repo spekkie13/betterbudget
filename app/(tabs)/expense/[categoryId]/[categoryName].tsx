@@ -1,7 +1,8 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { ActivityIndicator, ScrollView, Text, TouchableOpacity, useColorScheme, View } from 'react-native';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { Link, useLocalSearchParams, useRouter } from 'expo-router';
+import { useAsyncEffect } from '@/hooks/useAsyncEffect'; // wherever you place it
 
 import { AuthContext } from '@/app/ctx';
 import { categoryNameOther } from '@/constants/OtherConstants';
@@ -37,48 +38,41 @@ const MonthSelection = () => {
     const currentTheme = colorScheme === 'dark' ? CustomDarkTheme : CustomDefaultTheme;
     const styles = styles_expenseMonthSelection(currentTheme);
 
-    useEffect(() => {
-        const loadData = async () => {
-            try {
-                const categoryNumId = Number.parseInt(categoryId);
-                const periods: Period[] = await getDistinctPeriods(user.id, categoryNumId);
-                const grouped = new Map<number, number[]>();
 
-                periods.forEach(({ startDate }) => {
-                    const date = new Date(startDate);
-                    const year = date.getFullYear();
-                    const month = date.getMonth() + 1;
+    useAsyncEffect(async () => {
+        const categoryNumId = Number.parseInt(categoryId);
+        const periods: Period[] = await getDistinctPeriods(user.id, categoryNumId);
+        const grouped = new Map<number, number[]>();
 
-                    if (!grouped.has(year)) grouped.set(year, []);
-                    if (!grouped.get(year)!.includes(month)) {
-                        grouped.get(year)!.push(month);
-                    }
-                });
+        periods.forEach(({ startDate }) => {
+            const date = new Date(startDate);
+            const year = date.getFullYear();
+            const month = date.getMonth() + 1;
 
-                for (const months of grouped.values()) {
-                    months.sort((a, b) => b - a); // descending months
-                }
-
-                setGroupedDates(new Map([...grouped.entries()].sort((a, b) => b[0] - a[0]))); // descending years
-
-                const expenses = await checkForExistingExpenses(user.id, categoryNumId);
-                const message = categoryName === categoryNameOther
-                    ? 'Unable to delete this home'
-                    : expenses.length > 0
-                        ? 'There are existing expenses in this home, are you sure you want to delete this home?'
-                        : 'Are you sure you want to delete this home?';
-
-                setDeleteMessage(message);
-            } catch (err) {
-                console.error(err);
-                setError(err as Error);
-            } finally {
-                setLoading(false);
+            if (!grouped.has(year)) grouped.set(year, []);
+            if (!grouped.get(year)!.includes(month)) {
+                grouped.get(year)!.push(month);
             }
-        };
+        });
 
-        loadData();
-    }, []);
+        for (const months of grouped.values()) {
+            months.sort((a, b) => b - a);
+        }
+
+        setGroupedDates(new Map([...grouped.entries()].sort((a, b) => b[0] - a[0])));
+
+        const expenses = await checkForExistingExpenses(user.id, categoryNumId);
+        const message = categoryName === categoryNameOther
+            ? 'Unable to delete this category'
+            : expenses.length > 0
+                ? 'There are existing expenses in this category, are you sure you want to delete this category?'
+                : 'Are you sure you want to delete this category?';
+
+        setDeleteMessage(message);
+        setError(null);
+        setLoading(false);
+    }, [categoryId, categoryName, user.id]);
+
 
     const handleEdit = () => setEditModalVisible(true);
     const handleDelete = () => setDeleteModalVisible(true);

@@ -66,6 +66,12 @@ const AddCategory = () => {
                     userId: user.id,
                     periodId: period.id,
                 },
+                result: {
+                    totalSpent: 0,
+                    percentageSpent: 0,
+                    userId: user.id,
+                    periodId: period.id,
+                }
             };
 
             try {

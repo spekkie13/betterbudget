@@ -68,19 +68,19 @@ export async function getMostRecentBudgetByCategory(userId : number, categoryId 
     }
 }
 
-export async function createNewBudget(budgetData: {userId: number, categoryId: number, periodId: number, amount : number}) : Promise<boolean> {
-    try {
-        const request : RequestInfo = formRequestWithBody(PERIOD_BUDGET_BASE_URL, 'POST', budgetData)
-        const response : Response = await fetch(request)
-        if(response.ok){
-            return await response.json()
-        }
-        return false
-    }catch(err){
-        console.log(err)
-        throw err
-    }
-}
+// export async function createNewBudget(budgetData: {userId: number, categoryId: number, periodId: number, amount : number}) : Promise<boolean> {
+//     try {
+//         const request : RequestInfo = formRequestWithBody(PERIOD_BUDGET_BASE_URL, 'POST', budgetData)
+//         const response : Response = await fetch(request)
+//         if(response.ok){
+//             return await response.json()
+//         }
+//         return false
+//     }catch(err){
+//         console.log(err)
+//         throw err
+//     }
+// }
 
 export async function updateBudgets(periodBudgets : Budget[], newCategoryId: number) : Promise<boolean>{
     try {

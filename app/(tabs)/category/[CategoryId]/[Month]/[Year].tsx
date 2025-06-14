@@ -90,7 +90,7 @@ const CategoryDetails = (): React.JSX.Element => {
         };
 
         fetchData();
-    }, []);
+    }, [user.id,  CategoryId, Month, Year]);
 
     if (loading) return <ActivityIndicator />;
     if (error) return <Text style={{ color: '#ff4444' }}>{error}</Text>;

@@ -1,6 +1,28 @@
-import {USER_PREFERENCES_BASE_URL} from '@/constants/APIConstants'
-import {formRequestNoBody} from "@/api/ApiHelpers";
+import {SAVE_PREFERENCES_URL, USER_PREFERENCES_BASE_URL} from '@/constants/APIConstants'
+import {formRequestNoBody, formRequestWithBody} from "@/api/ApiHelpers";
 import {UserPreference} from "@/models/userPreference";
+import {Category} from "@/models/category";
+
+export async function saveCategorySlots(userId: number, selectedSlots: (Category | null)[]) {
+    const preferences = selectedSlots.map((category, index) => ({
+        name: `Category ${index+1}`,
+        numberValue: category?.id ?? null
+    }));
+
+    const body = {
+        userId,
+        preferences
+    };
+
+    const request = formRequestWithBody(SAVE_PREFERENCES_URL, 'POST', body);
+    const response = await fetch(request);
+
+    if (!response.ok) {
+        console.log('save preferences failed...')
+    }
+
+    return await response.json();
+}
 
 export async function getUserPreferences(userId: number){
     const url = `${USER_PREFERENCES_BASE_URL}?userId=${userId}`

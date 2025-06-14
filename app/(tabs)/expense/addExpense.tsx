@@ -46,7 +46,7 @@ const AddExpense = () => {
         }
 
         fetchData()
-    }, [])
+    }, [user.id])
 
     const AddNewExpense = async (): Promise<void> => {
         if(!date || !amount || !description || !pickerItems){

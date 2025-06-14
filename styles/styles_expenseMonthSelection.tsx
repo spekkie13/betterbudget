@@ -4,6 +4,7 @@ import {Padding_LARGE, Padding_SMALL} from "@/constants/UIConstants"
 export const styles_expenseMonthSelection = (theme) => StyleSheet.create({
     container: {
         backgroundColor: theme.colors.background,
+        alignItems: 'center',
         padding: 20,
         flex: 1
     },

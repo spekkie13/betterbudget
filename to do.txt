@@ -1,9 +1,10 @@
 TO DO:
+-> Adjust size of CategorySlotPickerModal to be less wide
+-> Make the layout responsive instead of using hardcoded size formats
 -> Unify handling decimal place separator comma doesn't work but a dot does
 
 -> Add page to add/edit category budgets
--> Complete sign up flow => alert user -> when OK -> show sign in page
+-> Complete sign-up flow => alert user -> when OK -> show sign in page
 
--> Deny all requests with an empty user parameter or check how to add more security to API side
 -> Add in logic to fetch all members of a team and take their user ID into account when fetching all user-influenced data
 -> Team Management (create a team, join a team, think out logic for fetching user related stuff by team)

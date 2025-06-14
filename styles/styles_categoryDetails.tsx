@@ -7,6 +7,7 @@ export const styles_categoryDetails = (theme) => StyleSheet.create({
     flex: 1,
     paddingTop: Padding_MEDIUM,
     paddingLeft: 10,
+    alignItems: 'center',
   },
   titleText: {
     paddingTop: 15,
@@ -15,7 +16,6 @@ export const styles_categoryDetails = (theme) => StyleSheet.create({
     fontWeight: "bold",
     alignItems: "center",
     justifyContent: "center",
-    width: "100%",
     color: theme.colors.text
   },
   categoryList: {

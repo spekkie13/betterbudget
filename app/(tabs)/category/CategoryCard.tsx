@@ -6,7 +6,6 @@ import { getMostRecentResult } from "@/api/ResultController";
 import { getBudgetByCategoryAndDate } from "@/api/BudgetController";
 import { GetPercentageSpent } from "@/helpers/GeneralHelpers";
 import { AuthContext } from "@/app/ctx";
-import { Link } from "expo-router";
 import CustomDarkTheme from "@/theme/CustomDarkTheme";
 import CustomDefaultTheme from "@/theme/CustomDefaultTheme";
 import { Category } from "@/models/category";
@@ -67,7 +66,7 @@ const CategoryCard: React.FC<Props> = ({ category }) => {
         };
 
         fetchData();
-    }, []);
+    }, [user.id,  category.id]);
 
     const { loading, error, result, budget, valuta } = state;
     const spent = result?.totalSpent ?? 0;
@@ -78,17 +77,15 @@ const CategoryCard: React.FC<Props> = ({ category }) => {
     if (error) return <Text style={{ color: "#FFFFFF" }}>Error: {error.message}</Text>;
 
     return (
-        <Link href={`/(tabs)/expense/${category.id}/${category.name}`}>
-            <View style={styles.categoryCard}>
-                <Text style={styles.categoryName}>{category.name}</Text>
-                <Text style={styles.spent}>
-                    {valuta} {spent.toFixed(2)} / {valuta} {budgetAmount.toFixed(2)}
-                </Text>
-                <Text style={styles.status}>
-                    Status: {percentage.toFixed(2)}%
-                </Text>
-            </View>
-        </Link>
+        <View style={styles.categoryCard}>
+            <Text style={styles.categoryName}>{category.name}</Text>
+            <Text style={styles.spent}>
+                {valuta} {spent.toFixed(2)} / {valuta} {budgetAmount.toFixed(2)}
+            </Text>
+            <Text style={styles.status}>
+                Status: {percentage.toFixed(2)}%
+            </Text>
+        </View>
     );
 };
 

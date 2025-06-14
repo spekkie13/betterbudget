@@ -1,0 +1,4 @@
+node_modules
+next.config.js
+metro.config.js
+babel.config.js

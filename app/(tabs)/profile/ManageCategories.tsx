@@ -6,11 +6,12 @@ import CustomDefaultTheme from "@/theme/CustomDefaultTheme";
 import Title from "@/app/general/Title";
 import CustomButton from "@/app/general/CustomButton";
 import ManageCategoryModal from "@/app/(tabs)/profile/ManageCategoryModal";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useState } from "react";
 import { getCategories, getSelectedCategories } from "@/api/CategoryController";
 import { AuthContext } from "@/app/ctx";
 import {getUserPreferenceByName, updateAllPreferences } from "@/api/PreferenceController";
 import CategoryCard from "@/app/(tabs)/category/CategoryCard";
+import {useAsyncEffect} from "@/hooks/useAsyncEffect";
 
 const ManageCategories = () => {
     const colorScheme = useColorScheme();
@@ -18,29 +19,22 @@ const ManageCategories = () => {
     const [modalVisible, setModalVisible] = useState(false);
     const [selectedItems, setSelectedItems] = useState([null, null, null, null]); // State for each view
     const [currentIndex, setCurrentIndex] = useState(null); // Index of the clicked view
+    const [categoriesShown, setCategoriesShown] = useState(0);
 
     const { user } = useContext(AuthContext);
     const [items, setItems] = useState([]);
 
-    let categoriesShown = 0;
     const categoryList = [];
 
-    useEffect(() => {
-        const loadCategories = async () => {
-            const categoryList = await getCategories(user.id);
-            const selectedCategories = await getSelectedCategories(user.id);
-            setSelectedItems(selectedCategories);
-            setItems(categoryList);
-        };
+    useAsyncEffect(async () => {
+        const categoryList = await getCategories(user.id);
+        const selectedCategories = await getSelectedCategories(user.id);
+        setSelectedItems(selectedCategories);
+        setItems(categoryList);
 
-        const fetchPreferences = async () => {
-            let cardsPreference = await getUserPreferenceByName(user.id, "Cards")
-            categoriesShown = cardsPreference.numberValue
-        }
-
-        loadCategories();
-        fetchPreferences()
-    }, []);
+        let cardsPreference = await getUserPreferenceByName(user.id, "Cards")
+        setCategoriesShown(cardsPreference.numberValue)
+    }, [user.id]);
 
     // Filter out selected items from the available items
     const filteredItems = items.filter(
@@ -48,7 +42,7 @@ const ManageCategories = () => {
     );
 
     // Handler for when a category is selected
-    const handleCategorySelect = (item) => {
+    const handleCategorySelect = (item : any) => {
         const updatedItems = [...selectedItems];
         updatedItems[currentIndex] = item; // Update the specific view's state
         setSelectedItems(updatedItems);

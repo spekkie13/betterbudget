@@ -29,7 +29,7 @@ const CategoryDeleteModal = ({ visible, onClose, categoryId, message }) => {
         };
 
         if (visible) loadCategoryData();
-    }, [visible]);
+    }, [visible, categoryId, user.id]);
 
     const deleteCategory = async () => {
         if (!category) return;

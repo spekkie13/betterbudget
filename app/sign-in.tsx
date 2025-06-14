@@ -60,7 +60,6 @@ function Login() : React.JSX.Element {
         }
     };
 
-
     const ShowMessage = (message: string) => {
         setSubmissionMessage(message)
         setMessageVisible(true)
@@ -70,7 +69,7 @@ function Login() : React.JSX.Element {
     }
 
     return (
-        <SafeAreaView style={{backgroundColor: currentTheme.colors.background, flex: 1}}>
+        <SafeAreaView style={{backgroundColor: currentTheme.colors.background, flex: 1, alignItems: 'center'}}>
             <ScrollView contentInsetAdjustmentBehavior="automatic">
                 <Title text={'Better Budget'}/>
                 <Logo/>

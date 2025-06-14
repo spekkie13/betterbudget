@@ -29,10 +29,10 @@ export async function getTeamById(teamId: number) : Promise<Team>{
     }
 }
 
-export async function updateTeam(teamId: number) {
-    console.log(teamId)
-}
-
-export async function deleteTeam(teamId: number) {
-    console.log(teamId)
-}
+// export async function updateTeam(teamId: number) {
+//     console.log(teamId)
+// }
+//
+// export async function deleteTeam(teamId: number) {
+//     console.log(teamId)
+// }
