@@ -18,7 +18,7 @@ export const styles_categoryCard = (theme) => StyleSheet.create({
         marginTop: 5,
     },
     categoryName: {
-        fontWeight:'bold',
+        fontWeight: 'bold',
         color: theme.colors.textColor
     },
     spent: {

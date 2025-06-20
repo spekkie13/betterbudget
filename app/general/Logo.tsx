@@ -1,5 +1,5 @@
 import {Image, View} from 'react-native'
-import {styles_logo} from "@/styles/styles_logo"
+import {styles_logo} from "@/styles/general/styles_logo"
 
 const Logo = () => {
     return (

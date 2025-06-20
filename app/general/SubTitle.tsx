@@ -1,4 +1,4 @@
-import {styles_subtitle} from "@/styles/styles_subtitle"
+import {styles_subtitle} from "@/styles/general/styles_subtitle"
 import {Text, useColorScheme, View} from 'react-native'
 import CustomDarkTheme from "@/theme/CustomDarkTheme"
 import CustomDefaultTheme from "@/theme/CustomDefaultTheme"

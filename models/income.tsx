@@ -18,7 +18,7 @@ export class Income implements IIncome {
         this.userId = data.userId;
     }
 
-    static empty() : Income {
+    static empty(): Income {
         const incomeData = {
             id: 0,
             amount: 0,

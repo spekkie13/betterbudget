@@ -1,7 +1,7 @@
-import { useState } from "react";
-import { getUserPreferenceByName } from "@/api/PreferenceController";
-import { getCategories, getSelectedCategories } from "@/api/CategoryController";
-import { Category } from "@/models/category";
+import {useState} from "react";
+import {getUserPreferenceByName} from "@/api/PreferenceController";
+import {getCategories, getSelectedCategories} from "@/api/CategoryController";
+import {Category} from "@/models/category";
 import {useAsyncEffect} from "@/hooks/useAsyncEffect";
 
 type UseCategoriesOptions = {
@@ -9,7 +9,7 @@ type UseCategoriesOptions = {
     selectedOnly?: boolean;
 };
 
-export const useCategories = ({ userId, selectedOnly = false }: UseCategoriesOptions) => {
+export const useCategories = ({userId, selectedOnly = false}: UseCategoriesOptions) => {
     const [categories, setCategories] = useState<Category[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
@@ -17,7 +17,7 @@ export const useCategories = ({ userId, selectedOnly = false }: UseCategoriesOpt
 
     useAsyncEffect(async () => {
         try {
-            if(userId === undefined){
+            if (userId === undefined) {
                 return
             }
             if (selectedOnly) {
@@ -38,5 +38,5 @@ export const useCategories = ({ userId, selectedOnly = false }: UseCategoriesOpt
         }
     }, [userId, selectedOnly]);
 
-    return { categories, loading, error, cardsShown };
+    return {categories, loading, error, cardsShown};
 };

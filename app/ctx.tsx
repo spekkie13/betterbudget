@@ -2,7 +2,8 @@ import React, { createContext, useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabase';
 import { User } from '@/models/user';
 import { Team } from '@/models/team';
-import { getUser } from '@/api/UserController'; // ensure this fetches User by email
+import { getUser } from '@/api/UserController';
+import { useAsyncEffect } from "@/hooks/useAsyncEffect";
 
 interface AuthContextType {
     user: User | null;
@@ -28,22 +29,21 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         setTeam(null);
     };
 
-    useEffect(() => {
-        const restoreSession = async () => {
-            const { data } = await supabase.auth.getSession();
-            const session = data.session;
-            if (session?.user?.email) {
-                try {
-                    const userData = await getUser(session.user.email);
-                    setUser(userData);
-                } catch (error) {
-                    console.error('Failed to restore user from Supabase session:', error);
-                }
+    useAsyncEffect(async () => {
+        const { data } = await supabase.auth.getSession();
+        const session = data.session;
+
+        if (session?.user?.email) {
+            try {
+                const userData = await getUser(session.user.email);
+                setUser(userData);
+            } catch (error) {
+                console.error('Failed to restore user from Supabase session:', error);
             }
-        };
+        }
+    }, []);
 
-        restoreSession();
-
+    useEffect(() => {
         const { data: listener } = supabase.auth.onAuthStateChange(async (event, session) => {
             if (event === 'SIGNED_OUT') {
                 setUser(null);

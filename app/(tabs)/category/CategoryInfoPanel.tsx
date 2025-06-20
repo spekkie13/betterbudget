@@ -1,17 +1,17 @@
 import React, {useContext} from "react";
-import { ActivityIndicator, Text, useColorScheme, View } from "react-native";
-import { AuthContext } from "@/app/ctx";
-import { styles_categoryInfoPanel } from "@/styles/styles_categoryInfoPanel";
+import {ActivityIndicator, Text, useColorScheme, View} from "react-native";
+import {AuthContext} from "@/app/ctx";
+import {styles_categoryInfoPanel} from "@/styles/tabs/category/styles_categoryInfoPanel";
 import CustomDarkTheme from "@/theme/CustomDarkTheme";
 import CustomDefaultTheme from "@/theme/CustomDefaultTheme";
 import SubTitle from "@/app/general/SubTitle";
-import { useCategories } from "@/hooks/useCategories";
+import {useCategories} from "@/hooks/useCategories";
 import CategoriesList from "@/app/(tabs)/category/CategoriesList";
 
 const CategoryInfoPanel = () => {
-    const { user } = useContext(AuthContext);
+    const {user} = useContext(AuthContext);
 
-    const { categories, loading, error, cardsShown } = useCategories({ userId: user?.id, selectedOnly: true });
+    const {categories, loading, error, cardsShown} = useCategories({userId: user?.id, selectedOnly: true});
     const title: string = 'Top ' + cardsShown + ' categories';
 
     const colorScheme = useColorScheme();
@@ -22,7 +22,7 @@ const CategoryInfoPanel = () => {
     if (loading) {
         return (
             <View style={styles.container}>
-                <ActivityIndicator />
+                <ActivityIndicator/>
             </View>
         );
     }
@@ -37,14 +37,14 @@ const CategoryInfoPanel = () => {
 
     return (
         <View style={styles.container}>
-            <SubTitle text={title} />
+            <SubTitle text={title}/>
             <View style={styles.categoryView}>
                 {categories.length === 0 ? (
                     <Text style={styles.notFoundText}>
                         No categories to display.
                     </Text>
                 ) : (
-                    <CategoriesList categories={categories} max={cardsShown} />
+                    <CategoriesList categories={categories} max={cardsShown}/>
                 )}
             </View>
         </View>

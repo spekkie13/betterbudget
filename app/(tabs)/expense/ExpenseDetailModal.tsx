@@ -1,9 +1,9 @@
 import React from "react";
-import { Modal, Text, TouchableOpacity, useColorScheme, View } from "react-native";
-import { styles_expenseDetailModal } from "@/styles/styles_expenseDetailModal";
+import {Modal, Text, TouchableOpacity, useColorScheme, View} from "react-native";
+import {styles_expenseDetailModal} from "@/styles/tabs/expense/styles_expenseDetailModal";
 import CustomDarkTheme from "@/theme/CustomDarkTheme";
 import CustomDefaultTheme from "@/theme/CustomDefaultTheme";
-import { Expense } from "@/models/expense";
+import {Expense} from "@/models/expense";
 
 type Props = {
     visible: boolean;
@@ -12,7 +12,7 @@ type Props = {
     valuta: string;
 };
 
-const ExpenseDetailModal: React.FC<Props> = ({ visible, onClose, data, valuta }) => {
+const ExpenseDetailModal: React.FC<Props> = ({visible, onClose, data, valuta}) => {
     const colorScheme = useColorScheme();
     const currentTheme =
         colorScheme === "dark" ? CustomDarkTheme : CustomDefaultTheme;

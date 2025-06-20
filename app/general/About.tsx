@@ -4,7 +4,7 @@ import Logo from "@/app/general/Logo"
 import React from "react"
 import CustomDarkTheme from "@/theme/CustomDarkTheme";
 import CustomDefaultTheme from "@/theme/CustomDefaultTheme";
-import {styles_about} from "@/styles/styles_about";
+import {styles_about} from "@/styles/general/styles_about";
 
 const About = () => {
     const colorScheme = useColorScheme()

@@ -8,7 +8,7 @@ export const styles_addCategory = (theme) => StyleSheet.create({
         paddingTop: Padding_MEDIUM,
         alignItems: "center",
     },
-    statusMessage : {
+    statusMessage: {
         fontStyle: "italic",
         textAlign: 'center'
     },
@@ -46,7 +46,7 @@ export const styles_addCategory = (theme) => StyleSheet.create({
         borderRadius: 25,
         marginBottom: 5,
     },
-    buttonText:{
+    buttonText: {
         color: theme.colors.textColor,
         textAlign: 'center',
         fontWeight: 'bold',

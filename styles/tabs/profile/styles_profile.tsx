@@ -1,5 +1,5 @@
 import {StyleSheet} from 'react-native'
-import {Padding_SMALL, Padding_MEDIUM} from "@/constants/UIConstants";
+import {Padding_MEDIUM, Padding_SMALL} from "@/constants/UIConstants";
 
 export const styles_profile = (theme) => StyleSheet.create({
     container: {

@@ -1,24 +1,25 @@
-import { ActivityIndicator, Text, useColorScheme, View } from 'react-native';
-import { styles_categoryCard } from "@/styles/styles_categoryCard";
-import React, { useContext, useEffect, useState } from "react";
-import { getMostRecentPeriod } from "@/api/PeriodController";
-import { getMostRecentResult } from "@/api/ResultController";
-import { getBudgetByCategoryAndDate } from "@/api/BudgetController";
-import { GetPercentageSpent } from "@/helpers/GeneralHelpers";
-import { AuthContext } from "@/app/ctx";
+import {ActivityIndicator, Text, useColorScheme, View} from 'react-native';
+import {styles_categoryCard} from "@/styles/tabs/category/styles_categoryCard";
+import React, {useContext, useState} from "react";
+import {getMostRecentPeriod} from "@/api/PeriodController";
+import {getMostRecentResult} from "@/api/ResultController";
+import {getBudgetByCategoryAndDate} from "@/api/BudgetController";
+import {ConvertToPercentage} from "@/helpers/GeneralHelpers";
+import {AuthContext} from "@/app/ctx";
 import CustomDarkTheme from "@/theme/CustomDarkTheme";
 import CustomDefaultTheme from "@/theme/CustomDefaultTheme";
-import { Category } from "@/models/category";
-import { getUserPreferenceByName } from "@/api/PreferenceController";
-import { Budget } from "@/models/budget";
-import { Result } from "@/models/periodresult";
+import {Category} from "@/models/category";
+import {getUserPreferenceByName} from "@/api/PreferenceController";
+import {Budget} from "@/models/budget";
+import {Result} from "@/models/periodresult";
+import {useAsyncEffect} from "@/hooks/useAsyncEffect";
 
 type Props = {
     category: Category;
 };
 
-const CategoryCard: React.FC<Props> = ({ category }) => {
-    const { user } = useContext(AuthContext);
+const CategoryCard: React.FC<Props> = ({category}) => {
+    const {user} = useContext(AuthContext);
     const colorScheme = useColorScheme();
     const currentTheme = colorScheme === 'dark' ? CustomDarkTheme : CustomDefaultTheme;
     const styles = styles_categoryCard(currentTheme);
@@ -37,43 +38,39 @@ const CategoryCard: React.FC<Props> = ({ category }) => {
         valuta: "$",
     });
 
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const [period, valutaPref] = await Promise.all([
-                    getMostRecentPeriod(user.id, category.id),
-                    getUserPreferenceByName(user.id, "Valuta")
-                ]);
+    useAsyncEffect(async () => {
+        try {
+            const [period, valutaPref] = await Promise.all([
+                getMostRecentPeriod(user.id, category.id),
+                getUserPreferenceByName(user.id, "Valuta")
+            ]);
 
-                const [result, rawBudget] = await Promise.all([
-                    getMostRecentResult(user.id, category.id, period.id),
-                    getBudgetByCategoryAndDate(user.id, category.id, period.id)
-                ]);
+            const [result, rawBudget] = await Promise.all([
+                getMostRecentResult(user.id, category.id, period.id),
+                getBudgetByCategoryAndDate(user.id, category.id, period.id)
+            ]);
 
-                const budgetInstance = new Budget(rawBudget); // assume rawBudget matches Budget constructor
+            const budgetInstance = new Budget(rawBudget); // assume rawBudget matches Budget constructor
 
-                setState({
-                    loading: false,
-                    error: null,
-                    result,
-                    budget: budgetInstance,
-                    valuta: valutaPref?.stringValue || "$"
-                });
-            } catch (err) {
-                console.error(err);
-                setState(prev => ({ ...prev, loading: false, error: err }));
-            }
-        };
+            setState({
+                loading: false,
+                error: null,
+                result,
+                budget: budgetInstance,
+                valuta: valutaPref?.stringValue || "$"
+            });
+        } catch (err) {
+            console.error(err);
+            setState(prev => ({...prev, loading: false, error: err}));
+        }
+    }, [user?.id, category?.id])
 
-        fetchData();
-    }, [user.id,  category.id]);
-
-    const { loading, error, result, budget, valuta } = state;
+    const {loading, error, result, budget, valuta} = state;
     const spent = result?.totalSpent ?? 0;
     const budgetAmount = budget?.amount ?? 0;
-    const percentage = GetPercentageSpent(spent, budgetAmount);
+    const percentage = ConvertToPercentage(spent, budgetAmount);
 
-    if (loading) return <ActivityIndicator />;
+    if (loading) return <ActivityIndicator/>;
     if (error) return <Text style={styles.errorText}>Error: {error.message}</Text>;
 
     return (

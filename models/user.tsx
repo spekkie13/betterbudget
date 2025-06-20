@@ -21,7 +21,7 @@ export class User implements IUser {
         this.teamId = data.teamId;
     }
 
-    static empty() : User {
+    static empty(): User {
         const userData = {
             id: 0,
             email: "",

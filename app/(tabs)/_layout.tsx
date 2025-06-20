@@ -1,7 +1,7 @@
 import {Href, Tabs, useRouter} from "expo-router";
 import React from "react";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
-import { useColorScheme, View, Pressable } from "react-native";
+import {Pressable, useColorScheme, View} from "react-native";
 import CustomDarkTheme from "@/theme/CustomDarkTheme";
 import CustomDefaultTheme from "@/theme/CustomDefaultTheme";
 import {styles_tabLayout} from "@/styles/styles_tabLayout";
@@ -35,7 +35,7 @@ export default function TabsLayout() {
 
     return (
         <Tabs
-            screenOptions={({ route, navigation }) => ({
+            screenOptions={({route, navigation}) => ({
                 headerShown: false,
                 tabBarStyle: styles.tabBar,
                 tabBarButton: (props) => (
@@ -45,7 +45,7 @@ export default function TabsLayout() {
                             if (navigation.isFocused()) {
                                 const path = tabRoutes[route.name];
                                 if (path) {
-                                    router.replace({ pathname: path } as Href); // ✅ correct type
+                                    router.replace({pathname: path} as Href); // ✅ correct type
                                 }
                             } else {
                                 props.onPress?.(e);
@@ -79,11 +79,11 @@ export default function TabsLayout() {
                     route.name.charAt(0).toUpperCase() + route.name.slice(1),
             })}
         >
-            <Tabs.Screen name="home" />
-            <Tabs.Screen name="category" />
-            <Tabs.Screen name="expense" />
-            <Tabs.Screen name="profile" />
-            <Tabs.Screen name="settings" />
+            <Tabs.Screen name="home"/>
+            <Tabs.Screen name="category"/>
+            <Tabs.Screen name="expense"/>
+            <Tabs.Screen name="profile"/>
+            <Tabs.Screen name="settings"/>
         </Tabs>
     );
 }

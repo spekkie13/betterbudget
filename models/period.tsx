@@ -15,7 +15,7 @@ export class Period implements IPeriod {
         this.endDate = data.endDate;
     }
 
-    static empty() : Period {
+    static empty(): Period {
         const periodData = {
             id: 0,
             startDate: new Date(),

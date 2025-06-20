@@ -24,7 +24,7 @@ export class Result implements IResult {
         this.periodId = data.periodId;
     }
 
-    static empty() : Result {
+    static empty(): Result {
         const resultData = {
             id: 0,
             totalSpent: 0,

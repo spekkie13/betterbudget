@@ -4,7 +4,7 @@ import {AuthProvider} from "@/app/ctx";
 const RootLayout = () => {
     return (
         <AuthProvider>
-            <Slot />
+            <Slot/>
         </AuthProvider>
     );
 }

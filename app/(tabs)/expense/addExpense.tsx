@@ -1,19 +1,20 @@
 import {Text, TouchableOpacity, useColorScheme, View} from 'react-native'
-import { TextInput } from 'react-native-paper'
-import React, {useContext, useEffect, useState} from 'react'
+import {TextInput} from 'react-native-paper'
+import React, {useContext, useState} from 'react'
 import Title from '@/app/general/Title'
 import {createNewExpense} from "@/api/ExpenseController"
 import {Expense} from "@/models/expense"
 import {getCategories} from "@/api/CategoryController"
 import RNPickerSelect from 'react-native-picker-select'
 import {Category} from "@/models/category"
-import {pickerSelectStyles, styles_AddExpense} from "@/styles/styles_addExpense"
+import {pickerSelectStyles, styles_AddExpense} from "@/styles/tabs/expense/styles_addExpense"
 import {AuthContext} from "@/app/ctx"
 import {Link} from "expo-router"
 import CustomDarkTheme from "@/theme/CustomDarkTheme"
 import CustomDefaultTheme from "@/theme/CustomDefaultTheme"
-import {genericFailureMessage, successCreateMessage} from "@/constants/MessagesConstants";
+import {genericFailureMessage, successCreateMessage} from "@/constants/messageConstants";
 import CustomButton from "@/app/general/CustomButton";
+import {useAsyncEffect} from "@/hooks/useAsyncEffect";
 
 const AddExpense = () => {
     const [pickerItems, setPickerItems] = useState([])
@@ -29,30 +30,26 @@ const AddExpense = () => {
     const [errorSubmissionMessage, setErrorSubmissionMessage] = useState('')
     const [errorMessageVisible, setErrorMessageVisible] = useState(false)
 
-    const { user } = useContext(AuthContext)
+    const {user} = useContext(AuthContext)
 
     const colorScheme = useColorScheme()
     const currentTheme = colorScheme === 'dark' ? CustomDarkTheme : CustomDefaultTheme
     const styles = styles_AddExpense(currentTheme)
 
-    useEffect(() => {
-        const fetchData = async () => {
-            const Categories : Category[] = await getCategories(user.id)
-            const formattedItems = Categories.map(item => ({
-                label: item.name,
-                value: item.id
-            }))
-            setPickerItems(formattedItems)
-        }
-
-        fetchData()
-    }, [user.id])
+    useAsyncEffect(async () => {
+        const Categories: Category[] = await getCategories(user.id)
+        const formattedItems = Categories.map(item => ({
+            label: item.name,
+            value: item.id
+        }))
+        setPickerItems(formattedItems)
+    }, [user?.id])
 
     const AddNewExpense = async (): Promise<void> => {
-        if(!date || !amount || !description || !pickerItems){
+        if (!date || !amount || !description || !pickerItems) {
             ShowErrorMessage("Please fill in the required information")
             return
-        }else{
+        } else {
             const [day, month, year] = date.split("-").map(Number);
             const data = {
                 id: 0,
@@ -72,7 +69,7 @@ const AddExpense = () => {
                 setDate('')
                 setDescription('')
                 setAmount('')
-            }else{
+            } else {
                 ShowErrorMessage(genericFailureMessage)
             }
         }
@@ -96,7 +93,7 @@ const AddExpense = () => {
 
     return (
         <View style={styles.container}>
-            <Title text={'Add Expense'} />
+            <Title text={'Add Expense'}/>
             {successMessageVisible && (
                 <View>
                     <Text style={styles.successText}>

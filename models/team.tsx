@@ -12,7 +12,7 @@ export class Team implements ITeam {
         this.name = data.name;
     }
 
-    static empty() : Team {
+    static empty(): Team {
         const teamData = {
             id: 0,
             name: ''

@@ -1,31 +1,38 @@
 import * as React from "react"
+import {useContext, useState} from "react"
 import {SafeAreaView} from "react-native-safe-area-context"
-import { ActivityIndicator, KeyboardAvoidingView, ScrollView, Text, TouchableOpacity, useColorScheme, View } from "react-native"
+import {
+    ActivityIndicator,
+    KeyboardAvoidingView,
+    ScrollView,
+    Text,
+    TouchableOpacity,
+    useColorScheme,
+    View
+} from "react-native"
 
-import { TextInput } from 'react-native-paper'
+import {TextInput} from 'react-native-paper'
 import Title from "@/app/general/Title"
 import Logo from "@/app/general/Logo"
-import { supabase } from '@/lib/supabase'
-
-import {useState, useContext} from "react"
-import { styles_login } from '@/styles/styles_login'
+import {supabase} from '@/lib/supabase'
+import {styles_login} from '@/styles/styles_login'
 import CustomDarkTheme from "@/theme/CustomDarkTheme";
 import CustomDefaultTheme from "@/theme/CustomDefaultTheme";
-import {getUser, createNewUser} from "@/api/UserController";
+import {createNewUser, getUser} from "@/api/UserController";
 import {AuthContext} from "@/app/ctx";
-import {genericFailureMessage} from "@/constants/MessagesConstants";
+import {genericFailureMessage} from "@/constants/messageConstants";
 import {User} from "@/models/user";
 import {Link} from "expo-router";
 import CustomButton from "@/app/general/CustomButton";
 import {getTeamById} from "@/api/TeamController";
 import {Team} from "@/models/team";
 
-function Login() : React.JSX.Element {
+function Login(): React.JSX.Element {
     const [loading, setLoading] = useState(false)
     const [username, setUsername] = useState('')
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
-    const { login } = useContext(AuthContext)
+    const {login} = useContext(AuthContext)
 
     const colorScheme = useColorScheme()
     const currentTheme = colorScheme === 'dark' ? CustomDarkTheme : CustomDefaultTheme
@@ -38,7 +45,7 @@ function Login() : React.JSX.Element {
             return;
         }
         try {
-            const { data, error } = await supabase.auth.signUp({
+            const {data, error} = await supabase.auth.signUp({
                 email,
                 password,
             });
@@ -74,12 +81,12 @@ function Login() : React.JSX.Element {
                 <Logo/>
                 <View style={styles.container}>
                     {loading ? (
-                        <ActivityIndicator size="small" style={styles.activityIndicator} />
+                        <ActivityIndicator size="small" style={styles.activityIndicator}/>
                     ) : (
                         <View>
                             <View style={styles.messageView}>
                                 <Text style={styles.signInText}>Sign up</Text>
-                                <KeyboardAvoidingView behavior={'padding'} >
+                                <KeyboardAvoidingView behavior={'padding'}>
                                     <TextInput
                                         style={styles.input}
                                         value={username}
@@ -114,7 +121,8 @@ function Login() : React.JSX.Element {
                                 </KeyboardAvoidingView>
                                 <View style={styles.signUpView}>
                                     <Link href="/sign-in">
-                                        <Text style={styles.signUpText}>Already have an account? Click here to login</Text>
+                                        <Text style={styles.signUpText}>Already have an account? Click here to
+                                            login</Text>
                                     </Link>
                                 </View>
                             </View>

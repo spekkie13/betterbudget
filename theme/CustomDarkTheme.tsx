@@ -1,8 +1,8 @@
 import {DarkTheme} from "@react-navigation/native"
 
-const CustomDarkTheme ={
+const CustomDarkTheme = {
     ...DarkTheme,
-    colors:{
+    colors: {
         ...DarkTheme.colors,
         background: '#121212',
         backgroundDark: '#191919',

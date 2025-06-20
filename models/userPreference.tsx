@@ -24,7 +24,7 @@ export class UserPreference implements IUserPreference {
         this.userId = data.userId;
     }
 
-    static empty() : UserPreference {
+    static empty(): UserPreference {
         const preferenceData = {
             id: 0,
             name: '',

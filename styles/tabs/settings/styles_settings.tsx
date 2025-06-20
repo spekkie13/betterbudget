@@ -1,7 +1,7 @@
 import {StyleSheet} from 'react-native'
 import {Padding_MEDIUM} from "@/constants/UIConstants";
 
-export const styles_settings = (theme:any) => StyleSheet.create({
+export const styles_settings = (theme: any) => StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: theme.colors.background,
@@ -36,7 +36,7 @@ export const styles_settings = (theme:any) => StyleSheet.create({
     },
 })
 
-export const pickerStyles = (theme : any) => StyleSheet.create({
+export const pickerStyles = (theme: any) => StyleSheet.create({
     inputIOS: {
         width: 200,
         fontSize: 16,

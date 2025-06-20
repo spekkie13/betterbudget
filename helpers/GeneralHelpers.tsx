@@ -1,7 +1,7 @@
-export function GetPercentageSpent(spent : number, budget : number) : number {
-    if (Number.isNaN(spent) || Number.isNaN(budget) || spent === undefined || budget === undefined) {
+export function ConvertToPercentage(part: number, total: number): number {
+    if (Number.isNaN(part) || Number.isNaN(total) || part === undefined || total === undefined) {
         return 0
-    }else{
-        return spent / budget * 100
+    } else {
+        return part / total * 100
     }
 }

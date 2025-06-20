@@ -1,9 +1,6 @@
-export function ConvertMonthToName(month : number) : string {
-    const monthNumber = month - 1
-    return monthNames[monthNumber]
-}
+import {MonthNames} from '@/constants/monthNames'
 
-const monthNames : string[] = [
-    "Januari", "Februari", "Maart", "April", "Mei", "Juni",
-    "Juli", "Augustus", "September", "Oktober", "November", "December"
-];
+export function ConvertMonthToName(month: number): string {
+    const monthNumber = month - 1
+    return MonthNames[monthNumber]
+}

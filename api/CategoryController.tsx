@@ -1,5 +1,5 @@
 import {Category} from "@/models/category";
-import {CATEGORY_BASE_URL, CATEGORY_EXISTS_URL} from "@/constants/APIConstants";
+import {CATEGORY_BASE_URL, CATEGORY_EXISTS_URL} from "@/constants/apiConstants";
 import {formRequestNoBody,} from "@/api/ApiHelpers";
 import {getUserPreferenceByName, getUserPreferences,} from "@/api/PreferenceController";
 
@@ -97,11 +97,11 @@ returns a boolean based on whether a category with the provided name exists
 name -> name to check
 User ID -> user to check the name for
 */
-export async function checkIfCategoryExists (name: string, userId: number): Promise<boolean> {
+export async function checkIfCategoryExists(name: string, userId: number): Promise<boolean> {
     const response = await fetch(CATEGORY_EXISTS_URL + `?userId=${userId}&name=${name}`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, userId }),
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({name, userId}),
     });
 
     const result = await response.json();

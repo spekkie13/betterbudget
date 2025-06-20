@@ -1,7 +1,7 @@
 import React from 'react';
-import {View, TouchableOpacity, Text} from 'react-native';
+import {Text, TouchableOpacity, View} from 'react-native';
 import CategoryCard from "@/app/(tabs)/category/CategoryCard";
-import {styles_categorySlotPicker} from "@/styles/styles_categorySlotPicker";
+import {styles_categorySlotPicker} from "@/styles/tabs/profile/styles_categorySlotPicker";
 
 export interface Category {
     id: number;
@@ -16,7 +16,7 @@ interface CategorySlotPickerProps {
     onSlotPress?: (index: number) => void;
 }
 
-const CategorySlotPicker: React.FC<CategorySlotPickerProps> = ({ selectedCategories, onSlotPress }) => {
+const CategorySlotPicker: React.FC<CategorySlotPickerProps> = ({selectedCategories, onSlotPress}) => {
     const rows: (Category | null)[][] = [];
     for (let i = 0; i < selectedCategories.length; i += 2) {
         rows.push(selectedCategories.slice(i, i + 2));
@@ -36,7 +36,7 @@ const CategorySlotPicker: React.FC<CategorySlotPickerProps> = ({ selectedCategor
                                 style={styles_categorySlotPicker.touchable}
                             >
                                 {category ? (
-                                    <CategoryCard category={category} />
+                                    <CategoryCard category={category}/>
                                 ) : (
                                     <Text style={styles_categorySlotPicker.emptyCard}>-</Text>
                                 )}

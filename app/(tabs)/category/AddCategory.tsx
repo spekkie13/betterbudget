@@ -1,18 +1,15 @@
-import React, { useContext, useState } from "react";
-import { Text, useColorScheme, View, TouchableOpacity } from "react-native";
-import { TextInput } from "react-native-paper";
-import { Link } from "expo-router";
-
+import React, {useContext, useState} from "react";
+import {Text, TouchableOpacity, useColorScheme, View} from "react-native";
+import {TextInput} from "react-native-paper";
+import {Link} from "expo-router";
 import Title from "@/app/general/Title";
 import CustomButton from "@/app/general/CustomButton";
-
-import { AuthContext } from "@/app/ctx";
-
-import { genericFailureMessage, successCreateMessage } from "@/constants/MessagesConstants";
-import { styles_addCategory } from "@/styles/styles_addCategory";
+import {AuthContext} from "@/app/ctx";
+import {genericFailureMessage, successCreateMessage} from "@/constants/messageConstants";
+import {styles_addCategory} from "@/styles/tabs/category/styles_addCategory";
 import CustomDarkTheme from "@/theme/CustomDarkTheme";
 import CustomDefaultTheme from "@/theme/CustomDefaultTheme";
-import {CATEGORY_WITH_BUDGET_BASE_URL} from "@/constants/APIConstants";
+import {CATEGORY_WITH_BUDGET_BASE_URL} from "@/constants/apiConstants";
 import {getNextPeriod} from "@/api/PeriodController";
 import {checkIfCategoryExists} from "@/api/CategoryController";
 
@@ -24,7 +21,7 @@ const AddCategory = () => {
     const [showSuccess, setShowSuccess] = useState(false);
     const [showError, setShowError] = useState(false);
 
-    const { user } = useContext(AuthContext);
+    const {user} = useContext(AuthContext);
     const colorScheme = useColorScheme();
     const theme = colorScheme === "dark" ? CustomDarkTheme : CustomDefaultTheme;
     const styles = styles_addCategory(theme);
@@ -78,7 +75,7 @@ const AddCategory = () => {
             try {
                 const response = await fetch(`${CATEGORY_WITH_BUDGET_BASE_URL}`, {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: {'Content-Type': 'application/json'},
                     body: JSON.stringify(payload),
                 });
 
@@ -98,7 +95,7 @@ const AddCategory = () => {
 
     return (
         <View style={styles.container}>
-            <Title text="Add category" />
+            <Title text="Add category"/>
 
             {showSuccess && (
                 <Text style={styles.successMessage}>{successMessage}</Text>
@@ -132,11 +129,11 @@ const AddCategory = () => {
 
             <View style={styles.addButtonView}>
                 <TouchableOpacity onPress={handleAddCategory} style={styles.buttonView}>
-                    <CustomButton text="Add" color="" />
+                    <CustomButton text="Add" color=""/>
                 </TouchableOpacity>
 
                 <Link href="/(tabs)/expense/">
-                    <CustomButton text="Back" color="" />
+                    <CustomButton text="Back" color=""/>
                 </Link>
             </View>
         </View>

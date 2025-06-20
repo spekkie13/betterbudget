@@ -1,11 +1,11 @@
-import {SAVE_PREFERENCES_URL, USER_PREFERENCES_BASE_URL} from '@/constants/APIConstants'
+import {SAVE_PREFERENCES_URL, USER_PREFERENCES_BASE_URL} from '@/constants/apiConstants'
 import {formRequestNoBody, formRequestWithBody} from "@/api/ApiHelpers";
 import {UserPreference} from "@/models/userPreference";
 import {Category} from "@/models/category";
 
 export async function saveCategorySlots(userId: number, selectedSlots: (Category | null)[]) {
     const preferences = selectedSlots.map((category, index) => ({
-        name: `Category ${index+1}`,
+        name: `Category ${index + 1}`,
         numberValue: category?.id ?? null
     }));
 
@@ -24,14 +24,14 @@ export async function saveCategorySlots(userId: number, selectedSlots: (Category
     return await response.json();
 }
 
-export async function getUserPreferences(userId: number){
+export async function getUserPreferences(userId: number) {
     const url = `${USER_PREFERENCES_BASE_URL}?userId=${userId}`
     const request: RequestInfo = formRequestNoBody(url, 'GET')
     const response = await fetch(request)
     const data = await response.json()
 
-    let preferences : UserPreference[] = []
-    for (const item of data){
+    let preferences: UserPreference[] = []
+    for (const item of data) {
         const preference = formPreference(item)
         preferences.push(preference)
     }
@@ -39,7 +39,7 @@ export async function getUserPreferences(userId: number){
     return preferences
 }
 
-export async function getUserPreferenceByName(userId: number, name: string){
+export async function getUserPreferenceByName(userId: number, name: string) {
     const url = `${USER_PREFERENCES_BASE_URL}?userId=${userId}&preferenceName=${name}`
     const request: RequestInfo = formRequestNoBody(url, 'GET')
     const response = await fetch(request)
@@ -86,7 +86,7 @@ export async function updateUserPreference(id: number, pref: Partial<UserPrefere
 //     await Promise.all(requests);
 // }
 
-export function formPreference(item : any) : UserPreference {
+export function formPreference(item: any): UserPreference {
     const preferenceData = {
         id: item.id,
         userId: item.userId,

@@ -1,12 +1,11 @@
-import React, { useContext, useState } from 'react';
-import { ActivityIndicator, ScrollView, Text, TouchableOpacity, useColorScheme, View } from 'react-native';
+import React, {useContext, useState} from 'react';
+import {ActivityIndicator, ScrollView, Text, TouchableOpacity, useColorScheme, View} from 'react-native';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
-import { Link, useLocalSearchParams, useRouter } from 'expo-router';
-import { useAsyncEffect } from '@/hooks/useAsyncEffect'; // wherever you place it
-
-import { AuthContext } from '@/app/ctx';
-import { categoryNameOther } from '@/constants/OtherConstants';
-import { styles_expenseMonthSelection } from '@/styles/styles_expenseMonthSelection';
+import {Link, useLocalSearchParams, useRouter} from 'expo-router';
+import {useAsyncEffect} from '@/hooks/useAsyncEffect'; // wherever you place it
+import {AuthContext} from '@/app/ctx';
+import {categoryNameOther} from '@/constants/messageConstants';
+import {styles_expenseMonthSelection} from '@/styles/tabs/expense/styles_expenseMonthSelection';
 import CustomDarkTheme from '@/theme/CustomDarkTheme';
 import CustomDefaultTheme from '@/theme/CustomDefaultTheme';
 
@@ -15,16 +14,16 @@ import CustomButton from '@/app/general/CustomButton';
 import CategoryDeleteModal from '@/app/(tabs)/category/CategoryDeleteModal';
 import CategoryEditModal from '@/app/(tabs)/category/CategoryEditModal';
 
-import { ConvertMonthToName } from '@/helpers/DateHelpers';
-import { getDistinctPeriods } from '@/api/PeriodController';
-import { checkForExistingExpenses } from '@/api/ExpenseController';
+import {ConvertMonthToName} from '@/helpers/DateHelpers';
+import {getDistinctPeriods} from '@/api/PeriodController';
+import {checkForExistingExpenses} from '@/api/ExpenseController';
 
-import { Period } from '@/models/period';
+import {Period} from '@/models/period';
 
 const MonthSelection = () => {
-    const { user } = useContext(AuthContext);
+    const {user} = useContext(AuthContext);
     const router = useRouter();
-    const { categoryId, categoryName } = useLocalSearchParams<{ categoryId: string; categoryName: string }>();
+    const {categoryId, categoryName} = useLocalSearchParams<{ categoryId: string; categoryName: string }>();
 
     const [groupedDates, setGroupedDates] = useState<Map<number, number[]>>(new Map());
     const [loading, setLoading] = useState(true);
@@ -44,7 +43,7 @@ const MonthSelection = () => {
         const periods: Period[] = await getDistinctPeriods(user.id, categoryNumId);
         const grouped = new Map<number, number[]>();
 
-        periods.forEach(({ startDate }) => {
+        periods.forEach(({startDate}) => {
             const date = new Date(startDate);
             const year = date.getFullYear();
             const month = date.getMonth() + 1;
@@ -83,12 +82,12 @@ const MonthSelection = () => {
         router.back();
     };
 
-    if (loading) return <ActivityIndicator />;
+    if (loading) return <ActivityIndicator/>;
     if (error) return <Text style={styles.errorMessage}>Error: {error.message}</Text>;
 
     return (
         <View style={styles.container}>
-            <Title text={categoryName} />
+            <Title text={categoryName}/>
 
             <ScrollView contentContainerStyle={styles.scrollView}>
                 {Array.from(groupedDates.entries()).map(([year, months]) => (
@@ -109,14 +108,14 @@ const MonthSelection = () => {
                 <View style={styles.buttonView}>
                     <TouchableOpacity onPress={handleEdit} style={styles.touchable}>
                         <View style={styles.view}>
-                            <FontAwesome name="pencil" size={20} style={styles.icon} />
+                            <FontAwesome name="pencil" size={20} style={styles.icon}/>
                             <Text style={styles.text}>Edit Category</Text>
                         </View>
                     </TouchableOpacity>
 
                     <TouchableOpacity onPress={handleDelete} style={styles.touchable}>
                         <View style={styles.view}>
-                            <FontAwesome name="trash" size={20} style={styles.icon} />
+                            <FontAwesome name="trash" size={20} style={styles.icon}/>
                             <Text style={styles.text}>Delete</Text>
                         </View>
                     </TouchableOpacity>
@@ -136,7 +135,7 @@ const MonthSelection = () => {
                 </View>
 
                 <Link href="/(tabs)/category">
-                    <CustomButton text="Back" color="" />
+                    <CustomButton text="Back" color=""/>
                 </Link>
             </ScrollView>
         </View>
