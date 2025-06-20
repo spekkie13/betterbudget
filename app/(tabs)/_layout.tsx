@@ -4,14 +4,14 @@ import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { useColorScheme, View, Pressable } from "react-native";
 import CustomDarkTheme from "@/theme/CustomDarkTheme";
 import CustomDefaultTheme from "@/theme/CustomDefaultTheme";
+import {styles_tabLayout} from "@/styles/styles_tabLayout";
 
 type FontAwesomeIconName = keyof typeof FontAwesome.glyphMap;
 
 export default function TabsLayout() {
     const colorScheme = useColorScheme();
-    const currentTheme =
-        colorScheme === "dark" ? CustomDarkTheme : CustomDefaultTheme;
-
+    const currentTheme = colorScheme === "dark" ? CustomDarkTheme : CustomDefaultTheme;
+    const styles = styles_tabLayout(currentTheme)
     const router = useRouter();
 
     const getIcon = (name: string): FontAwesomeIconName => {
@@ -33,24 +33,11 @@ export default function TabsLayout() {
         settings: '/settings',
     };
 
-
     return (
         <Tabs
             screenOptions={({ route, navigation }) => ({
                 headerShown: false,
-                tabBarStyle: {
-                    position: "absolute",
-                    bottom: 25,
-                    left: 20,
-                    right: 20,
-                    elevation: 0,
-                    backgroundColor: currentTheme.colors.background,
-                    borderRadius: 15,
-                    borderStyle: "solid",
-                    borderWidth: 1,
-                    borderColor: currentTheme.colors.primary,
-                    height: 50,
-                },
+                tabBarStyle: styles.tabBar,
                 tabBarButton: (props) => (
                     <Pressable
                         {...props}
@@ -66,18 +53,11 @@ export default function TabsLayout() {
                         }}
                     />
                 ),
-                tabBarIcon: ({ focused }) => {
+                tabBarIcon: () => {
                     if (route.name === "expense") {
                         return (
                             <View
-                                style={{
-                                    width: 30,
-                                    height: 30,
-                                    borderRadius: 25,
-                                    backgroundColor: currentTheme.colors.primary,
-                                    justifyContent: "center",
-                                    alignItems: "center",
-                                }}
+                                style={styles.expenseView}
                             >
                                 <FontAwesome
                                     name="plus"

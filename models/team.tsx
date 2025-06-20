@@ -11,4 +11,13 @@ export class Team implements ITeam {
         this.id = data.id;
         this.name = data.name;
     }
+
+    static empty() : Team {
+        const teamData = {
+            id: 0,
+            name: ''
+        }
+
+        return new Team(teamData);
+    }
 }

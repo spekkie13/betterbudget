@@ -70,4 +70,21 @@ export const styles_AddExpense = (theme) => StyleSheet.create({
         borderRadius: 25,
         marginBottom: 5,
     },
+    successText: {
+        color: theme.colors.successColor
+    },
+    failureText: {
+        color: theme.colors.failureColor
+    },
+    addView: {
+        alignItems: 'center'
+    },
+    addButtonView: {
+        width: '100%',
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+    backButtonView: {
+        paddingBottom: 5
+    }
 })

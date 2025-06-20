@@ -99,19 +99,19 @@ const AddExpense = () => {
             <Title text={'Add Expense'} />
             {successMessageVisible && (
                 <View>
-                    <Text style={{color: currentTheme.colors.successColor}}>
+                    <Text style={styles.successText}>
                         {successSubmissionMessage}
                     </Text>
                 </View>
             )}
             {errorMessageVisible && (
                 <View>
-                    <Text style={{color: currentTheme.colors.failureColor}}>
+                    <Text style={styles.failureText}>
                         {errorSubmissionMessage}
                     </Text>
                 </View>
             )}
-            <View style={{alignItems: 'center'}}>
+            <View style={styles.addView}>
                 <View style={styles.view}>
                     <TextInput
                         style={styles.input}
@@ -158,14 +158,14 @@ const AddExpense = () => {
                         placeholder={{label: 'Select a category...', value: ''}}
                         style={pickerSelectStyles(currentTheme)}/>
                 </View>
-                <View style={{width: '100%', justifyContent: 'center', alignItems: 'center'}}>
+                <View style={styles.addButtonView}>
                     <TouchableOpacity
                         style={styles.buttonView}
                         onPress={AddNewExpense}
                     >
                         <CustomButton text={'ADD'} color=""/>
                     </TouchableOpacity>
-                    <View style={{paddingBottom: 5}}>
+                    <View style={styles.backButtonView}>
                         <Link href={"/(tabs)/expense/"}>
                             <CustomButton text='Back' color=""/>
                         </Link>

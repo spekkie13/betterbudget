@@ -84,7 +84,7 @@ const MonthSelection = () => {
     };
 
     if (loading) return <ActivityIndicator />;
-    if (error) return <Text style={{ color: 'red' }}>Error: {error.message}</Text>;
+    if (error) return <Text style={styles.errorMessage}>Error: {error.message}</Text>;
 
     return (
         <View style={styles.container}>
@@ -98,7 +98,7 @@ const MonthSelection = () => {
                             <Link
                                 key={month}
                                 href={`/(tabs)/category/${categoryId}/${month}/${year}`}
-                                style={{ height: 30 }}
+                                style={styles.monthItem}
                             >
                                 <Text style={styles.dateItem}>- {ConvertMonthToName(month)}</Text>
                             </Link>

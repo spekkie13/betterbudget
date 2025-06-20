@@ -1,5 +1,5 @@
 import {StyleSheet} from 'react-native'
-import {Padding_LARGE, Padding_MEDIUM} from "@/constants/UIConstants"
+import {Padding_EXTRA_SMALL, Padding_LARGE, Padding_MEDIUM} from "@/constants/UIConstants"
 
 export const styles_categoryDetails = (theme) => StyleSheet.create({
   container: {
@@ -24,7 +24,8 @@ export const styles_categoryDetails = (theme) => StyleSheet.create({
   expenseItemView: {
     flexDirection: 'row',
     width: '100%',
-    alignItems: 'center'
+    alignItems: 'center',
+    paddingTop: Padding_EXTRA_SMALL
   },
   expenseItemText: {
     color: theme.colors.textColor,
@@ -36,4 +37,10 @@ export const styles_categoryDetails = (theme) => StyleSheet.create({
     alignItems: 'center',
     paddingTop: 25,
   },
+  errorMessage: {
+    color: theme.colors.failureColor
+  },
+  touchable: {
+    paddingTop: Padding_EXTRA_SMALL
+  }
 })

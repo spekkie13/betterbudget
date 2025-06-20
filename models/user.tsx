@@ -20,4 +20,16 @@ export class User implements IUser {
         this.name = data.name;
         this.teamId = data.teamId;
     }
+
+    static empty() : User {
+        const userData = {
+            id: 0,
+            email: "",
+            username: "",
+            name: "",
+            teamId: 0
+        }
+
+        return new User(userData);
+    }
 }

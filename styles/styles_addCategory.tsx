@@ -1,7 +1,7 @@
 import {StyleSheet} from "react-native"
 import {Padding_MEDIUM} from "@/constants/UIConstants";
 
-export const createStyles = (theme) => StyleSheet.create({
+export const styles_addCategory = (theme) => StyleSheet.create({
     container: {
         backgroundColor: theme.colors.background,
         flex: 1,
@@ -52,5 +52,15 @@ export const createStyles = (theme) => StyleSheet.create({
         fontWeight: 'bold',
         lineHeight: 40,
         fontSize: 16
+    },
+    successMessage: {
+        color: theme.colors.successColor
+    },
+    errorMessage: {
+        color: theme.colors.failureColor
+    },
+    addButtonView: {
+        width: "100%",
+        alignItems: "center"
     }
 })

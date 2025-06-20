@@ -46,7 +46,7 @@ const CategoryOverviewScreen = () => {
             </View>
             <ScrollView contentContainerStyle={styles.scrollContainer}>
                 {categories.length === 0 ? (
-                    <Text style={{ color: "#ccc", marginTop: 10 }}>
+                    <Text style={styles.text}>
                         No categories to display.
                     </Text>
                 ) : (

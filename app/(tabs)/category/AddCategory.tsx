@@ -9,7 +9,7 @@ import CustomButton from "@/app/general/CustomButton";
 import { AuthContext } from "@/app/ctx";
 
 import { genericFailureMessage, successCreateMessage } from "@/constants/MessagesConstants";
-import { createStyles } from "@/styles/styles_addCategory";
+import { styles_addCategory } from "@/styles/styles_addCategory";
 import CustomDarkTheme from "@/theme/CustomDarkTheme";
 import CustomDefaultTheme from "@/theme/CustomDefaultTheme";
 import {CATEGORY_WITH_BUDGET_BASE_URL} from "@/constants/APIConstants";
@@ -27,13 +27,15 @@ const AddCategory = () => {
     const { user } = useContext(AuthContext);
     const colorScheme = useColorScheme();
     const theme = colorScheme === "dark" ? CustomDarkTheme : CustomDefaultTheme;
-    const styles = createStyles(theme);
+    const styles = styles_addCategory(theme);
 
     const showTemporaryMessage = (type: "success" | "error", message: string) => {
         if (type === "success") {
             setSuccessMessage(message);
             setShowSuccess(true);
             setTimeout(() => setShowSuccess(false), 3000);
+            setCategory('')
+            setBudget('')
         } else {
             setErrorMessage(message);
             setShowError(true);
@@ -46,7 +48,6 @@ const AddCategory = () => {
             showTemporaryMessage("error", "Please fill in the required information");
             return;
         }
-
 
         const exists = await checkIfCategoryExists(category, user.id);
         if (exists) {
@@ -100,11 +101,11 @@ const AddCategory = () => {
             <Title text="Add category" />
 
             {showSuccess && (
-                <Text style={{ color: theme.colors.successColor }}>{successMessage}</Text>
+                <Text style={styles.successMessage}>{successMessage}</Text>
             )}
 
             {showError && (
-                <Text style={{ color: theme.colors.failureColor }}>{errorMessage}</Text>
+                <Text style={styles.errorMessage}>{errorMessage}</Text>
             )}
 
             <View style={styles.textView}>
@@ -129,7 +130,7 @@ const AddCategory = () => {
                 />
             </View>
 
-            <View style={{ width: "100%", alignItems: "center" }}>
+            <View style={styles.addButtonView}>
                 <TouchableOpacity onPress={handleAddCategory} style={styles.buttonView}>
                     <CustomButton text="Add" color="" />
                 </TouchableOpacity>

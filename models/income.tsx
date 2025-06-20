@@ -17,4 +17,15 @@ export class Income implements IIncome {
         this.date = data.date;
         this.userId = data.userId;
     }
+
+    static empty() : Income {
+        const incomeData = {
+            id: 0,
+            amount: 0,
+            date: new Date(),
+            userId: 0,
+        }
+
+        return new Income(incomeData);
+    }
 }

@@ -14,5 +14,17 @@ export const styles_profile = (theme) => StyleSheet.create({
     },
     text: {
         color: theme.colors.textColor,
+    },
+    greeting: {
+        textAlign: 'center',
+        fontSize: 20
+    },
+    subGreeting: {
+        textAlign: 'center',
+        fontSize: 16
+    },
+    touchable: {
+        alignItems: "center",
+        marginVertical: 20
     }
 })

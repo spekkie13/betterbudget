@@ -93,7 +93,7 @@ const CategoryDetails = (): React.JSX.Element => {
     }, [user.id,  CategoryId, Month, Year]);
 
     if (loading) return <ActivityIndicator />;
-    if (error) return <Text style={{ color: '#ff4444' }}>{error}</Text>;
+    if (error) return <Text style={styles.errorMessage}>{error}</Text>;
     if (!category || !result) return <Text>Invalid category or result</Text>;
 
     const renderExpenses = (): React.JSX.Element[] =>
@@ -137,6 +137,7 @@ const CategoryDetails = (): React.JSX.Element => {
             <ScrollView contentContainerStyle={styles.categoryList}>
                 {renderExpenses()}
                 <Link
+                    style={styles.touchable}
                     href={{
                         pathname: '/expense/[categoryId]/[categoryName]',
                         params: { categoryId: category.id, categoryName: category.name },

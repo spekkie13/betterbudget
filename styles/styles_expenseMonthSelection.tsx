@@ -46,5 +46,11 @@ export const styles_expenseMonthSelection = (theme) => StyleSheet.create({
         lineHeight: 20,
         textAlign: 'left',
         color: theme.colors.text,
+    },
+    errorMessage: {
+        color: theme.colors.failureColor
+    },
+    monthItem: {
+        height: 30
     }
 })

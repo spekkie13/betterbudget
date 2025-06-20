@@ -23,5 +23,12 @@ export const styles_AddNew = (theme) => StyleSheet.create({
         marginLeft: 5,
         fontSize: 32,
         color: theme.colors.textColor
+    },
+    touchable: {
+        width: '100%',
+        height: 200,
+        alignItems: 'center',
+        justifyContent: 'center',
+        flexDirection: 'row'
     }
 })

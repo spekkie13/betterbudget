@@ -23,4 +23,17 @@ export class Result implements IResult {
         this.categoryId = data.categoryId;
         this.periodId = data.periodId;
     }
+
+    static empty() : Result {
+        const resultData = {
+            id: 0,
+            totalSpent: 0,
+            percentageSpent: 0,
+            userId: 0,
+            categoryId: 0,
+            periodId: 0
+        }
+
+        return new Result(resultData)
+    }
 }

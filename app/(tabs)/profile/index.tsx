@@ -35,10 +35,10 @@ const Profile = () => {
 
     return (
         <View style={styles.container}>
-            <Text style={{ textAlign: 'center', fontSize: 20 }}>Hello {user?.username}</Text>
-            <Text style={{ textAlign: 'center', fontSize: 16 }}>Favorite Categories:</Text>
+            <Text style={styles.greeting}>Hello {user?.username}</Text>
+            <Text style={styles.subGreeting}>Favorite Categories:</Text>
             {/* Manage button */}
-            <TouchableOpacity onPress={() => setModalVisible(true)} style={{ alignItems: "center", marginVertical: 20 }}>
+            <TouchableOpacity onPress={() => setModalVisible(true)} style={styles.touchable}>
                 <CustomButton text="Manage Categories" color="blue" />
             </TouchableOpacity>
 

@@ -4,10 +4,9 @@ export const styles_categoryCard = (theme) => StyleSheet.create({
     categoryCard: {
         borderRadius: 5,
         borderWidth: 1,
-        marginLeft: 5,
-        marginRight: 5,
+        paddingLeft: 5,
+        paddingRight: 5,
         marginBottom: 5,
-        width: '100%',
         height: 100,
         alignItems: 'center',
         justifyContent: 'center',
@@ -15,6 +14,7 @@ export const styles_categoryCard = (theme) => StyleSheet.create({
         borderColor: theme.colors.primary
     },
     container: {
+        width: '100%',
         marginTop: 5,
     },
     categoryName: {
@@ -28,5 +28,8 @@ export const styles_categoryCard = (theme) => StyleSheet.create({
     },
     status: {
         color: theme.colors.textColor
-    }
+    },
+    errorText: {
+        color: theme.colors.textColor
+    },
 })

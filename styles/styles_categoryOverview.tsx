@@ -31,5 +31,9 @@ export const styles_categoryOverview = (theme) => StyleSheet.create({
   buttonView: {
     alignItems: 'center',
     marginBottom: 5
+  },
+  text: {
+    color: theme.colors.text,
+    marginTop: 10
   }
 })

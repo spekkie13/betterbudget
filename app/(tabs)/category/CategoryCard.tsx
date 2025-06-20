@@ -74,17 +74,19 @@ const CategoryCard: React.FC<Props> = ({ category }) => {
     const percentage = GetPercentageSpent(spent, budgetAmount);
 
     if (loading) return <ActivityIndicator />;
-    if (error) return <Text style={{ color: "#FFFFFF" }}>Error: {error.message}</Text>;
+    if (error) return <Text style={styles.errorText}>Error: {error.message}</Text>;
 
     return (
-        <View style={styles.categoryCard}>
-            <Text style={styles.categoryName}>{category.name}</Text>
-            <Text style={styles.spent}>
-                {valuta} {spent.toFixed(2)} / {valuta} {budgetAmount.toFixed(2)}
-            </Text>
-            <Text style={styles.status}>
-                Status: {percentage.toFixed(2)}%
-            </Text>
+        <View style={styles.container}>
+            <View style={styles.categoryCard}>
+                <Text style={styles.categoryName}>{category.name}</Text>
+                <Text style={styles.spent}>
+                    {valuta} {spent.toFixed(2)} / {valuta} {budgetAmount.toFixed(2)}
+                </Text>
+                <Text style={styles.status}>
+                    Status: {percentage.toFixed(2)}%
+                </Text>
+            </View>
         </View>
     );
 };

@@ -20,7 +20,7 @@ const AddNew = () => {
 
             <View style={styles.itemView}>
                 <TouchableOpacity
-                    style={{width: '100%', height: 200, alignItems: 'center', justifyContent: 'center', flexDirection: 'row'}}
+                    style={styles.touchable}
                     onPress={() => router.replace("/(tabs)/category/AddCategory")}
                 >
                     <FontAwesome name="briefcase" size={32} color={theme.colors.textColor} />
@@ -30,7 +30,7 @@ const AddNew = () => {
 
             <View style={styles.itemView}>
                 <TouchableOpacity
-                    style={{width: '100%', height: 200, alignItems: 'center', justifyContent: 'center', flexDirection: 'row'}}
+                    style={styles.touchable}
                     onPress={() => router.replace("/(tabs)/expense/addExpense")}
                 >
                     <FontAwesome name="dollar" size={32} color={theme.colors.textColor} />

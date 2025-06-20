@@ -3,11 +3,23 @@ import {CATEGORY_BASE_URL, CATEGORY_EXISTS_URL} from "@/constants/APIConstants";
 import {formRequestNoBody,} from "@/api/ApiHelpers";
 import {getUserPreferenceByName, getUserPreferences,} from "@/api/PreferenceController";
 
+/*
+get all categories for a specific user
+returns a collection of categories or an empty category when no categories are found
+
+UserId -> user to fetch categories for
+*/
 export async function getCategories(userId: number): Promise<Category[]> {
     const url = `${CATEGORY_BASE_URL}?userId=${userId}`;
     const request: RequestInfo = formRequestNoBody(url, "get");
 
     const response = await fetch(request);
+
+    if (!response.ok) {
+        console.log(`Failed to fetch category: ${response.statusText}`);
+        return [Category.empty()]
+    }
+
     const data = await response.json();
 
     return data.map((item: any) => {
@@ -21,6 +33,12 @@ export async function getCategories(userId: number): Promise<Category[]> {
     });
 }
 
+/*
+fetch all selected categories for a specific user (based on their preferences)
+returns a collection of categories or an empty category when no categories are found
+
+UserId -> user to fetch categories for
+*/
 export async function getSelectedCategories(userId: number): Promise<Category[]> {
     const cardsPref = await getUserPreferenceByName(userId, "cards");
     const cards = cardsPref.numberValue;
@@ -38,16 +56,23 @@ export async function getSelectedCategories(userId: number): Promise<Category[]>
     return await Promise.all(fetchPromises);
 }
 
-export async function getCategoryById(userId: number, id: number): Promise<Category> {
-    const headers: Headers = new Headers();
-    headers.set("Accept", "application/json");
-    headers.set("Content-Type", "application/json");
+/*
+Fetch a single category by ID for a specific user
+returns a single category object or an empty category object when no category is found
 
-    const url: string = `${CATEGORY_BASE_URL}?userId=${userId}&id=${encodeURIComponent(
-        id
-    )}`;
+User ID -> user to fetch categories for
+id -> Category to be fetched
+*/
+export async function getCategoryById(userId: number, id: number): Promise<Category> {
+    const url: string = `${CATEGORY_BASE_URL}?userId=${userId}&id=${encodeURIComponent(id)}`;
     const request: RequestInfo = formRequestNoBody(url, "GET");
     const response = await fetch(request);
+
+    if (!response.ok) {
+        console.log(`Failed to fetch category: ${response.statusText}`);
+        return Category.empty();
+    }
+
     const data = await response.json();
 
     const categoryData = {
@@ -65,6 +90,13 @@ export async function deleteCategoryById(id: number): Promise<any> {
     return false;
 }
 
+/*
+Check if a category with the provided name exists for the specified user
+returns a boolean based on whether a category with the provided name exists
+
+name -> name to check
+User ID -> user to check the name for
+*/
 export async function checkIfCategoryExists (name: string, userId: number): Promise<boolean> {
     const response = await fetch(CATEGORY_EXISTS_URL + `?userId=${userId}&name=${name}`, {
         method: 'POST',

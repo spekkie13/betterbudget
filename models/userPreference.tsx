@@ -23,5 +23,18 @@ export class UserPreference implements IUserPreference {
         this.dateValue = data.dateValue;
         this.userId = data.userId;
     }
+
+    static empty() : UserPreference {
+        const preferenceData = {
+            id: 0,
+            name: '',
+            stringValue: '',
+            numberValue: 0,
+            dateValue: new Date(),
+            userId: 0,
+        }
+
+        return new UserPreference(preferenceData);
+    }
 }
 

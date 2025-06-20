@@ -69,20 +69,20 @@ function Login() : React.JSX.Element {
     }
 
     return (
-        <SafeAreaView style={{backgroundColor: currentTheme.colors.background, flex: 1, alignItems: 'center'}}>
+        <SafeAreaView style={styles.safeContainer}>
             <ScrollView contentInsetAdjustmentBehavior="automatic">
                 <Title text={'Better Budget'}/>
                 <Logo/>
                 <View style={styles.container}>
                     {loading ? (
-                        <ActivityIndicator size="small" style={{ margin: 28}} />
+                        <ActivityIndicator size="small" style={styles.activityIndicator} />
                     ) : (
                         <View>
-                            <View style={{borderWidth: 1, borderStyle: 'solid', borderColor: currentTheme.colors.backgroundDark, paddingTop: 5, paddingBottom: 5, paddingLeft: 10, paddingRight: 10, borderRadius: 5, backgroundColor: currentTheme.colors.secondary}}>
-                                <Text style={{color: currentTheme.colors.textColor, fontSize: 24, textAlign: 'center'}}>Sign in</Text>
+                            <View style={styles.messageView}>
+                                <Text style={styles.signInText}>Sign in</Text>
                                 {messageVisible && (
                                     <View>
-                                        <Text style={{color: currentTheme.colors.failureColor, textAlign: 'center'}}>
+                                        <Text style={styles.submissionText}>
                                             {submissionMessage}
                                         </Text>
                                     </View>
@@ -104,7 +104,7 @@ function Login() : React.JSX.Element {
                                         secureTextEntry={true}
                                         label='Password'
                                         placeholderTextColor={currentTheme.colors.textColor}/>
-                                    <View style={{width: '100%', alignItems: 'center'}}>
+                                    <View style={styles.signInButtonView}>
                                         <TouchableOpacity
                                             onPress={signIn}
                                             style={styles.buttonView}>
@@ -112,9 +112,9 @@ function Login() : React.JSX.Element {
                                         </TouchableOpacity>
                                     </View>
                                 </KeyboardAvoidingView>
-                                <View style={{alignItems: 'center', width: '100%', marginTop: 10, height: 40}}>
+                                <View style={styles.signUpView}>
                                     <Link href="/sign-up">
-                                        <Text style={{color: currentTheme.colors.textColor, fontStyle: 'italic'}}>Don't have an account yet? Click here to sign up</Text>
+                                        <Text style={styles.signUpText}>Don't have an account yet? Click here to sign up</Text>
                                     </Link>
                                 </View>
                             </View>

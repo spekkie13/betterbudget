@@ -20,4 +20,16 @@ export class Budget implements IBudget {
         this.categoryId = data.categoryId;
         this.periodId = data.periodId;
     }
+
+    static empty(): Budget {
+        const budgetData = {
+            id: 0,
+            amount: 0,
+            userId: 0,
+            categoryId: 0,
+            periodId: 0,
+        }
+
+        return new Budget(budgetData)
+    }
 }

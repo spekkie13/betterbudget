@@ -4,6 +4,12 @@ import {formRequestNoBody, formRequestWithBody} from "@/api/ApiHelpers";
 import {getIncomes} from "@/api/IncomeController";
 import {getExpensesByUser} from "@/api/ExpenseController";
 
+/*
+fetch all budgets for a specific period, category and user
+UserId -> ID of the user to fetch the budgets for
+CategoryId -> ID of the category to fetch the budgets for
+PeriodId -> ID of the period to fetch the budgets for
+*/
 export async function getBudgetByCategoryAndDate(userId: number, categoryId : number, periodId: number) : Promise<Budget> {
     const url = `${PERIOD_BUDGET_BASE_URL}?userId=${userId}&categoryId=${categoryId}&periodId=${periodId}`;
     const request: RequestInfo = formRequestNoBody(url, 'GET')
@@ -12,6 +18,7 @@ export async function getBudgetByCategoryAndDate(userId: number, categoryId : nu
         const response : Response = await fetch(request)
         if (!response.ok) {
             console.log(`Failed to fetch periodBudget data: ${response.statusText}`)
+            return Budget.empty()
         }
 
         const data = await response.json()
@@ -30,6 +37,11 @@ export async function getBudgetByCategoryAndDate(userId: number, categoryId : nu
     }
 }
 
+/*
+fetch all budgets for a specific category and user
+UserId -> ID of the user to fetch the budgets for
+CategoryId -> ID of the category to fetch the budgets for
+*/
 export async function getBudgetByCategory(userId: number, categoryId : number) : Promise<Budget[]> {
     const url = `${PERIOD_BUDGET_BASE_URL}?userId=${userId}&categoryId=${categoryId}`
     const request : RequestInfo = formRequestNoBody(url, 'GET')
@@ -38,6 +50,7 @@ export async function getBudgetByCategory(userId: number, categoryId : number) :
         const response : Response = await fetch(request)
         if (!response.ok) {
             console.log(`Failed to fetch periodBudget data:${response.statusText}`)
+            return [Budget.empty()]
         }
 
         const data = await response.json()
@@ -50,23 +63,31 @@ export async function getBudgetByCategory(userId: number, categoryId : number) :
     }
 }
 
-export async function getMostRecentBudgetByCategory(userId : number, categoryId : number) : Promise<Budget> {
-    const url = `${PERIOD_BUDGET_BASE_URL}?userId=${userId}&categoryId=${categoryId}/latest`
-    const request : RequestInfo = formRequestNoBody(url, 'GET')
+/*
+fetch the most recent budget for a specific category and user
+returns a single budget object or an empty array when no budget was found
 
-    try {
-        const response : Response = await fetch(request)
-        if (!response.ok) {
-            console.log(`Failed to fetch periodBudget data: ${response.statusText}`)
-        }
-
-        const data = await response.json()
-        return new Budget(data)
-    } catch (error) {
-        console.error('Failed to fetch most recent period budget data:', error)
-        throw error // Re-throw the error after logging it
-    }
-}
+UserId -> ID of the user to fetch the budgets for
+CategoryId -> ID of the category to fetch the budgets for
+*/
+// export async function getMostRecentBudgetByCategory(userId : number, categoryId : number) : Promise<Budget> {
+//     const url = `${PERIOD_BUDGET_BASE_URL}?userId=${userId}&categoryId=${categoryId}/latest`
+//     const request : RequestInfo = formRequestNoBody(url, 'GET')
+//
+//     try {
+//         const response : Response = await fetch(request)
+//         if (!response.ok) {
+//             console.log(`Failed to fetch periodBudget data: ${response.statusText}`)
+//             return Budget.empty()
+//         }
+//
+//         const data = await response.json()
+//         return new Budget(data)
+//     } catch (error) {
+//         console.error('Failed to fetch most recent period budget data:', error)
+//         throw error // Re-throw the error after logging it
+//     }
+// }
 
 // export async function createNewBudget(budgetData: {userId: number, categoryId: number, periodId: number, amount : number}) : Promise<boolean> {
 //     try {
@@ -82,6 +103,13 @@ export async function getMostRecentBudgetByCategory(userId : number, categoryId 
 //     }
 // }
 
+/*
+update the categoryId for all budgets
+returns a boolean representing whether the update was successful or not
+
+periodBudgets -> all budgets to be updated
+newCategoryId -> new category ID to be set for the budgets
+*/
 export async function updateBudgets(periodBudgets : Budget[], newCategoryId: number) : Promise<boolean>{
     try {
         const promises : Promise<Response>[] = periodBudgets.map((obj : Budget) =>
@@ -96,6 +124,12 @@ export async function updateBudgets(periodBudgets : Budget[], newCategoryId: num
     }
 }
 
+/*
+determine the spending room (income - expenses) for a specific user
+returns a number which represents the spending room
+
+UserId -> User ID to determine the spending room for
+*/
 export async function determineSpendingRoom(userId: number) : Promise<number> {
     const incomes = await getIncomes(userId)
     const expenses = await getExpensesByUser(userId)

@@ -1,6 +1,7 @@
 import React from 'react';
-import { View, TouchableOpacity, Text } from 'react-native';
+import {View, TouchableOpacity, Text} from 'react-native';
 import CategoryCard from "@/app/(tabs)/category/CategoryCard";
+import {styles_categorySlotPicker} from "@/styles/styles_categorySlotPicker";
 
 export interface Category {
     id: number;
@@ -16,7 +17,6 @@ interface CategorySlotPickerProps {
 }
 
 const CategorySlotPicker: React.FC<CategorySlotPickerProps> = ({ selectedCategories, onSlotPress }) => {
-    // Group categories into rows of 2
     const rows: (Category | null)[][] = [];
     for (let i = 0; i < selectedCategories.length; i += 2) {
         rows.push(selectedCategories.slice(i, i + 2));
@@ -25,7 +25,7 @@ const CategorySlotPicker: React.FC<CategorySlotPickerProps> = ({ selectedCategor
     return (
         <View>
             {rows.map((row, rowIndex) => (
-                <View key={rowIndex} style={{ flexDirection: 'row', justifyContent: 'center', marginBottom: 10 }}>
+                <View key={rowIndex} style={styles_categorySlotPicker.cardRow}>
                     {row.map((category, indexInRow) => {
                         const absoluteIndex = rowIndex * 2 + indexInRow;
                         return (
@@ -33,21 +33,12 @@ const CategorySlotPicker: React.FC<CategorySlotPickerProps> = ({ selectedCategor
                                 key={absoluteIndex}
                                 onPress={() => onSlotPress?.(absoluteIndex)}
                                 disabled={!onSlotPress}
-                                style={{
-                                    borderWidth: 2,
-                                    width: 160,
-                                    height: 100,
-                                    justifyContent: 'center',
-                                    alignItems: 'center',
-                                    borderRadius: 10,
-                                    overflow: 'hidden',
-                                    marginHorizontal: 5,
-                                }}
+                                style={styles_categorySlotPicker.touchable}
                             >
                                 {category ? (
                                     <CategoryCard category={category} />
                                 ) : (
-                                    <Text style={{ fontSize: 24, color: '#888' }}>-</Text>
+                                    <Text style={styles_categorySlotPicker.emptyCard}>-</Text>
                                 )}
                             </TouchableOpacity>
                         );

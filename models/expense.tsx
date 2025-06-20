@@ -26,4 +26,17 @@ export class Expense implements IExpense {
     this.categoryId = data.categoryId;
     this.isRecurring = data.isRecurring;
   }
+
+  static empty() : Expense {
+    const expenseData = {
+      id: 0,
+      description: "",
+      amount: 0,
+      date: "",
+      userId: 0,
+      categoryId: 0,
+      isRecurring: false
+    }
+    return new Expense(expenseData);
+  }
 }

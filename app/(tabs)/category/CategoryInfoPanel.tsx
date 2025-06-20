@@ -30,7 +30,7 @@ const CategoryInfoPanel = () => {
     if (error) {
         return (
             <View style={styles.container}>
-                <Text style={{ color: "#ffffff" }}>{error}</Text>
+                <Text style={styles.errorText}>{error}</Text>
             </View>
         );
     }
@@ -38,9 +38,9 @@ const CategoryInfoPanel = () => {
     return (
         <View style={styles.container}>
             <SubTitle text={title} />
-            <View style={{paddingTop: 5}}>
+            <View style={styles.categoryView}>
                 {categories.length === 0 ? (
-                    <Text style={{ color: "#ccc", marginTop: 10 }}>
+                    <Text style={styles.notFoundText}>
                         No categories to display.
                     </Text>
                 ) : (

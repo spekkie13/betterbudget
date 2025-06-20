@@ -68,17 +68,17 @@ function Login() : React.JSX.Element {
 
 
     return (
-        <SafeAreaView style={{backgroundColor: currentTheme.colors.background, flex: 1}}>
+        <SafeAreaView style={styles.safeContainer}>
             <ScrollView contentInsetAdjustmentBehavior="automatic">
                 <Title text={'Better Budget'}/>
                 <Logo/>
                 <View style={styles.container}>
                     {loading ? (
-                        <ActivityIndicator size="small" style={{ margin: 28}} />
+                        <ActivityIndicator size="small" style={styles.activityIndicator} />
                     ) : (
                         <View>
-                            <View style={{borderWidth: 1, borderStyle: 'solid', borderColor: currentTheme.colors.backgroundDark, paddingTop: 5, paddingBottom: 5, paddingLeft: 10, paddingRight: 10, borderRadius: 5, backgroundColor: currentTheme.colors.tertiary}}>
-                                <Text style={{color: currentTheme.colors.textColor, fontSize: 24, textAlign: 'center'}}>Sign up</Text>
+                            <View style={styles.messageView}>
+                                <Text style={styles.signInText}>Sign up</Text>
                                 <KeyboardAvoidingView behavior={'padding'} >
                                     <TextInput
                                         style={styles.input}
@@ -104,15 +104,17 @@ function Login() : React.JSX.Element {
                                         secureTextEntry={true}
                                         label='Password'
                                         placeholderTextColor={currentTheme.colors.textColor}/>
-                                    <TouchableOpacity
-                                        onPress={signUp}
-                                        style={styles.buttonView}>
+                                    <View style={styles.signInButtonView}>
+                                        <TouchableOpacity
+                                            onPress={signUp}
+                                            style={styles.buttonView}>
                                             <CustomButton text={'Sign up'} color={''}/>
-                                    </TouchableOpacity>
+                                        </TouchableOpacity>
+                                    </View>
                                 </KeyboardAvoidingView>
-                                <View style={{alignItems: 'center', width: '100%', height: 40, marginTop: 10}}>
+                                <View style={styles.signUpView}>
                                     <Link href="/sign-in">
-                                        <Text style={{color: currentTheme.colors.textColor, fontStyle: 'italic'}}>Already have an account? Click here to login</Text>
+                                        <Text style={styles.signUpText}>Already have an account? Click here to login</Text>
                                     </Link>
                                 </View>
                             </View>

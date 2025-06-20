@@ -20,4 +20,15 @@ export class Category implements ICategory {
     this.icon = data.icon;
     this.userId = data.userId;
   }
+
+  static empty() : Category  {
+    const categoryData = {
+      id: 0,
+      name: '',
+      color: '',
+      icon: '',
+      userId: 0
+    }
+    return new Category (categoryData);
+  }
 }
