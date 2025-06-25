@@ -4,11 +4,16 @@ import {formRequestNoBody, formRequestWithBody} from "@/api/ApiHelpers";
 
 export async function getExpensesByUser(userId: number): Promise<Expense[]> {
     const url = `${EXPENSE_BASE_URL}?userId=${userId}`
-    const request: RequestInfo = formRequestNoBody(url, 'GET')
-    const response = await fetch(request)
-    const data = await response.json()
+    const request: Request = formRequestNoBody(url, 'GET')
+    const response : Response = await fetch(request)
 
-    return data.map((item: any) => {
+    if (!response.ok) {
+        return [Expense.empty()]
+    }
+
+    const data : any = await response.json()
+
+    return data.map((item: any) : Expense => {
         return formExpense(item)
     })
 }
@@ -16,14 +21,14 @@ export async function getExpensesByUser(userId: number): Promise<Expense[]> {
 export async function getExpensesByCategoryAndDate(userId: number, id: number, periodId: number): Promise<Expense[]> {
     const url = `${EXPENSE_BASE_URL}?userId=${userId}&categoryId=${id}&periodId=${periodId}`
     const request: RequestInfo = formRequestNoBody(url, 'GET')
-    const response = await fetch(request)
-    try {
-        const data = await response.json()
-        return data.map((item: any) => formExpense(item))
-    } catch (error) {
-        console.error('Failed to fetch expenses:', error)
-        throw error // Re-throw the error after logging it
+    const response : Response = await fetch(request)
+
+    if (!response.ok) {
+        return [Expense.empty()]
     }
+
+    const data : any = await response.json()
+    return data.map((item: any) : Expense => formExpense(item))
 }
 
 export async function getExpensesByCategory(userId: number, categoryId: number): Promise<Expense[]> {

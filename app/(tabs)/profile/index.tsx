@@ -1,4 +1,4 @@
-import React, {useContext, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import {Text, TouchableOpacity, useColorScheme, View} from 'react-native';
 import {AuthContext} from '@/app/ctx';
 import {getCategories} from '@/api/CategoryController';
@@ -9,7 +9,6 @@ import {useRouter} from "expo-router";
 import {styles_profile} from "@/styles/tabs/profile/styles_profile";
 import CustomDarkTheme from "@/theme/CustomDarkTheme";
 import CustomDefaultTheme from "@/theme/CustomDefaultTheme";
-import {useAsyncEffect} from "@/hooks/useAsyncEffect";
 
 const Profile = () => {
     const {user} = useContext(AuthContext);
@@ -21,14 +20,18 @@ const Profile = () => {
     const currentTheme = colorScheme === 'dark' ? CustomDarkTheme : CustomDefaultTheme
     const styles = styles_profile(currentTheme)
 
-    useAsyncEffect(async () => {
-        if (user) {
-            const result = await getCategories(user?.id);
-            setCategories(result);
-        } else {
-            router.replace('/')
-            return;
+    useEffect(() => {
+        const fetchData = async () => {
+            if (user) {
+                const result = await getCategories(user?.id);
+                setCategories(result);
+            } else {
+                router.replace('/')
+                return;
+            }
         }
+
+        fetchData()
     }, [router, user])
 
     return (

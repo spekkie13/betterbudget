@@ -27,8 +27,8 @@ export async function saveCategorySlots(userId: number, selectedSlots: (Category
 export async function getUserPreferences(userId: number) {
     const url = `${USER_PREFERENCES_BASE_URL}?userId=${userId}`
     const request: RequestInfo = formRequestNoBody(url, 'GET')
-    const response = await fetch(request)
-    const data = await response.json()
+    const response : Response = await fetch(request)
+    const data : any = await response.json()
 
     let preferences: UserPreference[] = []
     for (const item of data) {

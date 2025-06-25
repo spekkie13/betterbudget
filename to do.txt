@@ -1,10 +1,6 @@
 TO DO:
--> Adjust size of CategorySlotPickerModal to be less wide
--> Make the layout responsive instead of using hardcoded size formats
+-> Make sure the categories selected in the profile tab actually get displayed on the home screen
+-> Group Async/Await calls as much as possible
+
 -> Unify handling decimal place separator comma doesn't work but a dot does
-
 -> Add page to add/edit category budgets
--> Complete sign-up flow => alert user -> when OK -> show sign in page
-
--> Add in logic to fetch all members of a team and take their user ID into account when fetching all user-influenced data
--> Team Management (create a team, join a team, think out logic for fetching user related stuff by team)

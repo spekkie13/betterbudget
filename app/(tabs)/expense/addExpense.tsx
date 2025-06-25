@@ -1,6 +1,6 @@
 import {Text, TouchableOpacity, useColorScheme, View} from 'react-native'
 import {TextInput} from 'react-native-paper'
-import React, {useContext, useState} from 'react'
+import React, {useContext, useEffect, useState} from 'react'
 import Title from '@/app/general/Title'
 import {createNewExpense} from "@/api/ExpenseController"
 import {Expense} from "@/models/expense"
@@ -14,7 +14,6 @@ import CustomDarkTheme from "@/theme/CustomDarkTheme"
 import CustomDefaultTheme from "@/theme/CustomDefaultTheme"
 import {genericFailureMessage, successCreateMessage} from "@/constants/messageConstants";
 import CustomButton from "@/app/general/CustomButton";
-import {useAsyncEffect} from "@/hooks/useAsyncEffect";
 
 const AddExpense = () => {
     const [pickerItems, setPickerItems] = useState([])
@@ -36,13 +35,17 @@ const AddExpense = () => {
     const currentTheme = colorScheme === 'dark' ? CustomDarkTheme : CustomDefaultTheme
     const styles = styles_AddExpense(currentTheme)
 
-    useAsyncEffect(async () => {
-        const Categories: Category[] = await getCategories(user.id)
-        const formattedItems = Categories.map(item => ({
-            label: item.name,
-            value: item.id
-        }))
-        setPickerItems(formattedItems)
+    useEffect(() => {
+        const fetchData = async () => {
+            const Categories: Category[] = await getCategories(user.id)
+            const formattedItems = Categories.map(item => ({
+                label: item.name,
+                value: item.id
+            }))
+            setPickerItems(formattedItems)
+        }
+
+        fetchData()
     }, [user?.id])
 
     const AddNewExpense = async (): Promise<void> => {

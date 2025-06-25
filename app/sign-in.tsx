@@ -1,5 +1,5 @@
 import * as React from "react"
-import {useContext, useState} from "react"
+import {useContext, useEffect, useState} from "react"
 import {SafeAreaView} from "react-native-safe-area-context"
 import {
     ActivityIndicator,
@@ -23,18 +23,28 @@ import {errorLoginMessage, genericFailureMessage} from "@/constants/messageConst
 import CustomButton from "@/app/general/CustomButton";
 import {supabase} from "@/lib/supabase";
 import {getTeamById} from "@/api/TeamController";
+import {getUserPreferenceByName} from "@/api/PreferenceController";
 
 function Login(): React.JSX.Element {
+    const {login} = useContext(AuthContext)
+
     const [loading, setLoading] = useState(false)
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const [submissionMessage, setSubmissionMessage] = useState('')
     const [messageVisible, setMessageVisible] = useState(false)
+    const [theme, setTheme] = useState("")
 
-    const {login} = useContext(AuthContext)
+    useEffect(() => {
+        const fetchData = async () => {
+            const themePref = await getUserPreferenceByName(2, "colorScheme")
+            setTheme(themePref.stringValue.toLowerCase() ?? "light")
+        }
 
-    const colorScheme = useColorScheme()
-    const currentTheme = colorScheme === 'dark' ? CustomDarkTheme : CustomDefaultTheme
+        fetchData()
+    }, [])
+
+    const currentTheme = theme === 'dark' ? CustomDarkTheme : CustomDefaultTheme
     const styles = styles_login(currentTheme)
 
     const signIn = async (): Promise<void> => {

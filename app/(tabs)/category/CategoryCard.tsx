@@ -1,6 +1,6 @@
 import {ActivityIndicator, Text, useColorScheme, View} from 'react-native';
 import {styles_categoryCard} from "@/styles/tabs/category/styles_categoryCard";
-import React, {useContext, useState} from "react";
+import React, {useContext, useEffect, useState} from "react";
 import {getMostRecentPeriod} from "@/api/PeriodController";
 import {getMostRecentResult} from "@/api/ResultController";
 import {getBudgetByCategoryAndDate} from "@/api/BudgetController";
@@ -12,7 +12,7 @@ import {Category} from "@/models/category";
 import {getUserPreferenceByName} from "@/api/PreferenceController";
 import {Budget} from "@/models/budget";
 import {Result} from "@/models/periodresult";
-import {useAsyncEffect} from "@/hooks/useAsyncEffect";
+import {useRouter} from "expo-router";
 
 type Props = {
     category: Category;
@@ -23,6 +23,7 @@ const CategoryCard: React.FC<Props> = ({category}) => {
     const colorScheme = useColorScheme();
     const currentTheme = colorScheme === 'dark' ? CustomDarkTheme : CustomDefaultTheme;
     const styles = styles_categoryCard(currentTheme);
+    const router = useRouter();
 
     const [state, setState] = useState<{
         loading: boolean;
@@ -38,32 +39,40 @@ const CategoryCard: React.FC<Props> = ({category}) => {
         valuta: "$",
     });
 
-    useAsyncEffect(async () => {
-        try {
-            const [period, valutaPref] = await Promise.all([
-                getMostRecentPeriod(user.id, category.id),
-                getUserPreferenceByName(user.id, "Valuta")
-            ]);
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                if (!user){
+                    router.replace('/')
+                    return;
+                }
 
-            const [result, rawBudget] = await Promise.all([
-                getMostRecentResult(user.id, category.id, period.id),
-                getBudgetByCategoryAndDate(user.id, category.id, period.id)
-            ]);
+                const [period, valutaPref] = await Promise.all([
+                    getMostRecentPeriod(user.id, category.id),
+                    getUserPreferenceByName(user.id, "Valuta")
+                ]);
 
-            const budgetInstance = new Budget(rawBudget); // assume rawBudget matches Budget constructor
+                const [result, rawBudget] = await Promise.all([
+                    getMostRecentResult(user.id, category.id, period.id),
+                    getBudgetByCategoryAndDate(user.id, category.id, period.id)
+                ]);
 
-            setState({
-                loading: false,
-                error: null,
-                result,
-                budget: budgetInstance,
-                valuta: valutaPref?.stringValue || "$"
-            });
-        } catch (err) {
-            console.error(err);
-            setState(prev => ({...prev, loading: false, error: err}));
+                const budgetInstance = new Budget(rawBudget); // assume rawBudget matches Budget constructor
+
+                setState({
+                    loading: false,
+                    error: null,
+                    result,
+                    budget: budgetInstance,
+                    valuta: valutaPref?.stringValue || "$"
+                });
+            } catch (err) {
+                console.error(err);
+                setState(prev => ({...prev, loading: false, error: err}));
+            }
         }
-    }, [user?.id, category?.id])
+        fetchData()
+    }, [user, category])
 
     const {loading, error, result, budget, valuta} = state;
     const spent = result?.totalSpent ?? 0;

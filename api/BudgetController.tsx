@@ -3,13 +3,9 @@ import {Budget} from "@/models/budget"
 import {formRequestNoBody, formRequestWithBody} from "@/api/ApiHelpers";
 import {getIncomes} from "@/api/IncomeController";
 import {getExpensesByUser} from "@/api/ExpenseController";
+import {Income} from "@/models/income";
+import {Expense} from "@/models/expense";
 
-/*
-fetch all budgets for a specific period, category and user
-UserId -> ID of the user to fetch the budgets for
-CategoryId -> ID of the category to fetch the budgets for
-PeriodId -> ID of the period to fetch the budgets for
-*/
 export async function getBudgetByCategoryAndDate(userId: number, categoryId: number, periodId: number): Promise<Budget> {
     const url = `${PERIOD_BUDGET_BASE_URL}?userId=${userId}&categoryId=${categoryId}&periodId=${periodId}`;
     const request: RequestInfo = formRequestNoBody(url, 'GET')
@@ -21,7 +17,7 @@ export async function getBudgetByCategoryAndDate(userId: number, categoryId: num
             return Budget.empty()
         }
 
-        const data = await response.json()
+        const data : any = await response.json()
         const budgetData = {
             id: data.id,
             amount: Number.parseInt(data.amount),
@@ -37,11 +33,6 @@ export async function getBudgetByCategoryAndDate(userId: number, categoryId: num
     }
 }
 
-/*
-fetch all budgets for a specific category and user
-UserId -> ID of the user to fetch the budgets for
-CategoryId -> ID of the category to fetch the budgets for
-*/
 export async function getBudgetByCategory(userId: number, categoryId: number): Promise<Budget[]> {
     const url = `${PERIOD_BUDGET_BASE_URL}?userId=${userId}&categoryId=${categoryId}`
     const request: RequestInfo = formRequestNoBody(url, 'GET')
@@ -53,7 +44,7 @@ export async function getBudgetByCategory(userId: number, categoryId: number): P
             return [Budget.empty()]
         }
 
-        const data = await response.json()
+        const data : any = await response.json()
         return data.map((item: any): Budget => {
             return new Budget(item)
         })
@@ -63,13 +54,6 @@ export async function getBudgetByCategory(userId: number, categoryId: number): P
     }
 }
 
-/*
-fetch the most recent budget for a specific category and user
-returns a single budget object or an empty array when no budget was found
-
-UserId -> ID of the user to fetch the budgets for
-CategoryId -> ID of the category to fetch the budgets for
-*/
 // export async function getMostRecentBudgetByCategory(userId : number, categoryId : number) : Promise<Budget> {
 //     const url = `${PERIOD_BUDGET_BASE_URL}?userId=${userId}&categoryId=${categoryId}/latest`
 //     const request : RequestInfo = formRequestNoBody(url, 'GET')
@@ -103,18 +87,10 @@ CategoryId -> ID of the category to fetch the budgets for
 //     }
 // }
 
-/*
-update the categoryId for all budgets
-returns a boolean representing whether the update was successful or not
-
-periodBudgets -> all budgets to be updated
-newCategoryId -> new category ID to be set for the budgets
-*/
 export async function updateBudgets(periodBudgets: Budget[], newCategoryId: number): Promise<boolean> {
     try {
         const promises: Promise<Response>[] = periodBudgets.map((obj: Budget) =>
-            fetch(formRequestWithBody(`${PERIOD_BUDGET_BASE_URL}?id=${obj.id}`, 'PATCH', {categoryId: newCategoryId})
-            ))
+            fetch(formRequestWithBody(`${PERIOD_BUDGET_BASE_URL}?id=${obj.id}`, 'PATCH', {categoryId: newCategoryId})))
 
         const responses: Response[] = await Promise.all(promises)
         return responses.every((response: Response): boolean => response.ok)
@@ -124,17 +100,12 @@ export async function updateBudgets(periodBudgets: Budget[], newCategoryId: numb
     }
 }
 
-/*
-determine the spending room (income - expenses) for a specific user
-returns a number which represents the spending room
-
-UserId -> User ID to determine the spending room for
-*/
+//TODO: rework to just look at the most recent period
 export async function determineSpendingRoom(userId: number): Promise<number> {
-    const incomes = await getIncomes(userId)
-    const expenses = await getExpensesByUser(userId)
-    const expenseSum: number = expenses.reduce((sum, current) => sum + Number(current.amount), 0)
-    const incomeSum: number = incomes.reduce((sum, current) => sum + Number(current.amount), 0)
+    const incomes : Income[] = await getIncomes(userId)
+    const expenses : Expense[] = await getExpensesByUser(userId)
+    const expenseSum: number = expenses.reduce((sum : number, current : Expense) : number => sum + Number(current.amount), 0)
+    const incomeSum: number = incomes.reduce((sum : number, current : Income) : number => sum + Number(current.amount), 0)
 
     let spendingRoom: number = Number.parseFloat(incomeSum.toFixed(2)) - Number.parseFloat(expenseSum.toFixed(2))
     if (Number.isNaN(spendingRoom)) {

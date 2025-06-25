@@ -1,6 +1,0 @@
-Clean Up:
--> Consistent style gebruik (altijd aparte stylesheets en geen in-line styling)
--> Geen overbodige variabelen
--> Async/Await calls zo veel mogelijk groeperen
--> Geen unused methods en methods zoveel mogelijk generiek maken
--> Comments toevoegen 

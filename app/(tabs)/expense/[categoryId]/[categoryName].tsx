@@ -1,8 +1,7 @@
-import React, {useContext, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import {ActivityIndicator, ScrollView, Text, TouchableOpacity, useColorScheme, View} from 'react-native';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import {Link, useLocalSearchParams, useRouter} from 'expo-router';
-import {useAsyncEffect} from '@/hooks/useAsyncEffect'; // wherever you place it
 import {AuthContext} from '@/app/ctx';
 import {categoryNameOther} from '@/constants/messageConstants';
 import {styles_expenseMonthSelection} from '@/styles/tabs/expense/styles_expenseMonthSelection';
@@ -37,41 +36,43 @@ const MonthSelection = () => {
     const currentTheme = colorScheme === 'dark' ? CustomDarkTheme : CustomDefaultTheme;
     const styles = styles_expenseMonthSelection(currentTheme);
 
+    useEffect(() => {
+        const fetchData = async () => {
+            const categoryNumId = Number.parseInt(categoryId);
+            const periods: Period[] = await getDistinctPeriods(user.id, categoryNumId);
+            const grouped = new Map<number, number[]>();
 
-    useAsyncEffect(async () => {
-        const categoryNumId = Number.parseInt(categoryId);
-        const periods: Period[] = await getDistinctPeriods(user.id, categoryNumId);
-        const grouped = new Map<number, number[]>();
+            periods.forEach(({startDate}) => {
+                const date = new Date(startDate);
+                const year = date.getFullYear();
+                const month = date.getMonth() + 1;
 
-        periods.forEach(({startDate}) => {
-            const date = new Date(startDate);
-            const year = date.getFullYear();
-            const month = date.getMonth() + 1;
+                if (!grouped.has(year)) grouped.set(year, []);
+                if (!grouped.get(year)!.includes(month)) {
+                    grouped.get(year)!.push(month);
+                }
+            });
 
-            if (!grouped.has(year)) grouped.set(year, []);
-            if (!grouped.get(year)!.includes(month)) {
-                grouped.get(year)!.push(month);
+            for (const months of grouped.values()) {
+                months.sort((a, b) => b - a);
             }
-        });
 
-        for (const months of grouped.values()) {
-            months.sort((a, b) => b - a);
+            setGroupedDates(new Map([...grouped.entries()].sort((a, b) => b[0] - a[0])));
+
+            const expenses = await checkForExistingExpenses(user.id, categoryNumId);
+            const message = categoryName === categoryNameOther
+                ? 'Unable to delete this category'
+                : expenses.length > 0
+                    ? 'There are existing expenses in this category, are you sure you want to delete this category?'
+                    : 'Are you sure you want to delete this category?';
+
+            setDeleteMessage(message);
+            setError(null);
+            setLoading(false);
         }
 
-        setGroupedDates(new Map([...grouped.entries()].sort((a, b) => b[0] - a[0])));
-
-        const expenses = await checkForExistingExpenses(user.id, categoryNumId);
-        const message = categoryName === categoryNameOther
-            ? 'Unable to delete this category'
-            : expenses.length > 0
-                ? 'There are existing expenses in this category, are you sure you want to delete this category?'
-                : 'Are you sure you want to delete this category?';
-
-        setDeleteMessage(message);
-        setError(null);
-        setLoading(false);
+        fetchData();
     }, [categoryId, categoryName, user.id]);
-
 
     const handleEdit = () => setEditModalVisible(true);
     const handleDelete = () => setDeleteModalVisible(true);

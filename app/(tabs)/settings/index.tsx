@@ -1,6 +1,6 @@
 import {Text, TouchableOpacity, useColorScheme, View} from 'react-native';
 import Logo from '@/app/general/Logo';
-import React, {useContext, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import Title from '@/app/general/Title';
 import SubTitle from '@/app/general/SubTitle';
 import {AuthContext} from '@/app/ctx';
@@ -12,7 +12,6 @@ import RNPickerSelect from 'react-native-picker-select';
 import CustomButton from '@/app/general/CustomButton';
 import {getUserPreferences, updateUserPreference} from '@/api/PreferenceController';
 import {supabase} from "@/lib/supabase";
-import {useAsyncEffect} from "@/hooks/useAsyncEffect";
 
 const Settings = () => {
     const {user, logout} = useContext(AuthContext);
@@ -25,19 +24,23 @@ const Settings = () => {
     const currentTheme = colorScheme === 'dark' ? CustomDarkTheme : CustomDefaultTheme;
     const styles = styles_settings(currentTheme);
 
-    useAsyncEffect(async () => {
-        try {
-            const prefs = await getUserPreferences(user.id);
-            setPreferences(prefs);
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const prefs = await getUserPreferences(user.id);
+                setPreferences(prefs);
 
-            const cardsPref = prefs.find((p: any) => p.name === 'Cards');
-            const valutaPref = prefs.find((p: any) => p.name === 'Valuta');
+                const cardsPref = prefs.find((p: any) => p.name === 'Cards');
+                const valutaPref = prefs.find((p: any) => p.name === 'Valuta');
 
-            if (cardsPref) setCardsShown(cardsPref.numberValue);
-            if (valutaPref) setValuta(valutaPref.stringValue);
-        } catch (error) {
-            console.error('Failed to fetch preferences:', error);
+                if (cardsPref) setCardsShown(cardsPref.numberValue);
+                if (valutaPref) setValuta(valutaPref.stringValue);
+            } catch (error) {
+                console.error('Failed to fetch preferences:', error);
+            }
         }
+
+        fetchData();
     }, [user?.id])
 
     const updatePreferences = async () => {

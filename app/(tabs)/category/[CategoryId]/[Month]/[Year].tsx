@@ -1,5 +1,12 @@
-import React, {useContext, useState} from 'react';
-import {ActivityIndicator, SafeAreaView, ScrollView, Text, TouchableOpacity, useColorScheme, View} from 'react-native';
+import React, {useContext, useEffect, useState} from 'react';
+import {
+    ActivityIndicator,
+    SafeAreaView,
+    ScrollView,
+    Text,
+    TouchableOpacity,
+    View
+} from 'react-native';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import {Link, useLocalSearchParams} from 'expo-router';
 
@@ -11,7 +18,6 @@ import ExpenseDetailModal from '@/app/(tabs)/expense/ExpenseDetailModal';
 import {styles_categoryDetails} from '@/styles/tabs/category/styles_categoryDetails';
 import CustomDarkTheme from '@/theme/CustomDarkTheme';
 import CustomDefaultTheme from '@/theme/CustomDefaultTheme';
-
 import {AuthContext} from '@/app/ctx';
 import {getCategoryById} from '@/api/CategoryController';
 import {getExpensesByCategoryAndDate} from '@/api/ExpenseController';
@@ -19,28 +25,19 @@ import {getBudgetByCategoryAndDate} from '@/api/BudgetController';
 import {getMostRecentResult} from '@/api/ResultController';
 import {getUserPreferenceByName} from '@/api/PreferenceController';
 import {getPeriodByDate} from '@/api/PeriodController';
-
 import {Category} from '@/models/category';
 import {Expense} from '@/models/expense';
 import {Result} from '@/models/periodresult';
 import {ConvertToPercentage} from '@/helpers/GeneralHelpers';
-import {useAsyncEffect} from "@/hooks/useAsyncEffect";
+import {UserPreference} from "@/models/userPreference";
 
 const CategoryDetails = (): React.JSX.Element => {
     const {user} = useContext(AuthContext);
-    const {CategoryId, Month, Year} = useLocalSearchParams<{
-        CategoryId: string;
-        Month: string;
-        Year: string;
-    }>();
-
-    const colorScheme = useColorScheme();
-    const currentTheme = colorScheme === 'dark' ? CustomDarkTheme : CustomDefaultTheme;
-    const styles = styles_categoryDetails(currentTheme);
+    const {CategoryId, Month, Year} = useLocalSearchParams<{ CategoryId: string; Month: string; Year: string; }>();
 
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
-
+    const [theme, setTheme] = useState("");
     const [category, setCategory] = useState<Category | null>(null);
     const [expenses, setExpenses] = useState<Expense[]>([]);
     const [budgetAmount, setBudgetAmount] = useState<number>(0);
@@ -48,46 +45,55 @@ const CategoryDetails = (): React.JSX.Element => {
     const [valuta, setValuta] = useState<string>("$");
     const [modalVisible, setModalVisible] = useState<number | null>(null);
 
-    useAsyncEffect(async () => {
-        try {
-            const parsedMonth = parseInt(Month) - 1
-            const parsedYear = parseInt(Year)
-            const parsedCategoryId = parseInt(CategoryId)
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const parsedMonth : number = parseInt(Month) - 1
+                const parsedYear : number = parseInt(Year)
+                const parsedCategoryId : number = parseInt(CategoryId)
+                const valutaPref = await getUserPreferenceByName(user.id, 'Valuta');
+                const themePref : UserPreference = await getUserPreferenceByName(user.id, "ColorScheme")
+                setTheme(themePref.stringValue ?? "dark")
 
-            const [period, cat] = await Promise.all([
-                getPeriodByDate(user.id, new Date(parsedYear, parsedMonth, 1)),
-                getCategoryById(user.id, parsedCategoryId)
-            ])
+                const [period, cat] = await Promise.all([
+                    getPeriodByDate(user.id, new Date(parsedYear, parsedMonth, 1)),
+                    getCategoryById(user.id, parsedCategoryId)
+                ])
 
-            const [expenses, budget, resultRaw] = await Promise.all([
-                getExpensesByCategoryAndDate(user.id, cat.id, period.id),
-                getBudgetByCategoryAndDate(user.id, cat.id, period.id),
-                getMostRecentResult(user.id, cat.id, period.id)
-            ])
+                const [expenses, budget, resultRaw] = await Promise.all([
+                    getExpensesByCategoryAndDate(user.id, cat.id, period.id),
+                    getBudgetByCategoryAndDate(user.id, cat.id, period.id),
+                    getMostRecentResult(user.id, cat.id, period.id)
+                ])
 
-            const percentageSpent = !isNaN(resultRaw.totalSpent)
-                ? (resultRaw.totalSpent / budget.amount) * 100
-                : 0;
+                const percentageSpent = !isNaN(resultRaw.totalSpent)
+                    ? (resultRaw.totalSpent / budget.amount) * 100
+                    : 0;
 
-            const result = {
-                ...resultRaw,
-                percentageSpent,
+                const result = {
+                    ...resultRaw,
+                    percentageSpent,
+                }
+
+
+                setCategory(cat);
+                setExpenses(expenses);
+                setBudgetAmount(budget.amount);
+                setResult(result);
+                setValuta(valutaPref?.stringValue ?? '$');
+            } catch (err) {
+                console.error(err);
+                setError('Failed to load data');
+            } finally {
+                setLoading(false);
             }
-
-            const valutaPref = await getUserPreferenceByName(user.id, 'Valuta');
-
-            setCategory(cat);
-            setExpenses(expenses);
-            setBudgetAmount(budget.amount);
-            setResult(result);
-            setValuta(valutaPref?.stringValue ?? '$');
-        } catch (err) {
-            console.error(err);
-            setError('Failed to load data');
-        } finally {
-            setLoading(false);
         }
+
+        fetchData();
     }, [user.id, CategoryId, Month, Year])
+
+    const currentTheme = theme === 'dark' ? CustomDarkTheme : CustomDefaultTheme;
+    const styles = styles_categoryDetails(currentTheme);
 
     if (loading) return <ActivityIndicator/>;
     if (error) return <Text style={styles.errorMessage}>{error}</Text>;

@@ -3,7 +3,6 @@ import { supabase } from '@/lib/supabase';
 import { User } from '@/models/user';
 import { Team } from '@/models/team';
 import { getUser } from '@/api/UserController';
-import { useAsyncEffect } from "@/hooks/useAsyncEffect";
 
 interface AuthContextType {
     user: User | null;
@@ -29,19 +28,23 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         setTeam(null);
     };
 
-    useAsyncEffect(async () => {
-        const { data } = await supabase.auth.getSession();
-        const session = data.session;
+    useEffect(() => {
+        const fetchData = async () => {
+            const { data } = await supabase.auth.getSession();
+            const session = data.session;
 
-        if (session?.user?.email) {
-            try {
-                const userData = await getUser(session.user.email);
-                setUser(userData);
-            } catch (error) {
-                console.error('Failed to restore user from Supabase session:', error);
+            if (session?.user?.email) {
+                try {
+                    const userData = await getUser(session.user.email);
+                    setUser(userData);
+                } catch (error) {
+                    console.error('Failed to restore user from Supabase session:', error);
+                }
             }
         }
-    }, []);
+
+        fetchData();
+    }, [])
 
     useEffect(() => {
         const { data: listener } = supabase.auth.onAuthStateChange(async (event, session) => {
