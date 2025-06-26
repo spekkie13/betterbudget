@@ -59,24 +59,11 @@ export async function updateUserPreference(id: number, pref: Partial<UserPrefere
     return await response.json();
 }
 
-// export async function updateAllPreferences(userId : number, preferences: UserPreference[]) {
-//     const requests = preferences.map((pref) =>
-//         fetch(`/api/userpreferences/${pref.id}`, {
-//         method: "PUT",
-//             headers: {
-//             "Content-Type": "application/json",
-//         },
-//         body: JSON.stringify({
-//             numberValue: pref.numberValue,
-//             stringValue: pref.stringValue,
-//             dateValue: pref.dateValue,
-//         }),
-//     })
-//     );
-//
-//     // Option 1: Parallel updates
-//     await Promise.all(requests);
-// }
+export async function updateAllUserPreferences(userId: number,  preferences: UserPreference[]){
+    await Promise.all(preferences.map(async (preference) => {
+        await updateUserPreference(userId, preference);
+    }))
+}
 
 export function formPreference(item: any): UserPreference {
     const preferenceData = {

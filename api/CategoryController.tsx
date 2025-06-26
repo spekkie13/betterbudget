@@ -1,7 +1,6 @@
 import {Category} from "@/models/category";
 import {CATEGORY_BASE_URL, CATEGORY_EXISTS_URL} from "@/constants/apiConstants";
 import {formRequestNoBody,} from "@/api/ApiHelpers";
-import {getUserPreferences} from "@/api/PreferenceController";
 import {UserPreference} from "@/models/userPreference";
 import {preferenceStore} from "@/hooks/preferenceStore";
 
@@ -33,10 +32,7 @@ export async function getSelectedCategories(userId: number): Promise<Category[]>
     const cardsPref : UserPreference = preferenceStore.get('cards')
     const cards : number = cardsPref.numberValue;
 
-    //TODO: replace by preferenceStore => get where name contains
-    let userPreferences : UserPreference[] = await getUserPreferences(userId);
-    userPreferences = userPreferences
-        .filter((item : UserPreference) : boolean => item.name.toLowerCase().includes("category"))
+    let userPreferences : UserPreference[] = preferenceStore.nameContains('category')
         .slice(0, cards);
 
     // 🔄 Fetch all categories concurrently

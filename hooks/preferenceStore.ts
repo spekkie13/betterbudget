@@ -11,6 +11,10 @@ export class PreferenceStore {
         return this.preferences.find((p) => p.name.toLowerCase() === key.toLowerCase());
     }
 
+    nameContains(key: string): UserPreference[] {
+        return this.preferences.filter((p) => p.name.toLowerCase().includes(key.toLowerCase()));
+    }
+
     set(value: UserPreference) {
         this.preferences.push(value);
     }

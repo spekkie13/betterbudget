@@ -5,6 +5,7 @@ import {getIncomes} from "@/api/IncomeController";
 import {getExpensesByUser} from "@/api/ExpenseController";
 import {Income} from "@/models/income";
 import {Expense} from "@/models/expense";
+import {getPeriodByDate} from "@/api/PeriodController";
 
 export async function getBudgetByCategoryAndDate(userId: number, categoryId: number, periodId: number): Promise<Budget> {
     const url = `${PERIOD_BUDGET_BASE_URL}?userId=${userId}&categoryId=${categoryId}&periodId=${periodId}`;
@@ -100,10 +101,15 @@ export async function updateBudgets(periodBudgets: Budget[], newCategoryId: numb
     }
 }
 
-//TODO: rework to just look at the most recent period
 export async function determineSpendingRoom(userId: number): Promise<number> {
-    const incomes : Income[] = await getIncomes(userId)
-    const expenses : Expense[] = await getExpensesByUser(userId)
+    const mostRecentPeriod = await getPeriodByDate(userId, new Date());
+
+    let incomes : Income[] = await getIncomes(userId)
+    let expenses : Expense[] = await getExpensesByUser(userId)
+
+    incomes = incomes.filter((income: Income) => new Date(income.date) > new Date(mostRecentPeriod.startDate))
+    expenses = expenses.filter((expense: Expense) => new Date(expense.date) > new Date(mostRecentPeriod.startDate))
+
     const expenseSum: number = expenses.reduce((sum : number, current : Expense) : number => sum + Number(current.amount), 0)
     const incomeSum: number = incomes.reduce((sum : number, current : Income) : number => sum + Number(current.amount), 0)
 
