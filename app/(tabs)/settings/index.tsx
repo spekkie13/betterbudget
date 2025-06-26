@@ -1,4 +1,4 @@
-import {Text, TouchableOpacity, useColorScheme, View} from 'react-native';
+import {Text, TouchableOpacity, View} from 'react-native';
 import Logo from '@/app/general/Logo';
 import React, {useContext, useEffect, useState} from 'react';
 import Title from '@/app/general/Title';
@@ -12,6 +12,7 @@ import RNPickerSelect from 'react-native-picker-select';
 import CustomButton from '@/app/general/CustomButton';
 import {getUserPreferences, updateUserPreference} from '@/api/PreferenceController';
 import {supabase} from "@/lib/supabase";
+import {preferenceStore} from "@/hooks/preferenceStore";
 
 const Settings = () => {
     const {user, logout} = useContext(AuthContext);
@@ -19,8 +20,9 @@ const Settings = () => {
     const [preferences, setPreferences] = useState<any[]>([]);
     const [cardsShown, setCardsShown] = useState<number>(0);
     const [valuta, setValuta] = useState<string>('€');
+    const [theme, setTheme] = useState<string>('');
 
-    const colorScheme = useColorScheme();
+    const colorScheme = preferenceStore.get('colorScheme').stringValue;
     const currentTheme = colorScheme === 'dark' ? CustomDarkTheme : CustomDefaultTheme;
     const styles = styles_settings(currentTheme);
 
@@ -62,6 +64,7 @@ const Settings = () => {
     const SignOut = async () => {
         await supabase.auth.signOut();
         await logout();
+        preferenceStore.clear()
         router.replace('/sign-in');
     };
 
@@ -92,6 +95,17 @@ const Settings = () => {
                     value={valuta}
                     items={[{key: '1', label: '€', value: '€'}, {key: '2', label: '$', value: '$'}]}
                     placeholder={{label: 'Valuta symbol', value: ''}}
+                    style={pickerStyles(currentTheme)}
+                />
+            </View>
+
+            <View style={styles.view}>
+                <Text style={styles.text}>Theme</Text>
+                <RNPickerSelect
+                    onValueChange={(value) => setTheme(value)}
+                    value={theme}
+                    items={[{key: '1', label: 'dark', value: 'dark'}, {key: '2', label: 'light', value: 'light'}]}
+                    placeholder={{label: 'current theme', value: ''}}
                     style={pickerStyles(currentTheme)}
                 />
             </View>

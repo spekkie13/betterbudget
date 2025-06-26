@@ -39,14 +39,6 @@ export async function getUserPreferences(userId: number) {
     return preferences
 }
 
-export async function getUserPreferenceByName(userId: number, name: string) {
-    const url = `${USER_PREFERENCES_BASE_URL}?userId=${userId}&preferenceName=${name}`
-    const request: RequestInfo = formRequestNoBody(url, 'GET')
-    const response = await fetch(request)
-    const data = await response.json()
-    return formPreference(data)
-}
-
 export async function updateUserPreference(id: number, pref: Partial<UserPreference>) {
     const response = await fetch(`/api/userpreferences?id=${id}`, {
         method: "PUT",

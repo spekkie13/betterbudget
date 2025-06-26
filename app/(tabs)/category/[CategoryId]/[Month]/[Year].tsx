@@ -1,12 +1,5 @@
 import React, {useContext, useEffect, useState} from 'react';
-import {
-    ActivityIndicator,
-    SafeAreaView,
-    ScrollView,
-    Text,
-    TouchableOpacity,
-    View
-} from 'react-native';
+import { ActivityIndicator, SafeAreaView, ScrollView, Text, TouchableOpacity, View } from 'react-native';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import {Link, useLocalSearchParams} from 'expo-router';
 
@@ -23,13 +16,13 @@ import {getCategoryById} from '@/api/CategoryController';
 import {getExpensesByCategoryAndDate} from '@/api/ExpenseController';
 import {getBudgetByCategoryAndDate} from '@/api/BudgetController';
 import {getMostRecentResult} from '@/api/ResultController';
-import {getUserPreferenceByName} from '@/api/PreferenceController';
 import {getPeriodByDate} from '@/api/PeriodController';
 import {Category} from '@/models/category';
 import {Expense} from '@/models/expense';
 import {Result} from '@/models/periodresult';
 import {ConvertToPercentage} from '@/helpers/GeneralHelpers';
 import {UserPreference} from "@/models/userPreference";
+import {preferenceStore} from "@/hooks/preferenceStore";
 
 const CategoryDetails = (): React.JSX.Element => {
     const {user} = useContext(AuthContext);
@@ -51,8 +44,8 @@ const CategoryDetails = (): React.JSX.Element => {
                 const parsedMonth : number = parseInt(Month) - 1
                 const parsedYear : number = parseInt(Year)
                 const parsedCategoryId : number = parseInt(CategoryId)
-                const valutaPref = await getUserPreferenceByName(user.id, 'Valuta');
-                const themePref : UserPreference = await getUserPreferenceByName(user.id, "ColorScheme")
+                const valutaPref = preferenceStore.get('valuta')
+                const themePref : UserPreference = preferenceStore.get('colorscheme')
                 setTheme(themePref.stringValue ?? "dark")
 
                 const [period, cat] = await Promise.all([

@@ -1,4 +1,4 @@
-import {Text, TouchableOpacity, useColorScheme, View} from 'react-native'
+import {Text, TouchableOpacity, View} from 'react-native'
 import {TextInput} from 'react-native-paper'
 import React, {useContext, useEffect, useState} from 'react'
 import Title from '@/app/general/Title'
@@ -14,6 +14,7 @@ import CustomDarkTheme from "@/theme/CustomDarkTheme"
 import CustomDefaultTheme from "@/theme/CustomDefaultTheme"
 import {genericFailureMessage, successCreateMessage} from "@/constants/messageConstants";
 import CustomButton from "@/app/general/CustomButton";
+import {preferenceStore} from "@/hooks/preferenceStore";
 
 const AddExpense = () => {
     const [pickerItems, setPickerItems] = useState([])
@@ -31,7 +32,7 @@ const AddExpense = () => {
 
     const {user} = useContext(AuthContext)
 
-    const colorScheme = useColorScheme()
+    const colorScheme = preferenceStore.get('colorScheme').stringValue;
     const currentTheme = colorScheme === 'dark' ? CustomDarkTheme : CustomDefaultTheme
     const styles = styles_AddExpense(currentTheme)
 

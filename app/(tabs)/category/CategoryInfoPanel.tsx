@@ -1,5 +1,5 @@
 import React, {useContext} from "react";
-import {ActivityIndicator, Text, useColorScheme, View} from "react-native";
+import {ActivityIndicator, Text, View} from "react-native";
 import {AuthContext} from "@/app/ctx";
 import {styles_categoryInfoPanel} from "@/styles/tabs/category/styles_categoryInfoPanel";
 import CustomDarkTheme from "@/theme/CustomDarkTheme";
@@ -7,6 +7,7 @@ import CustomDefaultTheme from "@/theme/CustomDefaultTheme";
 import SubTitle from "@/app/general/SubTitle";
 import {useCategories} from "@/hooks/useCategories";
 import CategoriesList from "@/app/(tabs)/category/CategoriesList";
+import {preferenceStore} from "@/hooks/preferenceStore";
 
 const CategoryInfoPanel = () => {
     const {user} = useContext(AuthContext);
@@ -14,7 +15,7 @@ const CategoryInfoPanel = () => {
     const {categories, loading, error, cardsShown} = useCategories({userId: user?.id, selectedOnly: true});
     const title: string = 'Top ' + cardsShown + ' categories';
 
-    const colorScheme = useColorScheme();
+    const colorScheme = preferenceStore.get('colorScheme')?.stringValue;
     const currentTheme =
         colorScheme === "dark" ? CustomDarkTheme : CustomDefaultTheme;
     const styles = styles_categoryInfoPanel(currentTheme);

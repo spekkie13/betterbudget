@@ -1,7 +1,7 @@
 import {useEffect, useState} from "react";
-import {getUserPreferenceByName} from "@/api/PreferenceController";
 import {getCategories, getSelectedCategories} from "@/api/CategoryController";
 import {Category} from "@/models/category";
+import {preferenceStore} from "@/hooks/preferenceStore";
 
 type UseCategoriesOptions = {
     userId: number;
@@ -12,7 +12,7 @@ export const useCategories = ({userId, selectedOnly = false}: UseCategoriesOptio
     const [categories, setCategories] = useState<Category[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
-    const [cardsShown, setCardsShown] = useState<number>(0);
+    const cardsShown = preferenceStore.get('cards')?.numberValue
 
     useEffect(() => {
         const fetchData = async () => {
@@ -21,9 +21,6 @@ export const useCategories = ({userId, selectedOnly = false}: UseCategoriesOptio
                     return
                 }
                 if (selectedOnly) {
-                    const cardsPref = await getUserPreferenceByName(userId, "Cards");
-                    setCardsShown(cardsPref?.numberValue ?? 6);
-
                     const selected = await getSelectedCategories(userId);
                     setCategories(selected);
                 } else {

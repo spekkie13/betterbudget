@@ -1,10 +1,11 @@
 import {styles_title} from "@/styles/general/styles_title"
-import {Text, useColorScheme, View} from 'react-native'
+import {Text, View} from 'react-native'
 import CustomDarkTheme from "@/theme/CustomDarkTheme"
 import CustomDefaultTheme from "@/theme/CustomDefaultTheme"
+import {preferenceStore} from "@/hooks/preferenceStore";
 
 const Title = ({text}) => {
-    const colorScheme = useColorScheme()
+    const colorScheme = preferenceStore.get('colorScheme')?.stringValue ?? 'dark';
     const currentTheme = colorScheme === 'dark' ? CustomDarkTheme : CustomDefaultTheme
     const styles = styles_title(currentTheme)
 

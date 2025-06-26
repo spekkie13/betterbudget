@@ -1,29 +1,24 @@
 import * as React from "react"
-import {useContext, useEffect, useState} from "react"
-import {SafeAreaView} from "react-native-safe-area-context"
-import {
-    ActivityIndicator,
-    KeyboardAvoidingView,
-    ScrollView,
-    Text,
-    TouchableOpacity,
-    useColorScheme,
-    View
-} from "react-native"
-import {TextInput} from "react-native-paper"
+import { useContext, useState } from "react"
+import { SafeAreaView} from "react-native-safe-area-context"
+import { ActivityIndicator, KeyboardAvoidingView, ScrollView, Text, TouchableOpacity, View } from "react-native"
+import { TextInput } from "react-native-paper"
 import Title from "@/app/general/Title"
 import Logo from "@/app/general/Logo"
-import {styles_login} from '@/styles/styles_login'
+import { styles_login } from '@/styles/styles_login'
 import CustomDarkTheme from "@/theme/CustomDarkTheme";
-import CustomDefaultTheme from "@/theme/CustomDefaultTheme";
-import {getUser} from "@/api/UserController";
-import {AuthContext} from "@/app/ctx";
-import {Link, router} from 'expo-router'
-import {errorLoginMessage, genericFailureMessage} from "@/constants/messageConstants";
+import { getUser } from "@/api/UserController";
+import { AuthContext } from "@/app/ctx";
+import { Link, router } from 'expo-router'
+import { errorLoginMessage, genericFailureMessage } from "@/constants/messageConstants";
 import CustomButton from "@/app/general/CustomButton";
-import {supabase} from "@/lib/supabase";
-import {getTeamById} from "@/api/TeamController";
-import {getUserPreferenceByName} from "@/api/PreferenceController";
+import { supabase } from "@/lib/supabase";
+import { getTeamById } from "@/api/TeamController";
+import { getUserPreferences } from "@/api/PreferenceController";
+import { preferenceStore } from "@/hooks/preferenceStore";
+
+import { Team } from "@/models/team";
+import { User } from "@/models/user";
 
 function Login(): React.JSX.Element {
     const {login} = useContext(AuthContext)
@@ -33,18 +28,8 @@ function Login(): React.JSX.Element {
     const [password, setPassword] = useState('')
     const [submissionMessage, setSubmissionMessage] = useState('')
     const [messageVisible, setMessageVisible] = useState(false)
-    const [theme, setTheme] = useState("")
 
-    useEffect(() => {
-        const fetchData = async () => {
-            const themePref = await getUserPreferenceByName(2, "colorScheme")
-            setTheme(themePref.stringValue.toLowerCase() ?? "light")
-        }
-
-        fetchData()
-    }, [])
-
-    const currentTheme = theme === 'dark' ? CustomDarkTheme : CustomDefaultTheme
+    const currentTheme = CustomDarkTheme
     const styles = styles_login(currentTheme)
 
     const signIn = async (): Promise<void> => {
@@ -66,9 +51,11 @@ function Login(): React.JSX.Element {
                 return;
             }
 
-            const user = await getUser(data.user.email);
-            const team = await getTeamById(user.teamId)
+            const user : User = await getUser(data.user.email);
+            const team : Team = await getTeamById(user.teamId)
             login(user, team);
+            const preferences = await getUserPreferences(user.id)
+            preferenceStore.load(preferences)
             router.replace("/home/");
         } catch (error) {
             console.log("Something went wrong logging in: ", error);

@@ -1,14 +1,15 @@
 import React, {useEffect, useState} from "react";
-import {Modal, Text, TouchableOpacity, useColorScheme, View} from "react-native";
+import {Modal, Text, TouchableOpacity, View} from "react-native";
 import {styles_categoryEditModal} from "@/styles/tabs/category/styles_categoryEditModal";
 import {getCategories} from "@/api/CategoryController";
 import CustomDarkTheme from "@/theme/CustomDarkTheme";
 import CustomDefaultTheme from "@/theme/CustomDefaultTheme";
+import {preferenceStore} from "@/hooks/preferenceStore";
 
 const CategoryEditModal = ({visible, onClose, categoryId}) => {
     const [category, setCategory] = useState(null);
 
-    const colorScheme = useColorScheme();
+    const colorScheme = preferenceStore.get('colorScheme').stringValue;
     const currentTheme =
         colorScheme === "dark" ? CustomDarkTheme : CustomDefaultTheme;
     const styles = styles_categoryEditModal(currentTheme);

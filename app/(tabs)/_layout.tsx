@@ -1,16 +1,14 @@
 import {Href, Tabs, useRouter} from "expo-router";
 import React from "react";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
-import {Pressable, useColorScheme, View} from "react-native";
+import {Pressable, View} from "react-native";
 import CustomDarkTheme from "@/theme/CustomDarkTheme";
-import CustomDefaultTheme from "@/theme/CustomDefaultTheme";
 import {styles_tabLayout} from "@/styles/styles_tabLayout";
 
 type FontAwesomeIconName = keyof typeof FontAwesome.glyphMap;
 
 export default function TabsLayout() {
-    const colorScheme = useColorScheme();
-    const currentTheme = colorScheme === "dark" ? CustomDarkTheme : CustomDefaultTheme;
+    const currentTheme = CustomDarkTheme;
     const styles = styles_tabLayout(currentTheme)
     const router = useRouter();
 

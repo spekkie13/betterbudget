@@ -19,6 +19,8 @@ export const styles_settings = (theme: any) => StyleSheet.create({
     },
     text: {
         alignSelf: 'center',
+        textAlign: 'right',
+        paddingRight: Padding_MEDIUM,
         color: theme.colors.textColor
     },
     picker: {

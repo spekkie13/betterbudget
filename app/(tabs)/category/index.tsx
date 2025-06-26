@@ -1,4 +1,4 @@
-import {ActivityIndicator, SafeAreaView, ScrollView, Text, useColorScheme, View,} from 'react-native';
+import {ActivityIndicator, SafeAreaView, ScrollView, Text, View,} from 'react-native';
 import React, {useContext} from 'react';
 import {AuthContext} from '@/app/ctx';
 import {Link, useRouter} from 'expo-router';
@@ -9,6 +9,7 @@ import Title from '@/app/general/Title';
 import CustomButton from '@/app/general/CustomButton';
 import {useCategories} from "@/hooks/useCategories";
 import CategoriesList from "@/app/(tabs)/category/CategoriesList";
+import {preferenceStore} from "@/hooks/preferenceStore";
 
 const CategoryOverviewScreen = () => {
     const {user} = useContext(AuthContext);
@@ -16,7 +17,7 @@ const CategoryOverviewScreen = () => {
     const {categories, loading, error} = useCategories({userId: user.id});
     const cardsShown = categories.length
 
-    const colorScheme = useColorScheme();
+    const colorScheme = preferenceStore.get('colorScheme').stringValue;
     const currentTheme =
         colorScheme === 'dark' ? CustomDarkTheme : CustomDefaultTheme;
     const styles = styles_categoryOverview(currentTheme);

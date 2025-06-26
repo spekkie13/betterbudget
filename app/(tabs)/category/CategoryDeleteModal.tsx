@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import { Modal, Text, TouchableOpacity, useColorScheme, View } from "react-native";
+import { Modal, Text, TouchableOpacity, View } from "react-native";
 import { styles_categoryDeleteModal } from '@/styles/tabs/category/styles_categoryDeleteModal'
 import { deleteCategoryById, getCategories } from "@/api/CategoryController";
 import { getBudgetByCategory, updateBudgets } from "@/api/BudgetController";
@@ -8,15 +8,14 @@ import { Budget } from "@/models/budget";
 import { AuthContext } from "@/app/ctx";
 import CustomDarkTheme from "@/theme/CustomDarkTheme";
 import CustomDefaultTheme from "@/theme/CustomDefaultTheme";
+import {preferenceStore} from "@/hooks/preferenceStore";
 
 const CategoryDeleteModal = ({ visible, onClose, categoryId, message }) => {
     const { user } = useContext(AuthContext);
     const [category, setCategory] = useState(null);
     const [expenses, setExpenses] = useState([]);
-    const colorScheme = useColorScheme();
-    const styles = styles_categoryDeleteModal(
-        colorScheme === "dark" ? CustomDarkTheme : CustomDefaultTheme
-    );
+    const colorScheme = preferenceStore.get('colorScheme').stringValue;
+    const styles = styles_categoryDeleteModal(colorScheme === "dark" ? CustomDarkTheme : CustomDefaultTheme);
 
     useEffect(() => {
         const loadCategoryData = async () => {

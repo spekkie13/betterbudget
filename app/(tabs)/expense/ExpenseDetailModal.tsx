@@ -1,9 +1,10 @@
 import React from "react";
-import {Modal, Text, TouchableOpacity, useColorScheme, View} from "react-native";
+import {Modal, Text, TouchableOpacity, View} from "react-native";
 import {styles_expenseDetailModal} from "@/styles/tabs/expense/styles_expenseDetailModal";
 import CustomDarkTheme from "@/theme/CustomDarkTheme";
 import CustomDefaultTheme from "@/theme/CustomDefaultTheme";
 import {Expense} from "@/models/expense";
+import {preferenceStore} from "@/hooks/preferenceStore";
 
 type Props = {
     visible: boolean;
@@ -13,7 +14,7 @@ type Props = {
 };
 
 const ExpenseDetailModal: React.FC<Props> = ({visible, onClose, data, valuta}) => {
-    const colorScheme = useColorScheme();
+    const colorScheme = preferenceStore.get('colorScheme').stringValue;
     const currentTheme =
         colorScheme === "dark" ? CustomDarkTheme : CustomDefaultTheme;
     const styles = styles_expenseDetailModal(currentTheme);

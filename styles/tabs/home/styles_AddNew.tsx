@@ -8,6 +8,10 @@ export const styles_AddNew = (theme) => StyleSheet.create({
         backgroundColor: theme.colors.background,
         flex: 1
     },
+    addItems: {
+        marginLeft: 5,
+        marginRight: 5,
+    },
     itemView: {
         borderRadius: 10,
         alignItems: 'center',
@@ -17,6 +21,8 @@ export const styles_AddNew = (theme) => StyleSheet.create({
         width: '100%',
         height: 200,
         borderWidth: 1,
+        padding: Padding_LARGE,
+        backgroundColor: theme.colors.secondary,
         borderColor: theme.colors.primary
     },
     item: {

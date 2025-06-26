@@ -1,4 +1,4 @@
-import {ActivityIndicator, ColorSchemeName, ScrollView, Text, useColorScheme, View} from 'react-native'
+import {ActivityIndicator, ScrollView, Text, View} from 'react-native'
 import Title from '@/app/general/Title'
 import Logo from '@/app/general/Logo'
 import SubTitle from '@/app/general/SubTitle'
@@ -11,17 +11,16 @@ import {Link, router, useFocusEffect} from "expo-router";
 import {genericFailureMessage} from "@/constants/messageConstants";
 import CustomButton from "@/app/general/CustomButton";
 import {styles_home} from "@/styles/styles_home";
-import {getUserPreferenceByName} from "@/api/PreferenceController";
 import {determineSpendingRoom} from "@/api/BudgetController";
-import {UserPreference} from "@/models/userPreference";
+import {preferenceStore} from "@/hooks/preferenceStore";
 
 const HomeScreen = () => {
     const {user} = useContext(AuthContext)
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState(null)
-    const [valuta, setValuta] = useState("$")
+    const valuta : string = preferenceStore.get('valuta')?.stringValue ?? "$"
 
-    const colorScheme : ColorSchemeName = useColorScheme()
+    const colorScheme = preferenceStore.get('colorScheme')?.stringValue ?? "dark";
     const currentTheme = colorScheme === 'dark' ? CustomDarkTheme : CustomDefaultTheme
     const styles = styles_home(currentTheme)
     const [spendingRoom, setSpendingRoom] = useState(0)
@@ -36,9 +35,6 @@ const HomeScreen = () => {
                 }
                 try {
                     const sum : number = await determineSpendingRoom(user.id)
-                    const valutaPref : UserPreference = await getUserPreferenceByName(user.id, "Valuta")
-                    const valuta : string = valutaPref?.stringValue ?? "$"
-                    setValuta(valuta)
                     setSpendingRoom(sum)
                 } catch (err) {
                     console.log(err)

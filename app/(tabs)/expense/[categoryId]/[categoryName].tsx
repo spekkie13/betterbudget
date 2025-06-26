@@ -1,5 +1,5 @@
 import React, {useContext, useEffect, useState} from 'react';
-import {ActivityIndicator, ScrollView, Text, TouchableOpacity, useColorScheme, View} from 'react-native';
+import {ActivityIndicator, ScrollView, Text, TouchableOpacity, View} from 'react-native';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import {Link, useLocalSearchParams, useRouter} from 'expo-router';
 import {AuthContext} from '@/app/ctx';
@@ -18,6 +18,7 @@ import {getDistinctPeriods} from '@/api/PeriodController';
 import {checkForExistingExpenses} from '@/api/ExpenseController';
 
 import {Period} from '@/models/period';
+import {preferenceStore} from "@/hooks/preferenceStore";
 
 const MonthSelection = () => {
     const {user} = useContext(AuthContext);
@@ -32,7 +33,7 @@ const MonthSelection = () => {
     const [editModalVisible, setEditModalVisible] = useState(false);
     const [deleteModalVisible, setDeleteModalVisible] = useState(false);
 
-    const colorScheme = useColorScheme();
+    const colorScheme = preferenceStore.get('colorScheme').stringValue;
     const currentTheme = colorScheme === 'dark' ? CustomDarkTheme : CustomDefaultTheme;
     const styles = styles_expenseMonthSelection(currentTheme);
 

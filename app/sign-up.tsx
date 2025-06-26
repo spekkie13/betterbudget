@@ -1,15 +1,7 @@
 import * as React from "react"
 import {useContext, useState} from "react"
 import {SafeAreaView} from "react-native-safe-area-context"
-import {
-    ActivityIndicator,
-    KeyboardAvoidingView,
-    ScrollView,
-    Text,
-    TouchableOpacity,
-    useColorScheme,
-    View
-} from "react-native"
+import {ActivityIndicator, KeyboardAvoidingView, ScrollView, Text, TouchableOpacity, View } from "react-native"
 
 import {TextInput} from 'react-native-paper'
 import Title from "@/app/general/Title"
@@ -26,6 +18,7 @@ import {Link} from "expo-router";
 import CustomButton from "@/app/general/CustomButton";
 import {getTeamById} from "@/api/TeamController";
 import {Team} from "@/models/team";
+import {preferenceStore} from "@/hooks/preferenceStore";
 
 function Login(): React.JSX.Element {
     const [loading, setLoading] = useState(false)
@@ -34,7 +27,7 @@ function Login(): React.JSX.Element {
     const [password, setPassword] = useState('')
     const {login} = useContext(AuthContext)
 
-    const colorScheme = useColorScheme()
+    const colorScheme = preferenceStore.get('colorScheme').stringValue;
     const currentTheme = colorScheme === 'dark' ? CustomDarkTheme : CustomDefaultTheme
     const styles = styles_login(currentTheme)
 

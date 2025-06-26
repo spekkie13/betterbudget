@@ -1,11 +1,12 @@
 import React, {useState} from 'react';
-import {FlatList, Modal, Text, TouchableOpacity, useColorScheme, View} from 'react-native';
+import {FlatList, Modal, Text, TouchableOpacity, View} from 'react-native';
 import CategorySlotPicker, {Category} from './CategorySlotPicker';
 import {saveCategorySlots} from "@/api/PreferenceController";
 import {User} from "@/models/user";
 import CustomDarkTheme from "@/theme/CustomDarkTheme";
 import CustomDefaultTheme from "@/theme/CustomDefaultTheme";
 import {styles_categorySlotPickerModal} from "@/styles/tabs/profile/styles_categorySlotPickerModal";
+import {preferenceStore} from "@/hooks/preferenceStore";
 
 interface Props {
     visible: boolean;
@@ -19,7 +20,8 @@ interface Props {
 const CategorySlotPickerModal: React.FC<Props> = ({visible, user, onClose, categories, selected, onChange}) => {
     const [localSelected, setLocalSelected] = useState<(Category | null)[]>(selected);
     const [activeSlot, setActiveSlot] = useState<number | null>(null);
-    const colorScheme = useColorScheme();
+
+    const colorScheme = preferenceStore.get('colorScheme').stringValue;
     const theme = colorScheme === "dark" ? CustomDarkTheme : CustomDefaultTheme;
     const styles = styles_categorySlotPickerModal(theme);
 

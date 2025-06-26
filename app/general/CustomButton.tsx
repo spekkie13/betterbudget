@@ -1,11 +1,12 @@
-import {Text, useColorScheme, View} from "react-native";
+import {Text, View} from "react-native";
 import React from "react";
 import CustomDarkTheme from "@/theme/CustomDarkTheme";
 import CustomDefaultTheme from "@/theme/CustomDefaultTheme";
 import {styles_customButton} from "@/styles/general/styles_customButton";
+import {preferenceStore} from "@/hooks/preferenceStore";
 
 const CustomButton = ({text, color}) => {
-    const colorScheme = useColorScheme()
+    const colorScheme = preferenceStore.get('colorScheme')?.stringValue;
     const currentTheme = colorScheme === 'dark' ? CustomDarkTheme : CustomDefaultTheme
     const styles = styles_customButton(currentTheme, color)
 

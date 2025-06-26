@@ -1,5 +1,5 @@
 import React, {useContext, useState} from "react";
-import {Text, TouchableOpacity, useColorScheme, View} from "react-native";
+import {Text, TouchableOpacity, View} from "react-native";
 import {TextInput} from "react-native-paper";
 import {Link} from "expo-router";
 import Title from "@/app/general/Title";
@@ -12,6 +12,7 @@ import CustomDefaultTheme from "@/theme/CustomDefaultTheme";
 import {CATEGORY_WITH_BUDGET_BASE_URL} from "@/constants/apiConstants";
 import {getNextPeriod} from "@/api/PeriodController";
 import {checkIfCategoryExists} from "@/api/CategoryController";
+import {preferenceStore} from "@/hooks/preferenceStore";
 
 const AddCategory = () => {
     const [category, setCategory] = useState("");
@@ -22,7 +23,7 @@ const AddCategory = () => {
     const [showError, setShowError] = useState(false);
 
     const {user} = useContext(AuthContext);
-    const colorScheme = useColorScheme();
+    const colorScheme = preferenceStore.get('colorScheme').stringValue;
     const theme = colorScheme === "dark" ? CustomDarkTheme : CustomDefaultTheme;
     const styles = styles_addCategory(theme);
 
