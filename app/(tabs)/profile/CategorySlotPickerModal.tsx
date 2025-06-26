@@ -65,7 +65,7 @@ const CategorySlotPickerModal: React.FC<Props> = ({visible, user, onClose, categ
                                         onPress={() => handleCategorySelect(item)}
                                         style={styles.touchable}
                                     >
-                                        <Text>{item.name}</Text>
+                                        <Text style={styles.text}>{item.name}</Text>
                                     </TouchableOpacity>
                                 )}
                                 style={styles.flatList}

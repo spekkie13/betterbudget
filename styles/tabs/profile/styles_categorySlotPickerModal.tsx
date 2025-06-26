@@ -14,14 +14,19 @@ export const styles_categorySlotPickerModal = (theme) => StyleSheet.create({
         alignItems: 'center'
     },
     selectText: {
+        color: theme.colors.textColor,
         fontSize: 18,
         fontWeight: 'bold',
         marginBottom: 10
+    },
+    text: {
+        color: theme.colors.textColor,
     },
     touchable: {
         padding: 10
     },
     flatList: {
+        borderColor: theme.colors.primary,
         maxHeight: 200,
         width: '75%',
         borderWidth: 2,
