@@ -13,6 +13,7 @@ export const styles_login = (theme) => StyleSheet.create({
         marginHorizontal: 20,
         flex: 1,
         justifyContent: 'center',
+        backgroundColor: theme.colors.background,
     },
     input: {
         marginVertical: 4,
@@ -43,13 +44,13 @@ export const styles_login = (theme) => StyleSheet.create({
     messageView: {
         borderWidth: 1,
         borderStyle: 'solid',
-        borderColor: theme.colors.backgroundDark,
+        borderColor: theme.colors.borderColor,
         paddingTop: 5,
         paddingBottom: 5,
         paddingLeft: 10,
         paddingRight: 10,
         borderRadius: 5,
-        backgroundColor: theme.colors.secondary
+        backgroundColor: theme.colors.secondary,
     },
     signInText: {
         color: theme.colors.textColor,
@@ -62,7 +63,7 @@ export const styles_login = (theme) => StyleSheet.create({
     },
     signInButtonView: {
         width: '100%',
-        alignItems: 'center'
+        alignItems: 'center',
     },
     signUpView: {
         alignItems: 'center',

@@ -2,8 +2,8 @@ import React, {useContext, useState} from "react";
 import {Text, TouchableOpacity, View} from "react-native";
 import {TextInput} from "react-native-paper";
 import {Link} from "expo-router";
-import Title from "@/app/general/Title";
-import CustomButton from "@/app/general/CustomButton";
+import Title from "@/app/components/Text/Title";
+import CustomButton from "@/app/components/UI/CustomButton";
 import {AuthContext} from "@/app/ctx";
 import {genericFailureMessage, successCreateMessage} from "@/constants/messageConstants";
 import {styles_addCategory} from "@/styles/tabs/category/styles_addCategory";
@@ -130,11 +130,11 @@ const AddCategory = () => {
 
             <View style={styles.addButtonView}>
                 <TouchableOpacity onPress={handleAddCategory} style={styles.buttonView}>
-                    <CustomButton text="Add" color=""/>
+                    <CustomButton text="Add" color="" textColor=""/>
                 </TouchableOpacity>
 
-                <Link href="/(tabs)/expense/">
-                    <CustomButton text="Back" color=""/>
+                <Link href="/(tabs)/add/">
+                    <CustomButton text="Back" color="" textColor=""/>
                 </Link>
             </View>
         </View>

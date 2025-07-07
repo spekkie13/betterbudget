@@ -2,16 +2,14 @@ import React, {useContext, useEffect, useState} from 'react';
 import {TouchableOpacity, View} from 'react-native';
 import {AuthContext} from '@/app/ctx';
 import {getCategories} from '@/api/CategoryController';
-import CategorySlotPicker, {Category} from './CategorySlotPicker';
-import CategorySlotPickerModal from './CategorySlotPickerModal';
-import CustomButton from '@/app/general/CustomButton';
+import CategorySlotPicker, {Category} from '../../components/CategorySlotPicker';
+import CategorySlotPickerModal from '../../components/CategorySlotPickerModal';
+import CustomButton from '@/app/components/UI/CustomButton';
 import {useRouter} from "expo-router";
 import {styles_profile} from "@/styles/tabs/profile/styles_profile";
-import CustomDarkTheme from "@/theme/CustomDarkTheme";
-import CustomDefaultTheme from "@/theme/CustomDefaultTheme";
-import {preferenceStore} from "@/hooks/preferenceStore";
-import Title from "@/app/general/Title";
-import SubTitle from "@/app/general/SubTitle";
+import Title from "@/app/components/Text/Title";
+import SubTitle from "@/app/components/Text/SubTitle";
+import {useThemeContext} from "@/theme/ThemeContext";
 
 const Profile = () => {
     const {user} = useContext(AuthContext);
@@ -19,8 +17,7 @@ const Profile = () => {
     const [selectedSlots, setSelectedSlots] = useState<(Category | null)[]>([null, null, null, null]);
     const [modalVisible, setModalVisible] = useState(false);
     const router = useRouter();
-    const colorScheme = preferenceStore.get('colorScheme').stringValue;
-    const currentTheme = colorScheme === 'dark' ? CustomDarkTheme : CustomDefaultTheme
+    const { currentTheme } = useThemeContext();
     const styles = styles_profile(currentTheme)
 
     useEffect(() => {
@@ -39,21 +36,18 @@ const Profile = () => {
 
     return (
         <View style={styles.container}>
-            <Title text={`Hello, ${user?.username}`}/>
+            <Title text={`Hello ${user?.username}`}/>
             <SubTitle text={'Favorite Categories:'}/>
 
-            {/* Manage button */}
             <TouchableOpacity onPress={() => setModalVisible(true)} style={styles.touchable}>
-                <CustomButton text="Manage Categories" color="blue"/>
+                <CustomButton text="Manage Categories" color="blue" textColor='#ffffff'/>
             </TouchableOpacity>
 
-            {/* Always render read-only slots */}
-            <CategorySlotPicker selectedCategories={selectedSlots}/>
+            <CategorySlotPicker selectedCategories={selectedSlots} theme={currentTheme}/>
 
-            {/* Modal for editing */}
             <CategorySlotPickerModal
+                theme={currentTheme}
                 visible={modalVisible}
-                user={user}
                 onClose={() => setModalVisible(false)}
                 categories={categories}
                 selected={selectedSlots}

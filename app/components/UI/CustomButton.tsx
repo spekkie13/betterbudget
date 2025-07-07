@@ -5,10 +5,10 @@ import CustomDefaultTheme from "@/theme/CustomDefaultTheme";
 import {styles_customButton} from "@/styles/general/styles_customButton";
 import {preferenceStore} from "@/hooks/preferenceStore";
 
-const CustomButton = ({text, color}) => {
+const CustomButton = ({text, color, textColor}) => {
     const colorScheme = preferenceStore.get('colorScheme')?.stringValue;
     const currentTheme = colorScheme === 'dark' ? CustomDarkTheme : CustomDefaultTheme
-    const styles = styles_customButton(currentTheme, color)
+    const styles = styles_customButton(currentTheme, color, textColor)
 
     return (
         <View style={styles.buttonView}>

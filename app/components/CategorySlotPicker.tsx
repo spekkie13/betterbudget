@@ -1,10 +1,7 @@
 import React from 'react';
 import {Text, TouchableOpacity, View} from 'react-native';
-import CategoryCard from "@/app/(tabs)/category/CategoryCard";
+import CategoryCard from "@/app/components/CategoryCard";
 import {styles_categorySlotPicker} from "@/styles/tabs/profile/styles_categorySlotPicker";
-import {preferenceStore} from "@/hooks/preferenceStore";
-import CustomDarkTheme from "@/theme/CustomDarkTheme";
-import CustomDefaultTheme from "@/theme/CustomDefaultTheme";
 
 export interface Category {
     id: number;
@@ -15,16 +12,14 @@ export interface Category {
 }
 
 interface CategorySlotPickerProps {
+    theme: any;
     selectedCategories: (Category | null)[];
     onSlotPress?: (index: number) => void;
 }
 
-const CategorySlotPicker: React.FC<CategorySlotPickerProps> = ({selectedCategories, onSlotPress}) => {
+const CategorySlotPicker: React.FC<CategorySlotPickerProps> = ({selectedCategories, onSlotPress, theme}) => {
     const rows: (Category | null)[][] = [];
-    const colorScheme = preferenceStore.get('colorScheme').stringValue;
-    const currentTheme = colorScheme === 'dark' ? CustomDarkTheme : CustomDefaultTheme
-    const styles = styles_categorySlotPicker(currentTheme)
-
+    const styles = styles_categorySlotPicker(theme)
 
     for (let i = 0; i < selectedCategories.length; i += 2) {
         rows.push(selectedCategories.slice(i, i + 2));
@@ -44,7 +39,7 @@ const CategorySlotPicker: React.FC<CategorySlotPickerProps> = ({selectedCategori
                                 style={styles.touchable}
                             >
                                 {category ? (
-                                    <CategoryCard category={category}/>
+                                    <CategoryCard category={category} theme={theme}/>
                                 ) : (
                                     <Text style={styles.emptyCard}>-</Text>
                                 )}

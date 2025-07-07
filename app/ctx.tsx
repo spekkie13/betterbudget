@@ -41,27 +41,29 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
                     console.error('Failed to restore user from Supabase session:', error);
                 }
             }
-        }
+        };
 
         fetchData();
-    }, [])
+    }, []);
 
     useEffect(() => {
-        const { data: listener } = supabase.auth.onAuthStateChange(async (event, session) => {
-            if (event === 'SIGNED_OUT') {
-                setUser(null);
-                setTeam(null);
-            }
+        const { data: listener } = supabase.auth.onAuthStateChange(
+            async (event, session) => {
+                if (event === 'SIGNED_OUT') {
+                    setUser(null);
+                    setTeam(null);
+                }
 
-            if (event === 'SIGNED_IN' && session?.user?.email) {
-                try {
-                    const userData = await getUser(session.user.email);
-                    setUser(userData);
-                } catch (error) {
-                    console.error('Failed to load user on sign in:', error);
+                if (event === 'SIGNED_IN' && session?.user?.email) {
+                    try {
+                        const userData = await getUser(session.user.email);
+                        setUser(userData);
+                    } catch (error) {
+                        console.error('Failed to load user on sign in:', error);
+                    }
                 }
             }
-        });
+        );
 
         return () => {
             listener.subscription.unsubscribe();

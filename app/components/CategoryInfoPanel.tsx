@@ -2,23 +2,16 @@ import React, {useContext} from "react";
 import {ActivityIndicator, Text, View} from "react-native";
 import {AuthContext} from "@/app/ctx";
 import {styles_categoryInfoPanel} from "@/styles/tabs/category/styles_categoryInfoPanel";
-import CustomDarkTheme from "@/theme/CustomDarkTheme";
-import CustomDefaultTheme from "@/theme/CustomDefaultTheme";
-import SubTitle from "@/app/general/SubTitle";
+import SubTitle from "@/app/components/Text/SubTitle";
 import {useCategories} from "@/hooks/useCategories";
-import CategoriesList from "@/app/(tabs)/category/CategoriesList";
-import {preferenceStore} from "@/hooks/preferenceStore";
+import CategoriesList from "@/app/components/CategoriesList";
 
-const CategoryInfoPanel = () => {
+const CategoryInfoPanel = ({ theme }: { theme: any }) => {
     const {user} = useContext(AuthContext);
+    const styles = styles_categoryInfoPanel(theme);
 
     const {categories, loading, error, cardsShown} = useCategories({userId: user?.id, selectedOnly: true});
     const title: string = 'Top ' + cardsShown + ' categories';
-
-    const colorScheme = preferenceStore.get('colorScheme')?.stringValue;
-    const currentTheme =
-        colorScheme === "dark" ? CustomDarkTheme : CustomDefaultTheme;
-    const styles = styles_categoryInfoPanel(currentTheme);
 
     if (loading) {
         return (
@@ -45,7 +38,7 @@ const CategoryInfoPanel = () => {
                         No categories to display.
                     </Text>
                 ) : (
-                    <CategoriesList categories={categories} max={cardsShown}/>
+                    <CategoriesList categories={categories} max={cardsShown} theme={theme}/>
                 )}
             </View>
         </View>

@@ -6,8 +6,6 @@ import {getMostRecentResult} from "@/api/ResultController";
 import {getBudgetByCategoryAndDate} from "@/api/BudgetController";
 import {ConvertToPercentage} from "@/helpers/GeneralHelpers";
 import {AuthContext} from "@/app/ctx";
-import CustomDarkTheme from "@/theme/CustomDarkTheme";
-import CustomDefaultTheme from "@/theme/CustomDefaultTheme";
 import {Category} from "@/models/category";
 import {Budget} from "@/models/budget";
 import {Result} from "@/models/periodresult";
@@ -16,13 +14,12 @@ import {preferenceStore} from "@/hooks/preferenceStore";
 
 type Props = {
     category: Category;
+    theme: any;
 };
 
-const CategoryCard: React.FC<Props> = ({category}) => {
+const CategoryCard: React.FC<Props> = ({ category, theme }) => {
     const {user} = useContext(AuthContext);
-    const colorScheme = preferenceStore.get('colorScheme').stringValue;
-    const currentTheme = colorScheme === 'dark' ? CustomDarkTheme : CustomDefaultTheme;
-    const styles = styles_categoryCard(currentTheme);
+    const styles = styles_categoryCard(theme);
     const router = useRouter();
     const valutaPref = preferenceStore.get('valuta')
     const valuta = valutaPref.stringValue

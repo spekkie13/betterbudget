@@ -3,14 +3,12 @@ import { ActivityIndicator, SafeAreaView, ScrollView, Text, TouchableOpacity, Vi
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import {Link, useLocalSearchParams} from 'expo-router';
 
-import Title from '@/app/general/Title';
-import SubTitle from '@/app/general/SubTitle';
-import CustomButton from '@/app/general/CustomButton';
-import ExpenseDetailModal from '@/app/(tabs)/expense/ExpenseDetailModal';
+import Title from '@/app/components/Text/Title';
+import SubTitle from '@/app/components/Text/SubTitle';
+import CustomButton from '@/app/components/UI/CustomButton';
+import ExpenseDetailModal from '@/app/components/ExpenseDetailModal';
 
 import {styles_categoryDetails} from '@/styles/tabs/category/styles_categoryDetails';
-import CustomDarkTheme from '@/theme/CustomDarkTheme';
-import CustomDefaultTheme from '@/theme/CustomDefaultTheme';
 import {AuthContext} from '@/app/ctx';
 import {getCategoryById} from '@/api/CategoryController';
 import {getExpensesByCategoryAndDate} from '@/api/ExpenseController';
@@ -21,16 +19,17 @@ import {Category} from '@/models/category';
 import {Expense} from '@/models/expense';
 import {Result} from '@/models/periodresult';
 import {ConvertToPercentage} from '@/helpers/GeneralHelpers';
-import {UserPreference} from "@/models/userPreference";
 import {preferenceStore} from "@/hooks/preferenceStore";
+import {useThemeContext} from "@/theme/ThemeContext";
 
 const CategoryDetails = (): React.JSX.Element => {
     const {user} = useContext(AuthContext);
     const {CategoryId, Month, Year} = useLocalSearchParams<{ CategoryId: string; Month: string; Year: string; }>();
+    const { currentTheme } = useThemeContext();
+    const styles = styles_categoryDetails(currentTheme);
 
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
-    const [theme, setTheme] = useState("");
     const [category, setCategory] = useState<Category | null>(null);
     const [expenses, setExpenses] = useState<Expense[]>([]);
     const [budgetAmount, setBudgetAmount] = useState<number>(0);
@@ -45,8 +44,6 @@ const CategoryDetails = (): React.JSX.Element => {
                 const parsedYear : number = parseInt(Year)
                 const parsedCategoryId : number = parseInt(CategoryId)
                 const valutaPref = preferenceStore.get('valuta')
-                const themePref : UserPreference = preferenceStore.get('colorscheme')
-                setTheme(themePref.stringValue ?? "dark")
 
                 const [period, cat] = await Promise.all([
                     getPeriodByDate(user.id, new Date(parsedYear, parsedMonth, 1)),
@@ -68,7 +65,6 @@ const CategoryDetails = (): React.JSX.Element => {
                     percentageSpent,
                 }
 
-
                 setCategory(cat);
                 setExpenses(expenses);
                 setBudgetAmount(budget.amount);
@@ -84,9 +80,6 @@ const CategoryDetails = (): React.JSX.Element => {
 
         fetchData();
     }, [user.id, CategoryId, Month, Year])
-
-    const currentTheme = theme === 'dark' ? CustomDarkTheme : CustomDefaultTheme;
-    const styles = styles_categoryDetails(currentTheme);
 
     if (loading) return <ActivityIndicator/>;
     if (error) return <Text style={styles.errorMessage}>{error}</Text>;
@@ -135,11 +128,11 @@ const CategoryDetails = (): React.JSX.Element => {
                 <Link
                     style={styles.touchable}
                     href={{
-                        pathname: '/expense/[categoryId]/[categoryName]',
+                        pathname: '/add/[categoryId]/[categoryName]',
                         params: {categoryId: category.id, categoryName: category.name},
                     }}
                 >
-                    <CustomButton text="Back" color=""/>
+                    <CustomButton text="Back" color="" textColor=""/>
                 </Link>
             </ScrollView>
         </SafeAreaView>

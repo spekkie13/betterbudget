@@ -1,6 +1,6 @@
 import {StyleSheet} from "react-native";
 
-export const styles_customButton = (currentTheme, color) => StyleSheet.create({
+export const styles_customButton = (currentTheme, color, textColor) => StyleSheet.create({
     buttonView: {
         width: 225,
         height: 40,
@@ -11,7 +11,7 @@ export const styles_customButton = (currentTheme, color) => StyleSheet.create({
         marginBottom: 5,
     },
     buttonText: {
-        color: currentTheme.colors.textColor,
+        color: textColor || currentTheme.colors.textColor,
         textAlign: 'center',
         fontWeight: 'bold',
         lineHeight: 40,

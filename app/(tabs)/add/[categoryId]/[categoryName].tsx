@@ -8,10 +8,10 @@ import {styles_expenseMonthSelection} from '@/styles/tabs/expense/styles_expense
 import CustomDarkTheme from '@/theme/CustomDarkTheme';
 import CustomDefaultTheme from '@/theme/CustomDefaultTheme';
 
-import Title from '@/app/general/Title';
-import CustomButton from '@/app/general/CustomButton';
-import CategoryDeleteModal from '@/app/(tabs)/category/CategoryDeleteModal';
-import CategoryEditModal from '@/app/(tabs)/category/CategoryEditModal';
+import Title from '@/app/components/Text/Title';
+import CustomButton from '@/app/components/UI/CustomButton';
+import CategoryDeleteModal from '@/app/components/CategoryDeleteModal';
+import CategoryEditModal from '@/app/components/CategoryEditModal';
 
 import {ConvertMonthToName} from '@/helpers/DateHelpers';
 import {getDistinctPeriods} from '@/api/PeriodController';
@@ -137,7 +137,7 @@ const MonthSelection = () => {
                 </View>
 
                 <Link href="/(tabs)/category">
-                    <CustomButton text="Back" color=""/>
+                    <CustomButton text="Back" color="" textColor=""/>
                 </Link>
             </ScrollView>
         </View>

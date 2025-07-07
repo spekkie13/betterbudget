@@ -11,7 +11,7 @@ export const styles_tabLayout = (theme) => StyleSheet.create({
         borderRadius: 15,
         borderStyle: "solid",
         borderWidth: 1,
-        borderColor: theme.colors.primary,
+        borderColor: theme.colors.borderColor,
         height: 50,
     },
     expenseView: {

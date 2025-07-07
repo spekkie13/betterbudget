@@ -1,27 +1,28 @@
-import {SAVE_PREFERENCES_URL, USER_PREFERENCES_BASE_URL} from '@/constants/apiConstants'
-import {formRequestNoBody, formRequestWithBody} from "@/api/ApiHelpers";
+import {USER_PREFERENCES_BASE_URL} from '@/constants/apiConstants'
+import {formRequestNoBody} from "@/api/ApiHelpers";
 import {UserPreference} from "@/models/userPreference";
 import {Category} from "@/models/category";
+import {preferenceStore} from "@/hooks/preferenceStore";
 
-export async function saveCategorySlots(userId: number, selectedSlots: (Category | null)[]) {
-    const preferences = selectedSlots.map((category, index) => ({
-        name: `Category ${index + 1}`,
-        numberValue: category?.id ?? null
-    }));
+export async function saveCategorySlots(selectedSlots: (Category | null)[]) {
+    const allPrefs = preferenceStore.getAll();
 
-    const body = {
-        userId,
-        preferences
-    };
+    await Promise.all(
+        selectedSlots.map(async (category, index) => {
+            const name = `Category ${index + 1}`;
+            const existingPref = allPrefs.find(p => p.name === name);
 
-    const request = formRequestWithBody(SAVE_PREFERENCES_URL, 'POST', body);
-    const response = await fetch(request);
+            if (!existingPref) {
+                console.warn(`Preference with name ${name} not found`);
+                return;
+            }
 
-    if (!response.ok) {
-        console.log('save preferences failed...')
-    }
-
-    return await response.json();
+            await updateUserPreference(existingPref.id, {
+                id: existingPref.id,
+                numberValue: category?.id ?? null,
+            });
+        })
+    );
 }
 
 export async function getUserPreferences(userId: number) {
@@ -40,28 +41,33 @@ export async function getUserPreferences(userId: number) {
 }
 
 export async function updateUserPreference(id: number, pref: Partial<UserPreference>) {
-    const response = await fetch(`/api/userpreferences?id=${id}`, {
-        method: "PUT",
+    const body = {
+        id,
+        numberValue: pref.numberValue ?? null,
+        stringValue: pref.stringValue ?? null,
+        dateValue: pref.dateValue ?? null,
+    };
+
+    const response = await fetch(`${USER_PREFERENCES_BASE_URL}`, {
+        method: 'PUT',
         headers: {
-            "Content-Type": "application/json",
+            'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-            numberValue: pref.numberValue,
-            stringValue: pref.stringValue,
-            dateValue: pref.dateValue,
-        }),
+        body: JSON.stringify(body),
     });
 
     if (!response.ok) {
+        const errorText = await response.text();
+        console.error('Update failed:', errorText);
         throw new Error(`Failed to update preference with ID ${id}`);
     }
 
     return await response.json();
 }
 
-export async function updateAllUserPreferences(userId: number,  preferences: UserPreference[]){
+export async function updateAllUserPreferences(preferences: UserPreference[]){
     await Promise.all(preferences.map(async (preference) => {
-        await updateUserPreference(userId, preference);
+        await updateUserPreference(preference.id, preference);
     }))
 }
 

@@ -17,20 +17,23 @@ export const styles_home = (theme) => StyleSheet.create({
         borderColor: theme.colors.primary,
         borderRadius: 25,
         marginBottom: 10,
-        backgroundColor: theme.colors.backgroundDark
+        backgroundColor: 'gray'
     },
     headerText: {
         color: theme.colors.textColor,
         paddingTop: 10,
         fontSize: 24,
+        textAlign: 'center',
+        fontFamily: 'Inter-Bold',
         fontWeight: 'bold',
-        textAlign: 'center'
+
     },
     spendingRoomText: {
         fontSize: 24,
-        fontWeight: 'bold',
         marginBottom: 15,
-        textAlign: 'center'
+        textAlign: 'center',
+        fontFamily: 'Inter-Bold',
+        fontWeight: 'bold',
     },
     body: {
         alignItems: 'center',

@@ -2,13 +2,13 @@ import {Href, Tabs, useRouter} from "expo-router";
 import React from "react";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import {Pressable, View} from "react-native";
-import CustomDarkTheme from "@/theme/CustomDarkTheme";
 import {styles_tabLayout} from "@/styles/styles_tabLayout";
+import {useThemeContext} from "@/theme/ThemeContext";
 
 type FontAwesomeIconName = keyof typeof FontAwesome.glyphMap;
 
 export default function TabsLayout() {
-    const currentTheme = CustomDarkTheme;
+    const { currentTheme } = useThemeContext();
     const styles = styles_tabLayout(currentTheme)
     const router = useRouter();
 
@@ -16,7 +16,7 @@ export default function TabsLayout() {
         const iconMap: Record<string, FontAwesomeIconName> = {
             home: "home",
             category: "dashboard",
-            expense: "plus",
+            add: "plus",
             profile: "user",
             settings: "cog",
         };
@@ -26,7 +26,7 @@ export default function TabsLayout() {
     const tabRoutes: Record<string, string> = {
         home: '/home',
         category: '/category',
-        expense: '/expense',
+        add: '/add',
         profile: '/profile',
         settings: '/settings',
     };
@@ -52,7 +52,7 @@ export default function TabsLayout() {
                     />
                 ),
                 tabBarIcon: () => {
-                    if (route.name === "expense") {
+                    if (route.name === "add") {
                         return (
                             <View
                                 style={styles.expenseView}
@@ -79,7 +79,7 @@ export default function TabsLayout() {
         >
             <Tabs.Screen name="home"/>
             <Tabs.Screen name="category"/>
-            <Tabs.Screen name="expense"/>
+            <Tabs.Screen name="add"/>
             <Tabs.Screen name="profile"/>
             <Tabs.Screen name="settings"/>
         </Tabs>

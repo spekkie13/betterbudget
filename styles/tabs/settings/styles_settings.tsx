@@ -9,7 +9,7 @@ export const styles_settings = (theme: any) => StyleSheet.create({
         alignItems: 'center'
     },
     logoutView: {
-        marginTop: 10,
+        marginBottom: 10,
         width: '100%',
         alignItems: 'center',
         justifyContent: 'center',
@@ -18,8 +18,9 @@ export const styles_settings = (theme: any) => StyleSheet.create({
         flexDirection: 'row'
     },
     text: {
-        alignSelf: 'center',
         textAlign: 'right',
+        alignSelf: 'stretch',
+        width: 150,
         paddingRight: Padding_MEDIUM,
         color: theme.colors.textColor
     },

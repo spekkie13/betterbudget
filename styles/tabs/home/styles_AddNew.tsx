@@ -11,6 +11,7 @@ export const styles_AddNew = (theme) => StyleSheet.create({
     addItems: {
         marginLeft: 5,
         marginRight: 5,
+        marginBottom: 10,
     },
     itemView: {
         borderRadius: 10,
@@ -28,7 +29,8 @@ export const styles_AddNew = (theme) => StyleSheet.create({
     item: {
         marginLeft: 5,
         fontSize: 32,
-        color: theme.colors.textColor
+        color: theme.colors.textColor,
+        fontFamily: 'Manrope-Bold',
     },
     touchable: {
         width: '100%',

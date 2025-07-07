@@ -19,15 +19,19 @@ export const styles_categoryCard = (theme) => StyleSheet.create({
     },
     categoryName: {
         fontWeight: 'bold',
+        fontFamily: 'Manrope-Bold',
         color: theme.colors.textColor
     },
     spent: {
         fontStyle: 'italic',
+        fontFamily: 'Manrope-Bold',
         color: theme.colors.textColor,
         paddingBottom: 5
     },
     status: {
-        color: theme.colors.textColor
+        color: theme.colors.textColor,
+        fontFamily: 'Manrope-Bold',
+
     },
     errorText: {
         color: theme.colors.textColor

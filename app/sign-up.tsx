@@ -4,8 +4,8 @@ import {SafeAreaView} from "react-native-safe-area-context"
 import {ActivityIndicator, KeyboardAvoidingView, ScrollView, Text, TouchableOpacity, View } from "react-native"
 
 import {TextInput} from 'react-native-paper'
-import Title from "@/app/general/Title"
-import Logo from "@/app/general/Logo"
+import Title from "@/app/components/Text/Title"
+import Logo from "@/app/components/UI/Logo"
 import {supabase} from '@/lib/supabase'
 import {styles_login} from '@/styles/styles_login'
 import CustomDarkTheme from "@/theme/CustomDarkTheme";
@@ -15,7 +15,7 @@ import {AuthContext} from "@/app/ctx";
 import {genericFailureMessage} from "@/constants/messageConstants";
 import {User} from "@/models/user";
 import {Link} from "expo-router";
-import CustomButton from "@/app/general/CustomButton";
+import CustomButton from "@/app/components/UI/CustomButton";
 import {getTeamById} from "@/api/TeamController";
 import {Team} from "@/models/team";
 import {preferenceStore} from "@/hooks/preferenceStore";
@@ -108,7 +108,7 @@ function Login(): React.JSX.Element {
                                         <TouchableOpacity
                                             onPress={signUp}
                                             style={styles.buttonView}>
-                                            <CustomButton text={'Sign up'} color={''}/>
+                                            <CustomButton text={'Sign up'} color={''} textColor=""/>
                                         </TouchableOpacity>
                                     </View>
                                 </KeyboardAvoidingView>

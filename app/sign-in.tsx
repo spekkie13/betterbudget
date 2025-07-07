@@ -3,15 +3,13 @@ import { useContext, useState } from "react"
 import { SafeAreaView} from "react-native-safe-area-context"
 import { ActivityIndicator, KeyboardAvoidingView, ScrollView, Text, TouchableOpacity, View } from "react-native"
 import { TextInput } from "react-native-paper"
-import Title from "@/app/general/Title"
-import Logo from "@/app/general/Logo"
+import Logo from "@/app/components/UI/Logo"
 import { styles_login } from '@/styles/styles_login'
-import CustomDarkTheme from "@/theme/CustomDarkTheme";
 import { getUser } from "@/api/UserController";
 import { AuthContext } from "@/app/ctx";
 import { Link, router } from 'expo-router'
 import { errorLoginMessage, genericFailureMessage } from "@/constants/messageConstants";
-import CustomButton from "@/app/general/CustomButton";
+import CustomButton from "@/app/components/UI/CustomButton";
 import { supabase } from "@/lib/supabase";
 import { getTeamById } from "@/api/TeamController";
 import { getUserPreferences } from "@/api/PreferenceController";
@@ -19,17 +17,19 @@ import { preferenceStore } from "@/hooks/preferenceStore";
 
 import { Team } from "@/models/team";
 import { User } from "@/models/user";
+import {useThemeContext} from "@/theme/ThemeContext";
 
 function Login(): React.JSX.Element {
     const {login} = useContext(AuthContext)
 
-    const [loading, setLoading] = useState(false)
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const [submissionMessage, setSubmissionMessage] = useState('')
     const [messageVisible, setMessageVisible] = useState(false)
+    const [loading, setLoading] = useState(false)
 
-    const currentTheme = CustomDarkTheme
+    const { currentTheme, refreshTheme } = useThemeContext()
+
     const styles = styles_login(currentTheme)
 
     const signIn = async (): Promise<void> => {
@@ -56,6 +56,7 @@ function Login(): React.JSX.Element {
             login(user, team);
             const preferences = await getUserPreferences(user.id)
             preferenceStore.load(preferences)
+            refreshTheme()
             router.replace("/home/");
         } catch (error) {
             console.log("Something went wrong logging in: ", error);
@@ -76,7 +77,6 @@ function Login(): React.JSX.Element {
     return (
         <SafeAreaView style={styles.safeContainer}>
             <ScrollView contentInsetAdjustmentBehavior="automatic">
-                <Title text={'Better Budget'}/>
                 <Logo/>
                 <View style={styles.container}>
                     {loading ? (
@@ -113,14 +113,13 @@ function Login(): React.JSX.Element {
                                         <TouchableOpacity
                                             onPress={signIn}
                                             style={styles.buttonView}>
-                                            <CustomButton text={'Sign in'} color={''}/>
+                                            <CustomButton text={'Sign in'} color={''} textColor=""/>
                                         </TouchableOpacity>
                                     </View>
                                 </KeyboardAvoidingView>
                                 <View style={styles.signUpView}>
                                     <Link href="/sign-up">
-                                        <Text style={styles.signUpText}>Don't have an account yet? Click here to sign
-                                            up</Text>
+                                        <Text style={styles.signUpText}>Don't have an account yet? Click here to sign up</Text>
                                     </Link>
                                 </View>
                             </View>

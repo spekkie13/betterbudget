@@ -3,13 +3,11 @@ import React, {useContext} from 'react';
 import {AuthContext} from '@/app/ctx';
 import {Link, useRouter} from 'expo-router';
 import {styles_categoryOverview} from '@/styles/tabs/category/styles_categoryOverview';
-import CustomDarkTheme from '@/theme/CustomDarkTheme';
-import CustomDefaultTheme from '@/theme/CustomDefaultTheme';
-import Title from '@/app/general/Title';
-import CustomButton from '@/app/general/CustomButton';
+import Title from '@/app/components/Text/Title';
+import CustomButton from '@/app/components/UI/CustomButton';
 import {useCategories} from "@/hooks/useCategories";
-import CategoriesList from "@/app/(tabs)/category/CategoriesList";
-import {preferenceStore} from "@/hooks/preferenceStore";
+import CategoriesList from "@/app/components/CategoriesList";
+import {useThemeContext} from "@/theme/ThemeContext";
 
 const CategoryOverviewScreen = () => {
     const {user} = useContext(AuthContext);
@@ -17,9 +15,7 @@ const CategoryOverviewScreen = () => {
     const {categories, loading, error} = useCategories({userId: user.id});
     const cardsShown = categories.length
 
-    const colorScheme = preferenceStore.get('colorScheme').stringValue;
-    const currentTheme =
-        colorScheme === 'dark' ? CustomDarkTheme : CustomDefaultTheme;
+    const { currentTheme } = useThemeContext()
     const styles = styles_categoryOverview(currentTheme);
 
     if (!user) {
@@ -35,7 +31,7 @@ const CategoryOverviewScreen = () => {
             <Title text={'Overview'}/>
             <View style={styles.buttonView}>
                 <Link href="/(tabs)/category/AddCategory">
-                    <CustomButton text={'Add Category'} color=""/>
+                    <CustomButton text='Add Category' color="" textColor=""/>
                 </Link>
             </View>
             <ScrollView contentContainerStyle={styles.scrollContainer}>
@@ -44,7 +40,7 @@ const CategoryOverviewScreen = () => {
                         No categories to display.
                     </Text>
                 ) : (
-                    <CategoriesList categories={categories} max={cardsShown}/>
+                    <CategoriesList categories={categories} max={cardsShown} theme={currentTheme}/>
                 )}
             </ScrollView>
         </SafeAreaView>

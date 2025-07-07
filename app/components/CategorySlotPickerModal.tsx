@@ -2,27 +2,20 @@ import React, {useState} from 'react';
 import {FlatList, Modal, Text, TouchableOpacity, View} from 'react-native';
 import CategorySlotPicker, {Category} from './CategorySlotPicker';
 import {saveCategorySlots} from "@/api/PreferenceController";
-import {User} from "@/models/user";
-import CustomDarkTheme from "@/theme/CustomDarkTheme";
-import CustomDefaultTheme from "@/theme/CustomDefaultTheme";
 import {styles_categorySlotPickerModal} from "@/styles/tabs/profile/styles_categorySlotPickerModal";
-import {preferenceStore} from "@/hooks/preferenceStore";
 
 interface Props {
+    theme: any;
     visible: boolean;
-    user: User;
     onClose: () => void;
     categories: Category[];
     selected: (Category | null)[];
     onChange: (updated: (Category | null)[]) => void;
 }
 
-const CategorySlotPickerModal: React.FC<Props> = ({visible, user, onClose, categories, selected, onChange}) => {
+const CategorySlotPickerModal: React.FC<Props> = ({theme, visible, onClose, categories, selected, onChange}) => {
     const [localSelected, setLocalSelected] = useState<(Category | null)[]>(selected);
     const [activeSlot, setActiveSlot] = useState<number | null>(null);
-
-    const colorScheme = preferenceStore.get('colorScheme').stringValue;
-    const theme = colorScheme === "dark" ? CustomDarkTheme : CustomDefaultTheme;
     const styles = styles_categorySlotPickerModal(theme);
 
     const handleSlotPress = (index: number) => {
@@ -38,7 +31,7 @@ const CategorySlotPickerModal: React.FC<Props> = ({visible, user, onClose, categ
     };
 
     const handleSave = async () => {
-        await saveCategorySlots(user.id, localSelected);
+        await saveCategorySlots(localSelected);
         onChange(localSelected);
         onClose();
     };
@@ -50,6 +43,7 @@ const CategorySlotPickerModal: React.FC<Props> = ({visible, user, onClose, categ
                     <Text style={styles.selectText}>Select Categories</Text>
 
                     <CategorySlotPicker
+                        theme={theme}
                         selectedCategories={localSelected}
                         onSlotPress={handleSlotPress}
                     />

@@ -4,9 +4,11 @@ import {styles_logo} from "@/styles/general/styles_logo"
 const Logo = () => {
     return (
         <View style={styles_logo.imgView}>
-            <Image source={{uri: 'https://reactjs.org/logo-og.png'}}
-                   style={styles_logo.img}
-            />
+            <Image
+                source={require('../../../assets/images/Better_Budget_logo.png')}
+                style={styles_logo.imgView}
+                resizeMode="contain"
+                />
         </View>
     )
 }

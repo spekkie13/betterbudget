@@ -1,7 +1,7 @@
 import {Text, TouchableOpacity, View} from 'react-native'
 import {TextInput} from 'react-native-paper'
 import React, {useContext, useEffect, useState} from 'react'
-import Title from '@/app/general/Title'
+import Title from '@/app/components/Text/Title'
 import {createNewExpense} from "@/api/ExpenseController"
 import {Expense} from "@/models/expense"
 import {getCategories} from "@/api/CategoryController"
@@ -13,7 +13,7 @@ import {Link} from "expo-router"
 import CustomDarkTheme from "@/theme/CustomDarkTheme"
 import CustomDefaultTheme from "@/theme/CustomDefaultTheme"
 import {genericFailureMessage, successCreateMessage} from "@/constants/messageConstants";
-import CustomButton from "@/app/general/CustomButton";
+import CustomButton from "@/app/components/UI/CustomButton";
 import {preferenceStore} from "@/hooks/preferenceStore";
 
 const AddExpense = () => {
@@ -164,11 +164,11 @@ const AddExpense = () => {
                         style={styles.buttonView}
                         onPress={AddNewExpense}
                     >
-                        <CustomButton text={'ADD'} color=""/>
+                        <CustomButton text="ADD" color="" textColor=""/>
                     </TouchableOpacity>
                     <View style={styles.backButtonView}>
-                        <Link href={"/(tabs)/expense/"}>
-                            <CustomButton text='Back' color=""/>
+                        <Link href={"/(tabs)/add/"}>
+                            <CustomButton text='Back' color="" textColor=""/>
                         </Link>
                     </View>
                 </View>

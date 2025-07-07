@@ -10,5 +10,7 @@ export const styles_subtitle = (theme) => StyleSheet.create({
     subTitleText: {
         fontSize: 16,
         color: theme.colors.textColor,
+        fontFamily: 'Manrope-Bold',
+        fontWeight: 'bold',
     },
 })

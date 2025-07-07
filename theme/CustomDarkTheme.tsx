@@ -7,11 +7,13 @@ const CustomDarkTheme = {
         background: '#121212',
         backgroundDark: '#191919',
         oppositeColor: '#FFFAFA',
+        titleColor: '#3BA6B0',
         textColor: '#FFFAFA',
         successColor: '#00FF00',
         failureColor: '#DC3545',
         secondary: '#0F203C',
-        tertiary: '#1A375E'
+        tertiary: '#1A375E',
+        borderColor: '#FFFFFF'
     }
 }
 
