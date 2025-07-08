@@ -1,5 +1,5 @@
 import {StyleSheet} from 'react-native'
-import {Padding_LARGE} from "@/constants/UIConstants";
+import {Padding_LARGE} from "@/constants/UIConstants"
 
 export const styles_AddNew = (theme) => StyleSheet.create({
     container: {

@@ -1,18 +1,18 @@
-import React from "react";
-import {View} from "react-native";
-import {Category} from "@/models/category";
-import {LinkedCategoryCard} from "@/app/components/LinkedCategoryCard";
-import {styles_categoriesList} from "@/styles/tabs/category/styles_categoriesList";
+import React from "react"
+import {View} from "react-native"
+import {Category} from "@/models/category"
+import {LinkedCategoryCard} from "@/app/components/UI/Category/LinkedCategoryCard"
+import {styles_categoriesList} from "@/styles/tabs/category/styles_categoriesList"
 
 interface CategoryListProps {
-    theme: any;
-    categories: Category[];
-    max?: number; // optional limit
+    theme: any
+    categories: Category[]
+    max?: number
 }
 
 const CategoryList: React.FC<CategoryListProps> = ({categories, max, theme}) => {
-    const categoriesToRender = max ? categories.slice(0, max) : categories;
-    const pairs: React.JSX.Element[] = [];
+    const categoriesToRender = max ? categories.slice(0, max).sort() : categories
+    const pairs: React.JSX.Element[] = []
 
     for (let i = 0; i < categoriesToRender.length; i += 2) {
         pairs.push(
@@ -29,10 +29,10 @@ const CategoryList: React.FC<CategoryListProps> = ({categories, max, theme}) => 
                     </View>
                 )}
             </View>
-        );
+        )
     }
 
-    return <View>{pairs}</View>;
-};
+    return <View>{pairs}</View>
+}
 
-export default CategoryList;
+export default CategoryList

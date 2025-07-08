@@ -1,54 +1,54 @@
-import { Text, TouchableOpacity, View } from 'react-native';
-import Logo from '@/app/components/UI/Logo';
-import React, { useContext, useMemo, useState } from 'react';
-import Title from '@/app/components/Text/Title';
-import { AuthContext } from '@/app/ctx';
-import { pickerStyles, styles_settings } from '@/styles/tabs/settings/styles_settings';
-import { router } from 'expo-router';
-import RNPickerSelect from 'react-native-picker-select';
-import CustomButton from '@/app/components/UI/CustomButton';
-import { supabase } from "@/lib/supabase";
-import { preferenceStore } from "@/hooks/preferenceStore";
-import { updateAllUserPreferences } from "@/api/PreferenceController";
-import { useThemeContext } from '@/theme/ThemeContext'; // ✅ import context
+import { Text, TouchableOpacity, View } from 'react-native'
+import Logo from '@/app/components/UI/General/Logo'
+import React, { useContext, useMemo, useState } from 'react'
+import Title from '@/app/components/Text/Title'
+import { AuthContext } from '@/app/ctx'
+import { pickerStyles, styles_settings } from '@/styles/tabs/settings/styles_settings'
+import { router } from 'expo-router'
+import RNPickerSelect from 'react-native-picker-select'
+import CustomButton from '@/app/components/UI/General/CustomButton'
+import { supabase } from "@/lib/supabase"
+import { preferenceStore } from "@/hooks/preferenceStore"
+import { updateAllUserPreferences } from "@/api/PreferenceController"
+import { useThemeContext } from '@/theme/ThemeContext'
 
 const Settings = () => {
-    const { logout } = useContext(AuthContext);
-    const { setTheme, currentTheme } = useThemeContext();
+    const { logout } = useContext(AuthContext)
+    const { setTheme, currentTheme } = useThemeContext()
 
-    const [refreshKey, setRefreshKey] = useState(0);
-    const cardsPreference = preferenceStore.get('cards');
-    const valutaPreference = preferenceStore.get('valuta');
-    const themePreference = preferenceStore.get('colorScheme');
+    const [refreshKey, setRefreshKey] = useState(0)
+    const cardsPreference = preferenceStore.get('cards')
+    const valutaPreference = preferenceStore.get('valuta')
+    const themePreference = preferenceStore.get('colorScheme')
 
-    const [cards, setCards] = useState(cardsPreference.numberValue);
-    const [valuta, setValuta] = useState(valutaPreference.stringValue);
-    const [themeSelection, setThemeSelection] = useState(themePreference.stringValue); // ⏳ tijdelijke selectie
+    const [cards, setCards] = useState(cardsPreference.numberValue)
+    const [valuta, setValuta] = useState(valutaPreference.stringValue)
+    const [themeSelection, setThemeSelection] = useState(themePreference.stringValue)
 
-    const styles = useMemo(() => styles_settings(currentTheme), [currentTheme]);
+    const styles = useMemo(() => styles_settings(currentTheme), [currentTheme])
 
     const updatePreferences = async () => {
-        cardsPreference.numberValue = cards;
-        valutaPreference.stringValue = valuta;
-        themePreference.stringValue = themeSelection;
+        cardsPreference.numberValue = cards
+        valutaPreference.stringValue = valuta
+        themePreference.stringValue = themeSelection
 
-        preferenceStore.set(cardsPreference);
-        preferenceStore.set(valutaPreference);
-        preferenceStore.set(themePreference);
+        preferenceStore.set(cardsPreference)
+        preferenceStore.set(valutaPreference)
+        preferenceStore.set(themePreference)
 
         if(themeSelection === 'light' || themeSelection === 'dark') {
-            setTheme(themeSelection); // ✅ update context-theme
+            setTheme(themeSelection)
         }
-        setRefreshKey(prev => prev + 1);
-    };
+        setRefreshKey(prev => prev + 1)
+    }
 
     const SignOut = async () => {
-        await supabase.auth.signOut();
-        await logout();
-        await updateAllUserPreferences(preferenceStore.getAll());
-        preferenceStore.clear();
-        router.replace('/sign-in');
-    };
+        await supabase.auth.signOut()
+        await logout()
+        await updateAllUserPreferences(preferenceStore.getAll())
+        preferenceStore.clear()
+        router.replace('/sign-in')
+    }
 
     return (
         <View key={refreshKey} style={styles.container}>
@@ -96,7 +96,7 @@ const Settings = () => {
                 <CustomButton text='Update Preferences' color='' textColor='#ffffff' />
             </TouchableOpacity>
         </View>
-    );
-};
+    )
+}
 
-export default Settings;
+export default Settings

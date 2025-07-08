@@ -1,62 +1,59 @@
-import React, {useContext, useState} from "react";
-import {Text, TouchableOpacity, View} from "react-native";
-import {TextInput} from "react-native-paper";
-import {Link} from "expo-router";
-import Title from "@/app/components/Text/Title";
-import CustomButton from "@/app/components/UI/CustomButton";
-import {AuthContext} from "@/app/ctx";
-import {genericFailureMessage, successCreateMessage} from "@/constants/messageConstants";
-import {styles_addCategory} from "@/styles/tabs/category/styles_addCategory";
-import CustomDarkTheme from "@/theme/CustomDarkTheme";
-import CustomDefaultTheme from "@/theme/CustomDefaultTheme";
-import {CATEGORY_WITH_BUDGET_BASE_URL} from "@/constants/apiConstants";
-import {getNextPeriod} from "@/api/PeriodController";
-import {checkIfCategoryExists} from "@/api/CategoryController";
-import {preferenceStore} from "@/hooks/preferenceStore";
+import React, {useContext, useState} from "react"
+import {Text, TouchableOpacity, View} from "react-native"
+import {TextInput} from "react-native-paper"
+import {Link} from "expo-router"
+import Title from "@/app/components/Text/Title"
+import CustomButton from "@/app/components/UI/General/CustomButton"
+import {AuthContext} from "@/app/ctx"
+import {genericFailureMessage, successCreateMessage} from "@/constants/messageConstants"
+import {styles_addCategory} from "@/styles/tabs/category/styles_addCategory"
+import {CATEGORY_WITH_BUDGET_BASE_URL} from "@/constants/apiConstants"
+import {getNextPeriod} from "@/api/PeriodController"
+import {checkIfCategoryExists} from "@/api/CategoryController"
+import {useThemeContext} from "@/theme/ThemeContext"
 
 const AddCategory = () => {
-    const [category, setCategory] = useState("");
-    const [budget, setBudget] = useState("");
-    const [successMessage, setSuccessMessage] = useState("");
-    const [errorMessage, setErrorMessage] = useState("");
-    const [showSuccess, setShowSuccess] = useState(false);
-    const [showError, setShowError] = useState(false);
+    const [category, setCategory] = useState("")
+    const [budget, setBudget] = useState("")
+    const [successMessage, setSuccessMessage] = useState("")
+    const [errorMessage, setErrorMessage] = useState("")
+    const [showSuccess, setShowSuccess] = useState(false)
+    const [showError, setShowError] = useState(false)
 
-    const {user} = useContext(AuthContext);
-    const colorScheme = preferenceStore.get('colorScheme').stringValue;
-    const theme = colorScheme === "dark" ? CustomDarkTheme : CustomDefaultTheme;
-    const styles = styles_addCategory(theme);
+    const {user} = useContext(AuthContext)
+    const { currentTheme } = useThemeContext()
+    const styles = styles_addCategory(currentTheme)
 
     const showTemporaryMessage = (type: "success" | "error", message: string) => {
         if (type === "success") {
-            setSuccessMessage(message);
-            setShowSuccess(true);
-            setTimeout(() => setShowSuccess(false), 3000);
+            setSuccessMessage(message)
+            setShowSuccess(true)
+            setTimeout(() => setShowSuccess(false), 3000)
             setCategory('')
             setBudget('')
         } else {
-            setErrorMessage(message);
-            setShowError(true);
-            setTimeout(() => setShowError(false), 3000);
+            setErrorMessage(message)
+            setShowError(true)
+            setTimeout(() => setShowError(false), 3000)
         }
-    };
+    }
 
     const handleAddCategory = async (): Promise<void> => {
         if (!category || !budget) {
-            showTemporaryMessage("error", "Please fill in the required information");
-            return;
+            showTemporaryMessage("error", "Please fill in the required information")
+            return
         }
 
-        const exists = await checkIfCategoryExists(category, user.id);
+        const exists = await checkIfCategoryExists(category, user.id)
         if (exists) {
-            showTemporaryMessage("error", "The category already exists!");
+            showTemporaryMessage("error", "The category already exists!")
         } else {
-            const period = await getNextPeriod();
+            const period = await getNextPeriod()
 
             const payload = {
                 category: {
                     name: category,
-                    color: theme.colors.background,
+                    color: currentTheme.colors.background,
                     icon: "N/A",
                     userId: user.id,
                 },
@@ -71,28 +68,28 @@ const AddCategory = () => {
                     userId: user.id,
                     periodId: period.id,
                 }
-            };
+            }
 
             try {
                 const response = await fetch(`${CATEGORY_WITH_BUDGET_BASE_URL}`, {
                     method: 'POST',
                     headers: {'Content-Type': 'application/json'},
                     body: JSON.stringify(payload),
-                });
+                })
 
                 if (!response.ok) {
                     console.error("Failed to create category and budget")
                 }
 
-                const data = await response.json();
-                console.log(data);
-                showTemporaryMessage("success", successCreateMessage);
+                const data = await response.json()
+                console.log(data)
+                showTemporaryMessage("success", successCreateMessage)
             } catch (error) {
-                console.error("Error in handleAddCategory:", error);
-                showTemporaryMessage("error", genericFailureMessage);
+                console.error("Error in handleAddCategory:", error)
+                showTemporaryMessage("error", genericFailureMessage)
             }
         }
-    };
+    }
 
     return (
         <View style={styles.container}>
@@ -124,7 +121,7 @@ const AddCategory = () => {
                     onChangeText={setBudget}
                     keyboardType="numeric"
                     autoCapitalize="none"
-                    placeholderTextColor={theme.colors.textColor}
+                    placeholderTextColor={currentTheme.colors.textColor}
                 />
             </View>
 
@@ -138,7 +135,7 @@ const AddCategory = () => {
                 </Link>
             </View>
         </View>
-    );
-};
+    )
+}
 
-export default AddCategory;
+export default AddCategory

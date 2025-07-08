@@ -1,62 +1,62 @@
-import {ActivityIndicator, ScrollView, Text, View} from 'react-native';
-import Title from '@/app/components/Text/Title';
-import Logo from '@/app/components/UI/Logo';
-import React, {useCallback, useContext, useState} from 'react';
-import {AuthContext} from "@/app/ctx";
-import CategoryInfoPanel from "@/app/components/CategoryInfoPanel";
-import {Link, router, useFocusEffect} from "expo-router";
-import {genericFailureMessage} from "@/constants/messageConstants";
-import CustomButton from "@/app/components/UI/CustomButton";
-import {styles_home} from "@/styles/styles_home";
-import {determineSpendingRoom} from "@/api/BudgetController";
-import {preferenceStore} from "@/hooks/preferenceStore";
-import { useThemeContext } from '@/theme/ThemeContext';
+import {ActivityIndicator, ScrollView, Text, View} from 'react-native'
+import Title from '@/app/components/Text/Title'
+import Logo from '@/app/components/UI/General/Logo'
+import React, {useCallback, useContext, useState} from 'react'
+import {AuthContext} from "@/app/ctx"
+import CategoryInfoPanel from "@/app/components/UI/Category/CategoryInfoPanel"
+import {Link, router, useFocusEffect} from "expo-router"
+import {genericFailureMessage} from "@/constants/messageConstants"
+import CustomButton from "@/app/components/UI/General/CustomButton"
+import {styles_home} from "@/styles/styles_home"
+import {determineSpendingRoom} from "@/api/BudgetController"
+import {preferenceStore} from "@/hooks/preferenceStore"
+import { useThemeContext } from '@/theme/ThemeContext'
 
 const HomeScreen = () => {
-    const { user } = useContext(AuthContext);
-    const { currentTheme } = useThemeContext();
+    const {user} = useContext(AuthContext)
+    const {currentTheme} = useThemeContext()
+    const styles = styles_home(currentTheme)
 
-    const [loading, setLoading] = useState(false);
-    const [error, setError] = useState(null);
-    const [spendingRoom, setSpendingRoom] = useState(0);
+    const [loading, setLoading] = useState(false)
+    const [error, setError] = useState(null)
+    const [spendingRoom, setSpendingRoom] = useState(0)
 
-    const valuta: string = preferenceStore.get('valuta')?.stringValue ?? "$";
-    const styles = styles_home(currentTheme); // 🎨 gegenereerde styles obv context theme
+    const valuta: string = preferenceStore.get('valuta')?.stringValue ?? "$"
 
     useFocusEffect(
         useCallback((): void => {
             const fetchData = async (): Promise<void> => {
-                setLoading(true);
+                setLoading(true)
                 if (!user) {
-                    router.replace('/sign-in');
-                    return;
+                    router.replace('/sign-in')
+                    return
                 }
                 try {
-                    const sum: number = await determineSpendingRoom(user.id);
-                    setSpendingRoom(sum);
+                    const sum: number = await determineSpendingRoom(user.id)
+                    setSpendingRoom(sum)
                 } catch (err) {
-                    console.log(err);
-                    setError(err);
+                    console.log(err)
+                    setError(err)
                 } finally {
-                    setLoading(false);
+                    setLoading(false)
                 }
-            };
+            }
 
-            fetchData();
+            fetchData()
         }, [user])
-    );
+    )
 
     if (loading)
-        return <ActivityIndicator />;
+        return <ActivityIndicator/>
 
     if (error)
-        return <Text>Error: {genericFailureMessage}</Text>;
+        return <Text>Error: {genericFailureMessage}</Text>
 
     return (
         <ScrollView style={styles.container}>
             <View>
-                <Title text={`Hello ${user?.username}`} />
-                <Logo />
+                <Title text={`Hello ${user?.username}`}/>
+                <Logo/>
             </View>
             <View style={styles.header}>
                 <View style={styles.headerView}>
@@ -80,14 +80,14 @@ const HomeScreen = () => {
             </View>
             <View style={styles.body}>
                 <Link href={'/(tabs)/add/addExpense'}>
-                    <CustomButton text="Add expense" color="" textColor="" />
+                    <CustomButton text="Add expense" color="" textColor=""/>
                 </Link>
             </View>
             <View style={styles.categoryPanel}>
                 <CategoryInfoPanel theme={currentTheme}/>
             </View>
         </ScrollView>
-    );
-};
+    )
+}
 
-export default HomeScreen;
+export default HomeScreen

@@ -1,6 +1,6 @@
 import {Expense} from '@/models/expense'
 import {EXPENSE_BASE_URL} from "@/constants/apiConstants"
-import {formRequestNoBody, formRequestWithBody} from "@/api/ApiHelpers";
+import {formRequestNoBody, formRequestWithBody} from "@/helpers/ApiHelpers"
 
 export async function getExpensesByUser(userId: number): Promise<Expense[]> {
     const url = `${EXPENSE_BASE_URL}?userId=${userId}`

@@ -1,5 +1,5 @@
 import {StyleSheet} from 'react-native'
-import {Padding_EXTRA_LARGE} from "@/constants/UIConstants";
+import {Padding_EXTRA_LARGE} from "@/constants/UIConstants"
 
 export const styles_categoryInfoPanel = (theme : any) => StyleSheet.create({
     container: {

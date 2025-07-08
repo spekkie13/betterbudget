@@ -1,12 +1,9 @@
 import {styles_subtitle} from "@/styles/general/styles_subtitle"
 import {Text, View} from 'react-native'
-import CustomDarkTheme from "@/theme/CustomDarkTheme"
-import CustomDefaultTheme from "@/theme/CustomDefaultTheme"
-import {preferenceStore} from "@/hooks/preferenceStore";
+import {useThemeContext} from "@/theme/ThemeContext"
 
 const SubTitle = ({text}) => {
-    const colorScheme = preferenceStore.get('colorScheme')?.stringValue;
-    const currentTheme = colorScheme === 'dark' ? CustomDarkTheme : CustomDefaultTheme
+    const { currentTheme } = useThemeContext()
     const styles = styles_subtitle(currentTheme)
 
     return (

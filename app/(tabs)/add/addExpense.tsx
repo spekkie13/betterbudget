@@ -10,11 +10,9 @@ import {Category} from "@/models/category"
 import {pickerSelectStyles, styles_AddExpense} from "@/styles/tabs/expense/styles_addExpense"
 import {AuthContext} from "@/app/ctx"
 import {Link} from "expo-router"
-import CustomDarkTheme from "@/theme/CustomDarkTheme"
-import CustomDefaultTheme from "@/theme/CustomDefaultTheme"
-import {genericFailureMessage, successCreateMessage} from "@/constants/messageConstants";
-import CustomButton from "@/app/components/UI/CustomButton";
-import {preferenceStore} from "@/hooks/preferenceStore";
+import {genericFailureMessage, successCreateMessage} from "@/constants/messageConstants"
+import CustomButton from "@/app/components/UI/General/CustomButton"
+import {useThemeContext} from "@/theme/ThemeContext"
 
 const AddExpense = () => {
     const [pickerItems, setPickerItems] = useState([])
@@ -32,8 +30,7 @@ const AddExpense = () => {
 
     const {user} = useContext(AuthContext)
 
-    const colorScheme = preferenceStore.get('colorScheme').stringValue;
-    const currentTheme = colorScheme === 'dark' ? CustomDarkTheme : CustomDefaultTheme
+    const { currentTheme } = useThemeContext()
     const styles = styles_AddExpense(currentTheme)
 
     useEffect(() => {
@@ -54,7 +51,7 @@ const AddExpense = () => {
             ShowErrorMessage("Please fill in the required information")
             return
         } else {
-            const [day, month, year] = date.split("-").map(Number);
+            const [day, month, year] = date.split("-").map(Number)
             const data = {
                 id: 0,
                 description: description,

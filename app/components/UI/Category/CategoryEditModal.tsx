@@ -1,29 +1,25 @@
-import React, {useEffect, useState} from "react";
-import {Modal, Text, TouchableOpacity, View} from "react-native";
-import {styles_categoryEditModal} from "@/styles/tabs/category/styles_categoryEditModal";
-import {getCategories} from "@/api/CategoryController";
-import CustomDarkTheme from "@/theme/CustomDarkTheme";
-import CustomDefaultTheme from "@/theme/CustomDefaultTheme";
-import {preferenceStore} from "@/hooks/preferenceStore";
+import React, {useEffect, useState} from "react"
+import {Modal, Text, TouchableOpacity, View} from "react-native"
+import {styles_categoryEditModal} from "@/styles/tabs/category/styles_categoryEditModal"
+import {getCategories} from "@/api/CategoryController"
+import {useThemeContext} from "@/theme/ThemeContext"
 
 const CategoryEditModal = ({visible, onClose, categoryId}) => {
-    const [category, setCategory] = useState(null);
+    const [category, setCategory] = useState(null)
 
-    const colorScheme = preferenceStore.get('colorScheme').stringValue;
-    const currentTheme =
-        colorScheme === "dark" ? CustomDarkTheme : CustomDefaultTheme;
-    const styles = styles_categoryEditModal(currentTheme);
+    const { currentTheme } = useThemeContext()
+    const styles = styles_categoryEditModal(currentTheme)
 
     useEffect(() => {
         const fetchData = async () => {
-            if (!visible || !categoryId) return;
+            if (!visible || !categoryId) return
 
-            const cat = await getCategories(categoryId);
-            setCategory(cat);
+            const cat = await getCategories(categoryId)
+            setCategory(cat)
         }
 
-        fetchData();
-    }, [visible,  categoryId]);
+        fetchData()
+    }, [visible,  categoryId])
 
     return (
         <Modal
@@ -48,7 +44,7 @@ const CategoryEditModal = ({visible, onClose, categoryId}) => {
                 </View>
             </TouchableOpacity>
         </Modal>
-    );
-};
+    )
+}
 
-export default CategoryEditModal;
+export default CategoryEditModal

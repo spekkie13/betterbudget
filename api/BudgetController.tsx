@@ -1,14 +1,15 @@
 import {PERIOD_BUDGET_BASE_URL} from "@/constants/apiConstants"
 import {Budget} from "@/models/budget"
-import {formRequestNoBody, formRequestWithBody} from "@/api/ApiHelpers";
-import {getIncomes} from "@/api/IncomeController";
-import {getExpensesByUser} from "@/api/ExpenseController";
-import {Income} from "@/models/income";
-import {Expense} from "@/models/expense";
-import {getPeriodByDate} from "@/api/PeriodController";
+import {formRequestNoBody, formRequestWithBody} from "@/helpers/ApiHelpers"
+import {getIncomes} from "@/api/IncomeController"
+import {getExpensesByUser} from "@/api/ExpenseController"
+import {Income} from "@/models/income"
+import {Expense} from "@/models/expense"
+import {getPeriodByDate} from "@/api/PeriodController"
+import {Period} from "@/models/period"
 
 export async function getBudgetByCategoryAndDate(userId: number, categoryId: number, periodId: number): Promise<Budget> {
-    const url = `${PERIOD_BUDGET_BASE_URL}?userId=${userId}&categoryId=${categoryId}&periodId=${periodId}`;
+    const url = `${PERIOD_BUDGET_BASE_URL}?userId=${userId}&categoryId=${categoryId}&periodId=${periodId}`
     const request: RequestInfo = formRequestNoBody(url, 'GET')
 
     try {
@@ -30,7 +31,7 @@ export async function getBudgetByCategoryAndDate(userId: number, categoryId: num
         return new Budget(budgetData)
     } catch (error) {
         console.error('Failed to fetch expenses:', error)
-        throw error // Re-throw the error after logging it
+        throw error
     }
 }
 
@@ -55,39 +56,6 @@ export async function getBudgetByCategory(userId: number, categoryId: number): P
     }
 }
 
-// export async function getMostRecentBudgetByCategory(userId : number, categoryId : number) : Promise<Budget> {
-//     const url = `${PERIOD_BUDGET_BASE_URL}?userId=${userId}&categoryId=${categoryId}/latest`
-//     const request : RequestInfo = formRequestNoBody(url, 'GET')
-//
-//     try {
-//         const response : Response = await fetch(request)
-//         if (!response.ok) {
-//             console.log(`Failed to fetch periodBudget data: ${response.statusText}`)
-//             return Budget.empty()
-//         }
-//
-//         const data = await response.json()
-//         return new Budget(data)
-//     } catch (error) {
-//         console.error('Failed to fetch most recent period budget data:', error)
-//         throw error // Re-throw the error after logging it
-//     }
-// }
-
-// export async function createNewBudget(budgetData: {userId: number, categoryId: number, periodId: number, amount : number}) : Promise<boolean> {
-//     try {
-//         const request : RequestInfo = formRequestWithBody(PERIOD_BUDGET_BASE_URL, 'POST', budgetData)
-//         const response : Response = await fetch(request)
-//         if(response.ok){
-//             return await response.json()
-//         }
-//         return false
-//     }catch(err){
-//         console.log(err)
-//         throw err
-//     }
-// }
-
 export async function updateBudgets(periodBudgets: Budget[], newCategoryId: number): Promise<boolean> {
     try {
         const promises: Promise<Response>[] = periodBudgets.map((obj: Budget) =>
@@ -102,13 +70,13 @@ export async function updateBudgets(periodBudgets: Budget[], newCategoryId: numb
 }
 
 export async function determineSpendingRoom(userId: number): Promise<number> {
-    const mostRecentPeriod = await getPeriodByDate(userId, new Date());
+    const mostRecentPeriod : Period = await getPeriodByDate(userId, new Date())
 
     let incomes : Income[] = await getIncomes(userId)
     let expenses : Expense[] = await getExpensesByUser(userId)
 
-    incomes = incomes.filter((income: Income) => new Date(income.date) > new Date(mostRecentPeriod.startDate))
-    expenses = expenses.filter((expense: Expense) => new Date(expense.date) > new Date(mostRecentPeriod.startDate))
+    incomes = incomes.filter((income: Income) : boolean => new Date(income.date) > new Date(mostRecentPeriod.startDate))
+    expenses = expenses.filter((expense: Expense) : boolean => new Date(expense.date) > new Date(mostRecentPeriod.startDate))
 
     const expenseSum: number = expenses.reduce((sum : number, current : Expense) : number => sum + Number(current.amount), 0)
     const incomeSum: number = incomes.reduce((sum : number, current : Income) : number => sum + Number(current.amount), 0)

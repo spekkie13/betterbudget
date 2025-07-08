@@ -1,40 +1,40 @@
-import React, {useState} from 'react';
-import {FlatList, Modal, Text, TouchableOpacity, View} from 'react-native';
-import CategorySlotPicker, {Category} from './CategorySlotPicker';
-import {saveCategorySlots} from "@/api/PreferenceController";
-import {styles_categorySlotPickerModal} from "@/styles/tabs/profile/styles_categorySlotPickerModal";
+import React, {useState} from 'react'
+import {FlatList, Modal, Text, TouchableOpacity, View} from 'react-native'
+import CategorySlotPicker, {Category} from './CategorySlotPicker'
+import {saveCategorySlots} from "@/api/PreferenceController"
+import {styles_categorySlotPickerModal} from "@/styles/tabs/profile/styles_categorySlotPickerModal"
 
 interface Props {
-    theme: any;
-    visible: boolean;
-    onClose: () => void;
-    categories: Category[];
-    selected: (Category | null)[];
-    onChange: (updated: (Category | null)[]) => void;
+    theme: any
+    visible: boolean
+    onClose: () => void
+    categories: Category[]
+    selected: (Category | null)[]
+    onChange: (updated: (Category | null)[]) => void
 }
 
 const CategorySlotPickerModal: React.FC<Props> = ({theme, visible, onClose, categories, selected, onChange}) => {
-    const [localSelected, setLocalSelected] = useState<(Category | null)[]>(selected);
-    const [activeSlot, setActiveSlot] = useState<number | null>(null);
-    const styles = styles_categorySlotPickerModal(theme);
+    const [localSelected, setLocalSelected] = useState<(Category | null)[]>(selected)
+    const [activeSlot, setActiveSlot] = useState<number | null>(null)
+    const styles = styles_categorySlotPickerModal(theme)
 
     const handleSlotPress = (index: number) => {
-        setActiveSlot(index);
-    };
+        setActiveSlot(index)
+    }
 
     const handleCategorySelect = (category: Category) => {
         if (activeSlot !== null) {
-            const updated = [...localSelected];
-            updated[activeSlot] = category;
-            setLocalSelected(updated);
+            const updated = [...localSelected]
+            updated[activeSlot] = category
+            setLocalSelected(updated)
         }
-    };
+    }
 
     const handleSave = async () => {
-        await saveCategorySlots(localSelected);
-        onChange(localSelected);
-        onClose();
-    };
+        await saveCategorySlots(localSelected)
+        onChange(localSelected)
+        onClose()
+    }
 
     return (
         <Modal visible={visible} transparent animationType="slide">
@@ -77,7 +77,7 @@ const CategorySlotPickerModal: React.FC<Props> = ({theme, visible, onClose, cate
                 </View>
             </View>
         </Modal>
-    );
-};
+    )
+}
 
-export default CategorySlotPickerModal;
+export default CategorySlotPickerModal

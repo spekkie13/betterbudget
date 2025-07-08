@@ -1,6 +1,6 @@
 import {User} from "@/models/user"
 import {USER_BASE_URL} from "@/constants/apiConstants"
-import {formRequestNoBody, formRequestWithBody} from "@/api/ApiHelpers"
+import {formRequestNoBody, formRequestWithBody} from "@/helpers/ApiHelpers"
 
 export async function getUser(email: string): Promise<User> {
     const url = `${USER_BASE_URL}?email=${encodeURIComponent(email)}`

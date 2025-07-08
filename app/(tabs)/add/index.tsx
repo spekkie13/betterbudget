@@ -1,16 +1,16 @@
-import React from "react";
-import {Text, TouchableOpacity, View} from "react-native";
-import {useRouter} from "expo-router";
-import FontAwesome from "@expo/vector-icons/FontAwesome";
+import React from "react"
+import {Text, TouchableOpacity, View} from "react-native"
+import {Router, useRouter} from "expo-router"
+import FontAwesome from "@expo/vector-icons/FontAwesome"
 
-import Title from "@/app/components/Text/Title";
-import {styles_AddNew} from "@/styles/tabs/home/styles_AddNew";
-import {useThemeContext} from "@/theme/ThemeContext";
+import Title from "@/app/components/Text/Title"
+import {styles_AddNew} from "@/styles/tabs/home/styles_AddNew"
+import {useThemeContext} from "@/theme/ThemeContext"
 
 const AddNew = () => {
-    const { currentTheme } = useThemeContext();
-    const styles = styles_AddNew(currentTheme);
-    const router = useRouter();
+    const { currentTheme } = useThemeContext()
+    const styles = styles_AddNew(currentTheme)
+    const router : Router = useRouter()
 
     return (
         <View style={styles.container}>
@@ -37,7 +37,7 @@ const AddNew = () => {
                 </View>
             </View>
         </View>
-    );
-};
+    )
+}
 
-export default AddNew;
+export default AddNew

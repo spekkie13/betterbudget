@@ -1,9 +1,9 @@
 import {Team} from '@/models/team'
 import {TEAM_BASE_URL} from "@/constants/apiConstants"
-import {formRequestNoBody} from "@/api/ApiHelpers";
+import {formRequestNoBody} from "@/helpers/ApiHelpers"
 
 export async function getTeamById(teamId: number): Promise<Team> {
-    const url = `${TEAM_BASE_URL}?teamId=${teamId}`;
+    const url = `${TEAM_BASE_URL}?teamId=${teamId}`
     const request: RequestInfo = formRequestNoBody(url, 'GET')
 
     try {
@@ -28,11 +28,3 @@ export async function getTeamById(teamId: number): Promise<Team> {
         throw error
     }
 }
-
-// export async function updateTeam(teamId: number) {
-//     console.log(teamId)
-// }
-//
-// export async function deleteTeam(teamId: number) {
-//     console.log(teamId)
-// }

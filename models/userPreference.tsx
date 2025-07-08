@@ -1,27 +1,27 @@
 export interface IUserPreference {
-    id: number;
-    name: string;
-    stringValue?: string;
-    numberValue?: number;
-    dateValue?: Date;
-    userId: number;
+    id: number
+    name: string
+    stringValue?: string
+    numberValue?: number
+    dateValue?: Date
+    userId: number
 }
 
 export class UserPreference implements IUserPreference {
-    id: number;
-    name: string;
-    stringValue?: string;
-    numberValue?: number;
-    dateValue?: Date;
-    userId: number;
+    id: number
+    name: string
+    stringValue?: string
+    numberValue?: number
+    dateValue?: Date
+    userId: number
 
     constructor(data: IUserPreference) {
-        this.id = data.id;
-        this.name = data.name;
-        this.stringValue = data.stringValue;
-        this.numberValue = data.numberValue;
-        this.dateValue = data.dateValue;
-        this.userId = data.userId;
+        this.id = data.id
+        this.name = data.name
+        this.stringValue = data.stringValue
+        this.numberValue = data.numberValue
+        this.dateValue = data.dateValue
+        this.userId = data.userId
     }
 
     static empty(): UserPreference {
@@ -34,7 +34,7 @@ export class UserPreference implements IUserPreference {
             userId: 0,
         }
 
-        return new UserPreference(preferenceData);
+        return new UserPreference(preferenceData)
     }
 }
 

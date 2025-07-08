@@ -1,9 +1,9 @@
 import {Result} from "@/models/periodresult"
 import {PERIOD_RESULT_BASE_URL} from "@/constants/apiConstants"
-import {formRequestNoBody} from "@/api/ApiHelpers";
+import {formRequestNoBody} from "@/helpers/ApiHelpers"
 
 export async function getMostRecentResult(userId: number, categoryId: number, periodId: number): Promise<Result> {
-    const url = `${PERIOD_RESULT_BASE_URL}?userId=${userId}&categoryId=${categoryId}&periodId=${periodId}`;
+    const url = `${PERIOD_RESULT_BASE_URL}?userId=${userId}&categoryId=${categoryId}&periodId=${periodId}`
     const request: RequestInfo = formRequestNoBody(url, 'GET')
     try {
         const response = await fetch(request)
@@ -22,6 +22,6 @@ export async function getMostRecentResult(userId: number, categoryId: number, pe
         return new Result(resultData)
     } catch (error) {
         console.error('Failed to fetch recent period data:', error)
-        throw error // Re-throw the error after logging it
+        throw error
     }
 }

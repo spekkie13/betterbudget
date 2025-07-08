@@ -1,4 +1,4 @@
-import {StyleSheet} from "react-native";
+import {StyleSheet} from "react-native"
 
 export const styles_customButton = (currentTheme, color, textColor) => StyleSheet.create({
     buttonView: {

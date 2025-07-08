@@ -1,15 +1,15 @@
 export interface ITeam {
-    id: number;
-    name: string;
+    id: number
+    name: string
 }
 
 export class Team implements ITeam {
-    id: number;
-    name: string;
+    id: number
+    name: string
 
     constructor(data: ITeam) {
-        this.id = data.id;
-        this.name = data.name;
+        this.id = data.id
+        this.name = data.name
     }
 
     static empty(): Team {
@@ -18,6 +18,6 @@ export class Team implements ITeam {
             name: ''
         }
 
-        return new Team(teamData);
+        return new Team(teamData)
     }
 }

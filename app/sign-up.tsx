@@ -5,20 +5,18 @@ import {ActivityIndicator, KeyboardAvoidingView, ScrollView, Text, TouchableOpac
 
 import {TextInput} from 'react-native-paper'
 import Title from "@/app/components/Text/Title"
-import Logo from "@/app/components/UI/Logo"
+import Logo from "@/app/components/UI/General/Logo"
 import {supabase} from '@/lib/supabase'
 import {styles_login} from '@/styles/styles_login'
-import CustomDarkTheme from "@/theme/CustomDarkTheme";
-import CustomDefaultTheme from "@/theme/CustomDefaultTheme";
-import {createNewUser, getUser} from "@/api/UserController";
-import {AuthContext} from "@/app/ctx";
-import {genericFailureMessage} from "@/constants/messageConstants";
-import {User} from "@/models/user";
-import {Link} from "expo-router";
-import CustomButton from "@/app/components/UI/CustomButton";
-import {getTeamById} from "@/api/TeamController";
-import {Team} from "@/models/team";
-import {preferenceStore} from "@/hooks/preferenceStore";
+import {createNewUser, getUser} from "@/api/UserController"
+import {AuthContext} from "@/app/ctx"
+import {genericFailureMessage} from "@/constants/messageConstants"
+import {User} from "@/models/user"
+import {Link} from "expo-router"
+import CustomButton from "@/app/components/UI/General/CustomButton"
+import {getTeamById} from "@/api/TeamController"
+import {Team} from "@/models/team"
+import {useThemeContext} from "@/theme/ThemeContext"
 
 function Login(): React.JSX.Element {
     const [loading, setLoading] = useState(false)
@@ -27,45 +25,43 @@ function Login(): React.JSX.Element {
     const [password, setPassword] = useState('')
     const {login} = useContext(AuthContext)
 
-    const colorScheme = preferenceStore.get('colorScheme').stringValue;
-    const currentTheme = colorScheme === 'dark' ? CustomDarkTheme : CustomDefaultTheme
+    const { currentTheme } = useThemeContext()
     const styles = styles_login(currentTheme)
 
     const signUp = async (): Promise<void> => {
-        setLoading(true);
+        setLoading(true)
         if (!password || !email) {
-            setLoading(false);
-            return;
+            setLoading(false)
+            return
         }
         try {
             const {data, error} = await supabase.auth.signUp({
                 email,
                 password,
-            });
+            })
 
             if (error) {
-                alert('Registration failed: ' + error.message);
-                return;
+                alert('Registration failed: ' + error.message)
+                return
             }
 
-            const user: User = await getUser(data.user?.email);
-            const team: Team = await getTeamById(user.teamId);
-            const success: boolean = await createNewUser(user);
+            const user: User = await getUser(data.user?.email)
+            const team: Team = await getTeamById(user.teamId)
+            const success: boolean = await createNewUser(user)
 
             if (success) {
-                login(user, team);
-                alert('Check your email to confirm your account!');
+                login(user, team)
+                alert('Check your email to confirm your account!')
             } else {
-                alert(genericFailureMessage);
+                alert(genericFailureMessage)
             }
         } catch (e: any) {
-            console.error(e);
-            alert('An unexpected error occurred.');
+            console.error(e)
+            alert('An unexpected error occurred.')
         } finally {
-            setLoading(false);
+            setLoading(false)
         }
-    };
-
+    }
 
     return (
         <SafeAreaView style={styles.safeContainer}>

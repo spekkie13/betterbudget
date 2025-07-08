@@ -1,24 +1,24 @@
-import React, {useContext} from "react";
-import {ActivityIndicator, Text, View} from "react-native";
-import {AuthContext} from "@/app/ctx";
-import {styles_categoryInfoPanel} from "@/styles/tabs/category/styles_categoryInfoPanel";
-import SubTitle from "@/app/components/Text/SubTitle";
-import {useCategories} from "@/hooks/useCategories";
-import CategoriesList from "@/app/components/CategoriesList";
+import React, {useContext} from "react"
+import {ActivityIndicator, Text, View} from "react-native"
+import {AuthContext} from "@/app/ctx"
+import {styles_categoryInfoPanel} from "@/styles/tabs/category/styles_categoryInfoPanel"
+import SubTitle from "@/app/components/Text/SubTitle"
+import {useCategories} from "@/hooks/useCategories"
+import CategoriesList from "@/app/components/UI/Category/CategoriesList"
 
 const CategoryInfoPanel = ({ theme }: { theme: any }) => {
-    const {user} = useContext(AuthContext);
-    const styles = styles_categoryInfoPanel(theme);
+    const {user} = useContext(AuthContext)
+    const styles = styles_categoryInfoPanel(theme)
 
-    const {categories, loading, error, cardsShown} = useCategories({userId: user?.id, selectedOnly: true});
-    const title: string = 'Top ' + cardsShown + ' categories';
+    const {categories, loading, error, cardsShown} = useCategories({userId: user?.id, selectedOnly: true})
+    const title: string = 'Top ' + cardsShown + ' categories'
 
     if (loading) {
         return (
             <View style={styles.container}>
                 <ActivityIndicator/>
             </View>
-        );
+        )
     }
 
     if (error) {
@@ -26,7 +26,7 @@ const CategoryInfoPanel = ({ theme }: { theme: any }) => {
             <View style={styles.container}>
                 <Text style={styles.errorText}>{error}</Text>
             </View>
-        );
+        )
     }
 
     return (
@@ -42,7 +42,7 @@ const CategoryInfoPanel = ({ theme }: { theme: any }) => {
                 )}
             </View>
         </View>
-    );
-};
+    )
+}
 
-export default CategoryInfoPanel;
+export default CategoryInfoPanel

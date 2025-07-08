@@ -1,16 +1,16 @@
-import {Href, Tabs, useRouter} from "expo-router";
-import React from "react";
-import FontAwesome from "@expo/vector-icons/FontAwesome";
-import {Pressable, View} from "react-native";
-import {styles_tabLayout} from "@/styles/styles_tabLayout";
-import {useThemeContext} from "@/theme/ThemeContext";
+import {Href, Tabs, useRouter} from "expo-router"
+import React from "react"
+import FontAwesome from "@expo/vector-icons/FontAwesome"
+import {Pressable, View} from "react-native"
+import {styles_tabLayout} from "@/styles/styles_tabLayout"
+import {useThemeContext} from "@/theme/ThemeContext"
 
-type FontAwesomeIconName = keyof typeof FontAwesome.glyphMap;
+type FontAwesomeIconName = keyof typeof FontAwesome.glyphMap
 
 export default function TabsLayout() {
-    const { currentTheme } = useThemeContext();
+    const { currentTheme } = useThemeContext()
     const styles = styles_tabLayout(currentTheme)
-    const router = useRouter();
+    const router = useRouter()
 
     const getIcon = (name: string): FontAwesomeIconName => {
         const iconMap: Record<string, FontAwesomeIconName> = {
@@ -19,9 +19,9 @@ export default function TabsLayout() {
             add: "plus",
             profile: "user",
             settings: "cog",
-        };
-        return iconMap[name] || "circle";
-    };
+        }
+        return iconMap[name] || "circle"
+    }
 
     const tabRoutes: Record<string, string> = {
         home: '/home',
@@ -29,7 +29,7 @@ export default function TabsLayout() {
         add: '/add',
         profile: '/profile',
         settings: '/settings',
-    };
+    }
 
     return (
         <Tabs
@@ -41,12 +41,12 @@ export default function TabsLayout() {
                         {...props}
                         onPress={(e) => {
                             if (navigation.isFocused()) {
-                                const path = tabRoutes[route.name];
+                                const path = tabRoutes[route.name]
                                 if (path) {
-                                    router.replace({pathname: path} as Href); // ✅ correct type
+                                    router.replace({pathname: path} as Href)
                                 }
                             } else {
-                                props.onPress?.(e);
+                                props.onPress?.(e)
                             }
                         }}
                     />
@@ -63,7 +63,7 @@ export default function TabsLayout() {
                                     size={24}
                                 />
                             </View>
-                        );
+                        )
                     }
                     return (
                         <FontAwesome
@@ -71,7 +71,7 @@ export default function TabsLayout() {
                             color={currentTheme.colors.primary}
                             size={24}
                         />
-                    );
+                    )
                 },
                 tabBarLabel:
                     route.name.charAt(0).toUpperCase() + route.name.slice(1),
@@ -83,5 +83,5 @@ export default function TabsLayout() {
             <Tabs.Screen name="profile"/>
             <Tabs.Screen name="settings"/>
         </Tabs>
-    );
+    )
 }

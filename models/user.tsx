@@ -1,24 +1,24 @@
 export interface IUser {
-    id: number;
-    email: string;
-    username: string;
-    name: string;
-    teamId?: number;
+    id: number
+    email: string
+    username: string
+    name: string
+    teamId?: number
 }
 
 export class User implements IUser {
-    id: number;
-    email: string;
-    username: string;
-    name: string;
-    teamId?: number;
+    id: number
+    email: string
+    username: string
+    name: string
+    teamId?: number
 
     constructor(data: IUser) {
-        this.id = data.id;
-        this.email = data.email;
-        this.username = data.username;
-        this.name = data.name;
-        this.teamId = data.teamId;
+        this.id = data.id
+        this.email = data.email
+        this.username = data.username
+        this.name = data.name
+        this.teamId = data.teamId
     }
 
     static empty(): User {
@@ -30,6 +30,6 @@ export class User implements IUser {
             teamId: 0
         }
 
-        return new User(userData);
+        return new User(userData)
     }
 }

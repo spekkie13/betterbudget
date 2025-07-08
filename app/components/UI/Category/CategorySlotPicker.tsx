@@ -1,28 +1,28 @@
-import React from 'react';
-import {Text, TouchableOpacity, View} from 'react-native';
-import CategoryCard from "@/app/components/CategoryCard";
-import {styles_categorySlotPicker} from "@/styles/tabs/profile/styles_categorySlotPicker";
+import React from 'react'
+import {Text, TouchableOpacity, View} from 'react-native'
+import CategoryCard from "@/app/components/UI/Category/CategoryCard"
+import {styles_categorySlotPicker} from "@/styles/tabs/profile/styles_categorySlotPicker"
 
 export interface Category {
-    id: number;
-    name: string;
-    color: string;
-    icon: string;
-    userId: number;
+    id: number
+    name: string
+    color: string
+    icon: string
+    userId: number
 }
 
 interface CategorySlotPickerProps {
-    theme: any;
-    selectedCategories: (Category | null)[];
-    onSlotPress?: (index: number) => void;
+    theme: any
+    selectedCategories: (Category | null)[]
+    onSlotPress?: (index: number) => void
 }
 
 const CategorySlotPicker: React.FC<CategorySlotPickerProps> = ({selectedCategories, onSlotPress, theme}) => {
-    const rows: (Category | null)[][] = [];
+    const rows: (Category | null)[][] = []
     const styles = styles_categorySlotPicker(theme)
 
     for (let i = 0; i < selectedCategories.length; i += 2) {
-        rows.push(selectedCategories.slice(i, i + 2));
+        rows.push(selectedCategories.slice(i, i + 2))
     }
 
     return (
@@ -44,12 +44,12 @@ const CategorySlotPicker: React.FC<CategorySlotPickerProps> = ({selectedCategori
                                     <Text style={styles.emptyCard}>-</Text>
                                 )}
                             </TouchableOpacity>
-                        );
+                        )
                     })}
                 </View>
             ))}
         </View>
-    );
-};
+    )
+}
 
 export default CategorySlotPicker;

@@ -1,30 +1,30 @@
-import {ActivityIndicator, SafeAreaView, ScrollView, Text, View,} from 'react-native';
-import React, {useContext} from 'react';
-import {AuthContext} from '@/app/ctx';
-import {Link, useRouter} from 'expo-router';
-import {styles_categoryOverview} from '@/styles/tabs/category/styles_categoryOverview';
-import Title from '@/app/components/Text/Title';
-import CustomButton from '@/app/components/UI/CustomButton';
-import {useCategories} from "@/hooks/useCategories";
-import CategoriesList from "@/app/components/CategoriesList";
-import {useThemeContext} from "@/theme/ThemeContext";
+import {ActivityIndicator, SafeAreaView, ScrollView, Text, View,} from 'react-native'
+import React, {useContext} from 'react'
+import {AuthContext} from '@/app/ctx'
+import {Link, useRouter} from 'expo-router'
+import {styles_categoryOverview} from '@/styles/tabs/category/styles_categoryOverview'
+import Title from '@/app/components/Text/Title'
+import CustomButton from '@/app/components/UI/General/CustomButton'
+import {useCategories} from "@/hooks/useCategories"
+import CategoriesList from "@/app/components/UI/Category/CategoriesList"
+import {useThemeContext} from "@/theme/ThemeContext"
 
 const CategoryOverviewScreen = () => {
-    const {user} = useContext(AuthContext);
-    const router = useRouter();
-    const {categories, loading, error} = useCategories({userId: user.id});
+    const {user} = useContext(AuthContext)
+    const router = useRouter()
+    const {categories, loading, error} = useCategories({userId: user.id})
     const cardsShown = categories.length
 
     const { currentTheme } = useThemeContext()
-    const styles = styles_categoryOverview(currentTheme);
+    const styles = styles_categoryOverview(currentTheme)
 
     if (!user) {
         router.replace('/')
-        return;
+        return
     }
 
-    if (loading) return <ActivityIndicator/>;
-    if (error) return <Text>{error}</Text>;
+    if (loading) return <ActivityIndicator/>
+    if (error) return <Text>{error}</Text>
 
     return (
         <SafeAreaView style={styles.container}>
@@ -44,7 +44,7 @@ const CategoryOverviewScreen = () => {
                 )}
             </ScrollView>
         </SafeAreaView>
-    );
-};
+    )
+}
 
-export default CategoryOverviewScreen;
+export default CategoryOverviewScreen

@@ -1,31 +1,31 @@
-import {UserPreference} from "@/models/userPreference";
+import {UserPreference} from "@/models/userPreference"
 
 export class PreferenceStore {
-    private preferences: UserPreference[] = [];
+    private preferences: UserPreference[] = []
 
     load(preferences: UserPreference[]) {
-        this.preferences = preferences;
+        this.preferences = preferences
     }
 
     get(key: string): UserPreference {
-        return this.preferences.find((p) => p.name.toLowerCase() === key.toLowerCase());
+        return this.preferences.find((p) => p.name.toLowerCase() === key.toLowerCase())
     }
 
     nameContains(key: string): UserPreference[] {
-        return this.preferences.filter((p) => p.name.toLowerCase().includes(key.toLowerCase()));
+        return this.preferences.filter((p) => p.name.toLowerCase().includes(key.toLowerCase()))
     }
 
     set(value: UserPreference) {
-        this.preferences.push(value);
+        this.preferences.push(value)
     }
 
     getAll(): UserPreference[] {
-        return this.preferences;
+        return this.preferences
     }
 
     clear() {
-        this.preferences = [];
+        this.preferences = []
     }
 }
 
-export const preferenceStore = new PreferenceStore();
+export const preferenceStore = new PreferenceStore()

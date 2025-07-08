@@ -3,21 +3,22 @@ import { useContext, useState } from "react"
 import { SafeAreaView} from "react-native-safe-area-context"
 import { ActivityIndicator, KeyboardAvoidingView, ScrollView, Text, TouchableOpacity, View } from "react-native"
 import { TextInput } from "react-native-paper"
-import Logo from "@/app/components/UI/Logo"
+import Logo from "@/app/components/UI/General/Logo"
 import { styles_login } from '@/styles/styles_login'
-import { getUser } from "@/api/UserController";
-import { AuthContext } from "@/app/ctx";
+import { getUser } from "@/api/UserController"
+import { AuthContext } from "@/app/ctx"
 import { Link, router } from 'expo-router'
-import { errorLoginMessage, genericFailureMessage } from "@/constants/messageConstants";
-import CustomButton from "@/app/components/UI/CustomButton";
-import { supabase } from "@/lib/supabase";
-import { getTeamById } from "@/api/TeamController";
-import { getUserPreferences } from "@/api/PreferenceController";
-import { preferenceStore } from "@/hooks/preferenceStore";
+import { errorLoginMessage, genericFailureMessage } from "@/constants/messageConstants"
+import CustomButton from "@/app/components/UI/General/CustomButton"
+import { supabase } from "@/lib/supabase"
+import { getTeamById } from "@/api/TeamController"
+import { getUserPreferences } from "@/api/PreferenceController"
+import { preferenceStore } from "@/hooks/preferenceStore"
 
-import { Team } from "@/models/team";
-import { User } from "@/models/user";
-import {useThemeContext} from "@/theme/ThemeContext";
+import { Team } from "@/models/team"
+import { User } from "@/models/user"
+import {useThemeContext} from "@/theme/ThemeContext"
+import {UserPreference} from "@/models/userPreference"
 
 function Login(): React.JSX.Element {
     const {login} = useContext(AuthContext)
@@ -33,38 +34,38 @@ function Login(): React.JSX.Element {
     const styles = styles_login(currentTheme)
 
     const signIn = async (): Promise<void> => {
-        setLoading(true);
+        setLoading(true)
         if (!password || !email) {
-            setLoading(false);
-            ShowMessage(errorLoginMessage);
-            return;
+            setLoading(false)
+            ShowMessage(errorLoginMessage)
+            return
         }
 
         try {
             const {data, error} = await supabase.auth.signUp({
                 email: email,
                 password: password,
-            });
+            })
 
             if (error || !data.user) {
-                ShowMessage(errorLoginMessage);
-                return;
+                ShowMessage(errorLoginMessage)
+                return
             }
 
-            const user : User = await getUser(data.user.email);
+            const user : User = await getUser(data.user.email)
             const team : Team = await getTeamById(user.teamId)
-            login(user, team);
-            const preferences = await getUserPreferences(user.id)
+            login(user, team)
+            const preferences : UserPreference[] = await getUserPreferences(user.id)
             preferenceStore.load(preferences)
             refreshTheme()
-            router.replace("/home/");
+            router.replace("/home/")
         } catch (error) {
-            console.log("Something went wrong logging in: ", error);
-            alert(genericFailureMessage);
+            console.log("Something went wrong logging in: ", error)
+            alert(genericFailureMessage)
         } finally {
-            setLoading(false);
+            setLoading(false)
         }
-    };
+    }
 
     const ShowMessage = (message: string) => {
         setSubmissionMessage(message)
