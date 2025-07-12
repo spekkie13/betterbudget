@@ -10,7 +10,7 @@
     "web": "expo start --web",
     "test": "jest --watchAll",
     "lint": "expo lint",
-    "build": "expo export --platform web"
+    "build": "expo export --platform web --output-dir dist"
   },
   "jest": {
     "preset": "jest-expo"
