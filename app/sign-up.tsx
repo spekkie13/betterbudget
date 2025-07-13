@@ -8,13 +8,12 @@ import Title from "@/app/components/Text/Title"
 import Logo from "@/app/components/UI/General/Logo"
 import {supabase} from '@/lib/supabase'
 import {styles_login} from '@/styles/styles_login'
-import {createNewUser, getUser} from "@/api/UserController"
+import {createNewUser} from "@/api/UserController"
 import {AuthContext} from "@/app/ctx"
 import {genericFailureMessage} from "@/constants/messageConstants"
 import {User} from "@/models/user"
 import {Link} from "expo-router"
 import CustomButton from "@/app/components/UI/General/CustomButton"
-import {getTeamById} from "@/api/TeamController"
 import {Team} from "@/models/team"
 import {useThemeContext} from "@/theme/ThemeContext"
 
@@ -30,24 +29,35 @@ function Login(): React.JSX.Element {
 
     const signUp = async (): Promise<void> => {
         setLoading(true)
-        if (!password || !email) {
+        if (!password || !email || !username) {
             setLoading(false)
             return
         }
         try {
+            console.log(email)
+            console.log(password)
+            console.log(username)
+
             const {data, error} = await supabase.auth.signUp({
                 email,
                 password,
             })
+            console.log(data)
 
             if (error) {
                 alert('Registration failed: ' + error.message)
                 return
             }
 
-            const user: User = await getUser(data.user?.email)
-            const team: Team = await getTeamById(user.teamId)
+            // const user: User = await getUser(data.user?.email)
+            const user: User = User.empty()
+            user.email = email
+            user.username = username
+
+            // const team: Team = await getTeamById(user.teamId)
+            const team: Team = Team.empty()
             const success: boolean = await createNewUser(user)
+            console.log(success)
 
             if (success) {
                 login(user, team)
