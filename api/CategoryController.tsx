@@ -28,12 +28,9 @@ export async function getCategories(userId: number): Promise<Category[]> {
     })
 }
 
-export async function getSelectedCategories(userId: number): Promise<Category[]> {
-    const cardsPref : UserPreference = preferenceStore.get('cards')
-    const cards : number = cardsPref.numberValue
-
+export async function getSelectedCategories(userId: number, cardsShown: number): Promise<Category[]> {
     let userPreferences : UserPreference[] = preferenceStore.nameContains('category')
-        .slice(0, cards)
+        .slice(0, cardsShown)
 
     const fetchPromises : Promise<Category>[] = userPreferences.map((pref : UserPreference) : Promise<Category> =>
         getCategoryById(userId, pref.numberValue)

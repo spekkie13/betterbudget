@@ -32,14 +32,15 @@ export async function getUser(email: string): Promise<User> {
     }
 }
 
-export async function createNewUser(user: User): Promise<boolean> {
+export async function createNewUser(user: User): Promise<User> {
     const request: RequestInfo = formRequestWithBody(USER_BASE_URL, 'POST', user)
 
     try {
         const response: Response = await fetch(request)
-        return response.ok
+        const userData = await response.json()
+        return new User(userData)
     } catch (error) {
         console.error("insertUser error:", error)
-        return false
+        return User.empty()
     }
 }

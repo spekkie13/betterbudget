@@ -27,5 +27,8 @@ export const styles_categoryInfoPanel = (theme : any) => StyleSheet.create({
         marginRight: 5,
         paddingTop: 5
     },
-    notFoundText: {color: "#ccc", marginTop: 10}
+    notFoundText: {
+        color: "#ccc",
+        marginTop: 10
+    }
 })

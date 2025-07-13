@@ -1,7 +1,2 @@
 TO DO:
--> update preferences not working (id 17 = cards)
--> Make sure the categories selected in the profile tab actually get displayed on the home screen
-
--> Group Async/Await calls as much as possible
--> Unify handling decimal place separator comma doesn't work but a dot does
--> Add page to add/edit category budgets
+-> create new Theme & Valuta preference for new signup users

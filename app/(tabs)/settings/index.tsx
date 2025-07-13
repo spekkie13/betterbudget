@@ -21,7 +21,7 @@ const Settings = () => {
     const valutaPreference = preferenceStore.get('valuta')
     const themePreference = preferenceStore.get('colorScheme')
 
-    const [cards, setCards] = useState(cardsPreference.numberValue)
+    const [cards, setCards] = useState(cardsPreference?.numberValue ?? 0)
     const [valuta, setValuta] = useState(valutaPreference.stringValue)
     const [themeSelection, setThemeSelection] = useState(themePreference.stringValue)
 

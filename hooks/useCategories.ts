@@ -21,7 +21,7 @@ export const useCategories = ({userId, selectedOnly = false}: UseCategoriesOptio
                     return
                 }
                 if (selectedOnly) {
-                    const selected = await getSelectedCategories(userId)
+                    const selected = await getSelectedCategories(userId, cardsShown)
                     setCategories(selected)
                 } else {
                     const all = await getCategories(userId)

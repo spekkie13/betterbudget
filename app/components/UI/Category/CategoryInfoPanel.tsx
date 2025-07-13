@@ -10,7 +10,11 @@ const CategoryInfoPanel = ({ theme }: { theme: any }) => {
     const {user} = useContext(AuthContext)
     const styles = styles_categoryInfoPanel(theme)
 
-    const {categories, loading, error, cardsShown} = useCategories({userId: user?.id, selectedOnly: true})
+    let {categories, loading, error, cardsShown} = useCategories({userId: user?.id, selectedOnly: true})
+    if (cardsShown === undefined) {
+        cardsShown = 0
+    }
+
     const title: string = 'Top ' + cardsShown + ' categories'
 
     if (loading) {

@@ -12,56 +12,68 @@ import {createNewUser} from "@/api/UserController"
 import {AuthContext} from "@/app/ctx"
 import {genericFailureMessage} from "@/constants/messageConstants"
 import {User} from "@/models/user"
-import {Link} from "expo-router"
+import {Link, router} from "expo-router"
 import CustomButton from "@/app/components/UI/General/CustomButton"
 import {Team} from "@/models/team"
 import {useThemeContext} from "@/theme/ThemeContext"
+import {setupNewUserPrefs} from "@/api/PreferenceController";
 
 function Login(): React.JSX.Element {
     const [loading, setLoading] = useState(false)
+    const [name, setName] = useState('')
     const [username, setUsername] = useState('')
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
+    const [submissionMessage, setSubmissionMessage] = useState('')
+    const [messageVisible, setMessageVisible] = useState(false)
+
     const {login} = useContext(AuthContext)
 
     const { currentTheme } = useThemeContext()
     const styles = styles_login(currentTheme)
 
+    const ShowMessage = (message: string) => {
+        setSubmissionMessage(message)
+        setMessageVisible(true)
+        setTimeout(() => {
+            setMessageVisible(false)
+        }, 3000)
+    }
+
     const signUp = async (): Promise<void> => {
         setLoading(true)
-        if (!password || !email || !username) {
+        if (!name || !username || !email || !password) {
             setLoading(false)
             return
         }
         try {
-            console.log(email)
-            console.log(password)
-            console.log(username)
-
             const {data, error} = await supabase.auth.signUp({
                 email,
                 password,
             })
-            console.log(data)
 
             if (error) {
                 alert('Registration failed: ' + error.message)
                 return
             }
 
-            // const user: User = await getUser(data.user?.email)
             const user: User = User.empty()
-            user.email = email
+            user.name = name
             user.username = username
+            user.email = data.user.email
 
-            // const team: Team = await getTeamById(user.teamId)
             const team: Team = Team.empty()
-            const success: boolean = await createNewUser(user)
-            console.log(success)
+            const dbUser : User = await createNewUser(user)
 
-            if (success) {
-                login(user, team)
-                alert('Check your email to confirm your account!')
+            if (dbUser.name !== '') {
+                login(dbUser, team)
+                await setupNewUserPrefs(dbUser.id)
+                ShowMessage('Successfully registered user')
+                setName('')
+                setEmail('')
+                setUsername('')
+                setPassword('')
+                router.replace('/sign-in')
             } else {
                 alert(genericFailureMessage)
             }
@@ -85,7 +97,22 @@ function Login(): React.JSX.Element {
                         <View>
                             <View style={styles.messageView}>
                                 <Text style={styles.signInText}>Sign up</Text>
+                                {messageVisible && (
+                                    <View>
+                                        <Text style={styles.submissionText}>
+                                            {submissionMessage}
+                                        </Text>
+                                    </View>
+                                )}
                                 <KeyboardAvoidingView behavior={'padding'}>
+                                    <TextInput
+                                        style={styles.input}
+                                        value={name}
+                                        onChangeText={setName}
+                                        autoCapitalize="none"
+                                        keyboardType="email-address"
+                                        label='Name'
+                                        placeholderTextColor={currentTheme.colors.textColor}/>
                                     <TextInput
                                         style={styles.input}
                                         value={username}

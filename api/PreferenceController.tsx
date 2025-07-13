@@ -1,8 +1,25 @@
 import {USER_PREFERENCES_BASE_URL} from '@/constants/apiConstants'
-import {formRequestNoBody} from "@/helpers/ApiHelpers"
-import {UserPreference} from "@/models/userPreference"
+import {formRequestNoBody, formRequestWithBody} from "@/helpers/ApiHelpers"
+import {IUserPreference, UserPreference} from "@/models/userPreference"
 import {Category} from "@/models/category"
 import {preferenceStore} from "@/hooks/preferenceStore"
+import {createDefaultPreferences} from "@/helpers/PreferenceHelpers";
+
+export async function setupNewUserPrefs(userId: number): Promise<void> {
+    const preferences : IUserPreference[] = createDefaultPreferences(userId)
+
+    await Promise.all(
+        preferences.map(async (pref) => {
+            const request : Request = formRequestWithBody(USER_PREFERENCES_BASE_URL, 'POST', pref)
+            const response : Response = await fetch(request)
+
+            if (!response.ok) {
+                console.error(`Failed to save preference ${pref.name}`, await response.text())
+                throw new Error(`Failed to save preference ${pref.name}`)
+            }
+        })
+    )
+}
 
 export async function saveCategorySlots(selectedSlots: (Category | null)[]) {
     const allPrefs = preferenceStore.getAll()

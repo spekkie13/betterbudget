@@ -46,6 +46,7 @@ function Login(): React.JSX.Element {
                 email: email,
                 password: password,
             })
+            console.log(data)
 
             if (error || !data.user) {
                 ShowMessage(errorLoginMessage)
@@ -53,7 +54,12 @@ function Login(): React.JSX.Element {
             }
 
             const user : User = await getUser(data.user.email)
-            const team : Team = await getTeamById(user.teamId)
+            let team : Team
+            if (user.teamId){
+                team = await getTeamById(user.teamId)
+            }else{
+                team = Team.empty()
+            }
             login(user, team)
             const preferences : UserPreference[] = await getUserPreferences(user.id)
             preferenceStore.load(preferences)
