@@ -1,4 +1,4 @@
-import {UserPreference} from "@/models/userPreference"
+import {UserPreference} from "@/models/preference"
 
 export class PreferenceStore {
     private preferences: UserPreference[] = []
@@ -16,7 +16,13 @@ export class PreferenceStore {
     }
 
     set(value: UserPreference) {
-        this.preferences.push(value)
+        const index = this.preferences.findIndex(p => p.id === value.id)
+
+        if (index !== -1) {
+            this.preferences[index] = value // update bestaande preference
+        } else {
+            this.preferences.push(value) // voeg nieuwe toe
+        }
     }
 
     getAll(): UserPreference[] {

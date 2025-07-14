@@ -1,2 +1,5 @@
 TO DO:
--> create new Theme & Valuta preference for new signup users
+-> update status for category cards upon expense creation
+   => spent
+   => percentage spent
+   => starting amount for spending room

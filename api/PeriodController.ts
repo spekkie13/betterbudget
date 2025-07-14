@@ -49,7 +49,6 @@ export async function getNextPeriod() {
     const startDate = new Date(Date.UTC(startYear, startMonth, 1))
     const endDate = new Date(Date.UTC(startYear, startMonth + 1, 0)) // last day of the month
 
-    console.log(startDate)
     const response = await fetch(`${FIND_OR_CREATE_PERIOD_BASE_URL}`, {
         method: 'POST',
         headers: {

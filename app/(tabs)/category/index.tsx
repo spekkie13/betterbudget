@@ -1,5 +1,6 @@
 import {ActivityIndicator, SafeAreaView, ScrollView, Text, View,} from 'react-native'
-import React, {useContext} from 'react'
+import React, {useCallback, useContext, useState} from 'react'
+import { useFocusEffect } from '@react-navigation/native'
 import {AuthContext} from '@/app/ctx'
 import {Link, useRouter} from 'expo-router'
 import {styles_categoryOverview} from '@/styles/tabs/category/styles_categoryOverview'
@@ -12,7 +13,16 @@ import {useThemeContext} from "@/theme/ThemeContext"
 const CategoryOverviewScreen = () => {
     const {user} = useContext(AuthContext)
     const router = useRouter()
-    const {categories, loading, error} = useCategories({userId: user.id})
+
+    const [refreshKey, setRefreshKey] = useState(0)
+
+    useFocusEffect(
+        useCallback(() => {
+            setRefreshKey(prev => prev + 1)
+        }, [])
+    )
+
+    const {categories, loading, error} = useCategories({userId: user.id, refreshTrigger: refreshKey})
     const cardsShown = categories.length
 
     const { currentTheme } = useThemeContext()

@@ -19,7 +19,6 @@ export const ThemeProvider = ({ children }: { children: ReactNode }) => {
         const stored = preferenceStore.get("colorScheme")?.stringValue
         if (stored === "dark" || stored === "light") {
             setThemeState(stored)
-            console.log('Set theme to:', stored)
         }
     }, [])
 

@@ -11,5 +11,4 @@ export const FIND_OR_CREATE_PERIOD_BASE_URL = `${DATE_BASE_URL}/find-or-create`
 export const USER_BASE_URL = `${API_BASE_URL}/users`
 export const TEAM_BASE_URL = `${API_BASE_URL}/teams`
 export const USER_PREFERENCES_BASE_URL = `${API_BASE_URL}/preferences`
-export const SAVE_PREFERENCES_URL = `${USER_PREFERENCES_BASE_URL}/saveCategorySlots`
 

@@ -18,7 +18,7 @@ import { preferenceStore } from "@/hooks/preferenceStore"
 import { Team } from "@/models/team"
 import { User } from "@/models/user"
 import {useThemeContext} from "@/theme/ThemeContext"
-import {UserPreference} from "@/models/userPreference"
+import {UserPreference} from "@/models/preference"
 
 function Login(): React.JSX.Element {
     const {login} = useContext(AuthContext)
@@ -46,7 +46,6 @@ function Login(): React.JSX.Element {
                 email: email,
                 password: password,
             })
-            console.log(data)
 
             if (error || !data.user) {
                 ShowMessage(errorLoginMessage)

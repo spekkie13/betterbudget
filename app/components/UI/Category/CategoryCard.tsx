@@ -43,7 +43,6 @@ const CategoryCard: React.FC<Props> = ({ category, theme }) => {
                     router.replace('/')
                     return
                 }
-                console.log(category)
 
                 const period = await getMostRecentPeriod(user.id, category.id)
 

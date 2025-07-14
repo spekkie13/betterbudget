@@ -1,7 +1,7 @@
 import {Category} from "@/models/category"
 import {CATEGORY_BASE_URL, CATEGORY_EXISTS_URL} from "@/constants/apiConstants"
 import {formRequestNoBody,} from "@/helpers/ApiHelpers"
-import {UserPreference} from "@/models/userPreference"
+import {UserPreference} from "@/models/preference"
 import {preferenceStore} from "@/hooks/preferenceStore"
 
 export async function getCategories(userId: number): Promise<Category[]> {

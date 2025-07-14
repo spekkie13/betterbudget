@@ -1,6 +1,6 @@
 import {USER_PREFERENCES_BASE_URL} from '@/constants/apiConstants'
 import {formRequestNoBody, formRequestWithBody} from "@/helpers/ApiHelpers"
-import {IUserPreference, UserPreference} from "@/models/userPreference"
+import {IUserPreference, UserPreference} from "@/models/preference"
 import {Category} from "@/models/category"
 import {preferenceStore} from "@/hooks/preferenceStore"
 import {createDefaultPreferences} from "@/helpers/PreferenceHelpers";
@@ -36,8 +36,19 @@ export async function saveCategorySlots(selectedSlots: (Category | null)[]) {
 
             await updateUserPreference(existingPref.id, {
                 id: existingPref.id,
+                name: name ?? "",
+                userId: existingPref.userId ?? 0,
                 numberValue: category?.id ?? null,
             })
+
+            const newPref = {
+                ...existingPref,
+                name: name ?? "",
+                userId: existingPref.userId ?? 0,
+                numberValue: category?.id ?? null,
+            }
+            preferenceStore.set(newPref)
+            console.log(preferenceStore.nameContains('category'))
         })
     )
 }
@@ -60,18 +71,15 @@ export async function getUserPreferences(userId: number) {
 export async function updateUserPreference(id: number, pref: Partial<UserPreference>) {
     const body = {
         id,
+        name: pref.name,
         numberValue: pref.numberValue ?? null,
         stringValue: pref.stringValue ?? null,
         dateValue: pref.dateValue ?? null,
+        userId: pref.userId ?? 0,
     }
 
-    const response = await fetch(`${USER_PREFERENCES_BASE_URL}`, {
-        method: 'PUT',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(body),
-    })
+    const request = formRequestWithBody(USER_PREFERENCES_BASE_URL, 'PUT', body)
+    const response = await fetch(request)
 
     if (!response.ok) {
         const errorText = await response.text()

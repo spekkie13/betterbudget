@@ -6,13 +6,15 @@ import {preferenceStore} from "@/hooks/preferenceStore"
 type UseCategoriesOptions = {
     userId: number
     selectedOnly?: boolean
+    refreshTrigger?: any
 }
 
-export const useCategories = ({userId, selectedOnly = false}: UseCategoriesOptions) => {
+export const useCategories = ({userId, selectedOnly = false, refreshTrigger }: UseCategoriesOptions) => {
     const [categories, setCategories] = useState<Category[]>([])
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState<string | null>(null)
     const cardsShown = preferenceStore.get('cards')?.numberValue
+    const categoryPreferences = preferenceStore.nameContains('category').length > 0
 
     useEffect(() => {
         const fetchData = async () => {
@@ -20,7 +22,7 @@ export const useCategories = ({userId, selectedOnly = false}: UseCategoriesOptio
                 if (userId === undefined) {
                     return
                 }
-                if (selectedOnly) {
+                if (selectedOnly && categoryPreferences) {
                     const selected = await getSelectedCategories(userId, cardsShown)
                     setCategories(selected)
                 } else {
@@ -36,7 +38,7 @@ export const useCategories = ({userId, selectedOnly = false}: UseCategoriesOptio
         }
 
         fetchData()
-    }, [userId, selectedOnly])
+    }, [userId, selectedOnly, refreshTrigger])
 
     return {categories, loading, error, cardsShown}
 }
