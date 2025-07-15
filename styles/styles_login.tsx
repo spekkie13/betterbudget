@@ -3,7 +3,7 @@ import {StyleSheet} from 'react-native'
 export const styles_login = (theme) => StyleSheet.create({
     safeContainer: {
         backgroundColor: theme.colors.background,
-        alignItems: "center",
+        alignItems: 'center',
         flex: 1
     },
     activityIndicator: {
@@ -14,20 +14,6 @@ export const styles_login = (theme) => StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         backgroundColor: theme.colors.background,
-    },
-    input: {
-        marginVertical: 4,
-        height: 50,
-        borderWidth: 1,
-        borderRadius: 4,
-        backgroundColor: theme.colors.oppositeColor,
-        borderColor: theme.colors.primary,
-        color: theme.colors.textColor,
-        shadowColor: '#00FF00',
-        shadowOffset: {width: 0, height: 0},
-        shadowOpacity: 0.9,
-        shadowRadius: 10,
-        elevation: 10,
     },
     button: {
         marginVertical: 4,
@@ -50,7 +36,7 @@ export const styles_login = (theme) => StyleSheet.create({
         paddingLeft: 10,
         paddingRight: 10,
         borderRadius: 5,
-        backgroundColor: theme.colors.secondary,
+        backgroundColor: theme.colors.background,
     },
     signInText: {
         color: theme.colors.textColor,
@@ -62,6 +48,7 @@ export const styles_login = (theme) => StyleSheet.create({
         textAlign: 'center'
     },
     signInButtonView: {
+        marginTop: theme.spacing.sm,
         width: '100%',
         alignItems: 'center',
     },
@@ -73,6 +60,9 @@ export const styles_login = (theme) => StyleSheet.create({
     },
     signUpText: {
         color: theme.colors.textColor,
-        fontStyle: 'italic'
+        fontStyle: 'italic',
+        textDecorationLine: 'underline',
+        textDecorationStyle: 'dotted',
+        textDecorationColor: theme.colors.accentMuted,
     }
 })

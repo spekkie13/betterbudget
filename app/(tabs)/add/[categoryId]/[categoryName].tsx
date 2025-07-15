@@ -7,7 +7,6 @@ import {categoryNameOther} from '@/constants/messageConstants'
 import {styles_expenseMonthSelection} from '@/styles/tabs/expense/styles_expenseMonthSelection'
 
 import Title from '@/app/components/Text/Title'
-import CustomButton from '@/app/components/UI/General/CustomButton'
 import CategoryDeleteModal from '@/app/components/UI/Category/CategoryDeleteModal'
 import CategoryEditModal from '@/app/components/UI/Category/CategoryEditModal'
 
@@ -17,6 +16,7 @@ import {checkForExistingExpenses} from '@/api/ExpenseController'
 
 import {Period} from '@/models/period'
 import {useThemeContext} from "@/theme/ThemeContext"
+import Button from "@/app/components/UI/General/Button";
 
 const MonthSelection = () => {
     const {user} = useContext(AuthContext)
@@ -133,9 +133,9 @@ const MonthSelection = () => {
                     />
                 </View>
 
-                <Link href="/(tabs)/category">
-                    <CustomButton text="Back" color="" textColor=""/>
-                </Link>
+                <Button
+                    text='Back'
+                    onPress={() => router.replace('/(tabs)/category')}/>
             </ScrollView>
         </View>
     )

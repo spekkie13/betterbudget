@@ -1,15 +1,14 @@
 import {StyleSheet} from 'react-native'
-import {Padding_LARGE, Padding_MEDIUM} from "@/constants/UIConstants"
 
-export const styles_categoryOverview = (theme) => StyleSheet.create({
+export const styles_categoryOverview = (theme : any) => StyleSheet.create({
     container: {
         backgroundColor: theme.colors.background,
-        paddingBottom: Padding_MEDIUM,
-        paddingTop: Padding_MEDIUM,
+        paddingBottom: theme.spacing.md,
+        paddingTop: theme.spacing.md,
         flex: 1
     },
     scrollContainer: {
-        paddingBottom: Padding_LARGE
+        paddingBottom: theme.spacing.lg
     },
     title: {
         alignItems: 'center',

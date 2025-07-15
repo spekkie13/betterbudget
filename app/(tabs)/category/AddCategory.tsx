@@ -1,9 +1,7 @@
 import React, {useContext, useState} from "react"
-import {Text, TouchableOpacity, View} from "react-native"
-import {TextInput} from "react-native-paper"
-import {Link} from "expo-router"
+import {Text, View} from "react-native"
+import {useRouter} from "expo-router"
 import Title from "@/app/components/Text/Title"
-import CustomButton from "@/app/components/UI/General/CustomButton"
 import {AuthContext} from "@/app/ctx"
 import {genericFailureMessage, successCreateMessage} from "@/constants/messageConstants"
 import {styles_addCategory} from "@/styles/tabs/category/styles_addCategory"
@@ -11,6 +9,8 @@ import {CATEGORY_WITH_BUDGET_BASE_URL} from "@/constants/apiConstants"
 import {getNextPeriod} from "@/api/PeriodController"
 import {checkIfCategoryExists} from "@/api/CategoryController"
 import {useThemeContext} from "@/theme/ThemeContext"
+import { InputField } from "@/app/components/UI/InputField"
+import Button from "@/app/components/UI/General/Button";
 
 const AddCategory = () => {
     const [category, setCategory] = useState("")
@@ -21,6 +21,7 @@ const AddCategory = () => {
     const [showError, setShowError] = useState(false)
 
     const {user} = useContext(AuthContext)
+    const router = useRouter()
     const { currentTheme } = useThemeContext()
     const styles = styles_addCategory(currentTheme)
 
@@ -104,35 +105,30 @@ const AddCategory = () => {
             )}
 
             <View style={styles.textView}>
-                <TextInput
-                    style={styles.input}
-                    label="Category name"
-                    textAlign="center"
+                <InputField
+                    label={'Category Name'}
                     value={category}
-                    onChangeText={setCategory}
-                />
+                    onChange={setCategory}
+                    secure={false} />
             </View>
 
             <View style={styles.textView}>
-                <TextInput
-                    style={styles.input}
-                    label="Budget"
+                <InputField
+                    label={'Budget'}
                     value={budget}
-                    onChangeText={setBudget}
-                    keyboardType="numeric"
-                    autoCapitalize="none"
-                    placeholderTextColor={currentTheme.colors.textColor}
-                />
+                    onChange={setBudget}
+                    secure={false} />
             </View>
 
             <View style={styles.addButtonView}>
-                <TouchableOpacity onPress={handleAddCategory} style={styles.buttonView}>
-                    <CustomButton text="Add" color="" textColor=""/>
-                </TouchableOpacity>
+                <Button
+                    text='Add'
+                    onPress={handleAddCategory}
+                    style={styles.buttonView}/>
 
-                <Link href="/(tabs)/add/">
-                    <CustomButton text="Back" color="" textColor=""/>
-                </Link>
+                <Button text='Back'
+                        onPress={() => router.replace('/(tabs)/add')}
+                        style={styles.buttonView}/>
             </View>
         </View>
     )

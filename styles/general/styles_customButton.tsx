@@ -4,7 +4,7 @@ export const styles_customButton = (currentTheme, color, textColor) => StyleShee
     buttonView: {
         width: 225,
         height: 40,
-        backgroundColor: color || currentTheme.colors.primary,
+        backgroundColor: color || currentTheme.colors.accent,
         alignItems: 'center',
         paddingTop: 'auto',
         borderRadius: 25,

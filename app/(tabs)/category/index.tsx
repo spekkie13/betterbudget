@@ -2,13 +2,13 @@ import {ActivityIndicator, SafeAreaView, ScrollView, Text, View,} from 'react-na
 import React, {useCallback, useContext, useState} from 'react'
 import { useFocusEffect } from '@react-navigation/native'
 import {AuthContext} from '@/app/ctx'
-import {Link, useRouter} from 'expo-router'
+import {useRouter} from 'expo-router'
 import {styles_categoryOverview} from '@/styles/tabs/category/styles_categoryOverview'
 import Title from '@/app/components/Text/Title'
-import CustomButton from '@/app/components/UI/General/CustomButton'
 import {useCategories} from "@/hooks/useCategories"
 import CategoriesList from "@/app/components/UI/Category/CategoriesList"
 import {useThemeContext} from "@/theme/ThemeContext"
+import Button from "@/app/components/UI/General/Button";
 
 const CategoryOverviewScreen = () => {
     const {user} = useContext(AuthContext)
@@ -40,9 +40,9 @@ const CategoryOverviewScreen = () => {
         <SafeAreaView style={styles.container}>
             <Title text={'Overview'}/>
             <View style={styles.buttonView}>
-                <Link href="/(tabs)/category/AddCategory">
-                    <CustomButton text='Add Category' color="" textColor=""/>
-                </Link>
+                <Button
+                    text='Add Category'
+                    onPress={() => router.replace('/(tabs)/category/AddCategory')}/>
             </View>
             <ScrollView contentContainerStyle={styles.scrollContainer}>
                 {categories.length === 0 ? (

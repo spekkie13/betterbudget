@@ -1,11 +1,10 @@
 import {StyleSheet} from 'react-native'
-import {Padding_EXTRA_SMALL, Padding_LARGE, Padding_MEDIUM} from "@/constants/UIConstants"
 
-export const styles_categoryDetails = (theme) => StyleSheet.create({
+export const styles_categoryDetails = (theme : any) => StyleSheet.create({
     container: {
         backgroundColor: theme.colors.background,
         flex: 1,
-        paddingTop: Padding_MEDIUM,
+        paddingTop: theme.spacing.md,
         paddingLeft: 10,
         alignItems: 'center',
     },
@@ -13,19 +12,19 @@ export const styles_categoryDetails = (theme) => StyleSheet.create({
         paddingTop: 15,
         paddingBottom: 5,
         fontSize: 16,
-        fontWeight: "bold",
-        alignItems: "center",
-        justifyContent: "center",
+        fontWeight: 'bold',
+        alignItems: 'center',
+        justifyContent: 'center',
         color: theme.colors.text
     },
     categoryList: {
-        paddingBottom: Padding_LARGE
+        paddingBottom: theme.spacing.lg
     },
     expenseItemView: {
         flexDirection: 'row',
         width: '100%',
         alignItems: 'center',
-        paddingTop: Padding_EXTRA_SMALL
+        paddingTop: theme.spacing.xs
     },
     expenseItemText: {
         color: theme.colors.textColor,
@@ -41,6 +40,6 @@ export const styles_categoryDetails = (theme) => StyleSheet.create({
         color: theme.colors.failureColor
     },
     touchable: {
-        paddingTop: Padding_EXTRA_SMALL
+        paddingTop: theme.spacing.xs
     }
 })

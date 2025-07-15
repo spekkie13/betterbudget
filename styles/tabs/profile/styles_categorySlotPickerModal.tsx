@@ -1,6 +1,6 @@
-import {StyleSheet} from "react-native"
+import {StyleSheet} from 'react-native'
 
-export const styles_categorySlotPickerModal = (theme) => StyleSheet.create({
+export const styles_categorySlotPickerModal = (theme : any) => StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: 'rgba(0,0,0,0.4)',

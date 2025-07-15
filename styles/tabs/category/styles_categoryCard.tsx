@@ -1,6 +1,6 @@
 import {StyleSheet} from 'react-native'
 
-export const styles_categoryCard = (theme) => StyleSheet.create({
+export const styles_categoryCard = (theme : any) => StyleSheet.create({
     categoryCard: {
         borderRadius: 5,
         borderWidth: 1,

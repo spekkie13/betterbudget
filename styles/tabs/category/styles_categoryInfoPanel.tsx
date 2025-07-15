@@ -1,12 +1,11 @@
 import {StyleSheet} from 'react-native'
-import {Padding_EXTRA_LARGE} from "@/constants/UIConstants"
 
 export const styles_categoryInfoPanel = (theme : any) => StyleSheet.create({
     container: {
         marginTop: 10,
         flex: 1,
         backgroundColor: theme.colors.background,
-        paddingBottom: Padding_EXTRA_LARGE,
+        paddingBottom: theme.spacing.xl,
     },
     card: {
         flexDirection: 'row',
@@ -28,7 +27,7 @@ export const styles_categoryInfoPanel = (theme : any) => StyleSheet.create({
         paddingTop: 5
     },
     notFoundText: {
-        color: "#ccc",
+        color: '#ccc',
         marginTop: 10
     }
 })

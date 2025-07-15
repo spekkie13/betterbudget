@@ -1,6 +1,6 @@
-import {StyleSheet} from "react-native"
+import {StyleSheet} from 'react-native'
 
-export const styles_categoryEditModal = (theme) => StyleSheet.create({
+export const styles_categoryEditModal = (theme : any) => StyleSheet.create({
     backdrop: {
         flex: 1,
         justifyContent: 'center',

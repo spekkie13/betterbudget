@@ -59,7 +59,7 @@ export default function TabsLayout() {
                             >
                                 <FontAwesome
                                     name="plus"
-                                    color={currentTheme.colors.background}
+                                    color={currentTheme.colors.accent}
                                     size={24}
                                 />
                             </View>
@@ -68,7 +68,7 @@ export default function TabsLayout() {
                     return (
                         <FontAwesome
                             name={getIcon(route.name)}
-                            color={currentTheme.colors.primary}
+                            color={currentTheme.colors.accent}
                             size={24}
                         />
                     )

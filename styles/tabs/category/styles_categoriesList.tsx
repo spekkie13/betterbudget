@@ -1,9 +1,9 @@
-import {StyleSheet} from "react-native"
+import {StyleSheet} from 'react-native'
 
 export const styles_categoriesList = StyleSheet.create({
     categoriesView: {
-        flexDirection: "row",
-        justifyContent: "space-between",
+        flexDirection: 'row',
+        justifyContent: 'space-between',
     },
     cardView: {
         flex: 1,

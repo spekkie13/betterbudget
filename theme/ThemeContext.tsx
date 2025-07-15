@@ -1,11 +1,11 @@
 import React, { createContext, useContext, useEffect, useState, ReactNode } from "react"
-import CustomDarkTheme from "@/theme/CustomDarkTheme"
-import CustomDefaultTheme from "@/theme/CustomDefaultTheme"
+import { CustomDarkTheme } from "@/theme/Theme"
+import { CustomLightTheme } from "@/theme/Theme"
 import { preferenceStore } from "@/hooks/preferenceStore"
 
 interface ThemeContextType {
     theme: "light" | "dark"
-    currentTheme: typeof CustomDarkTheme | typeof CustomDefaultTheme
+    currentTheme: typeof CustomDarkTheme | typeof CustomLightTheme
     setTheme: (theme: "light" | "dark") => void
     refreshTheme: () => void
 }
@@ -36,7 +36,7 @@ export const ThemeProvider = ({ children }: { children: ReactNode }) => {
         setThemeState(newTheme)
     }
 
-    const currentTheme = theme === "dark" ? CustomDarkTheme : CustomDefaultTheme
+    const currentTheme = theme === "dark" ? CustomDarkTheme : CustomLightTheme
 
     return (
         <ThemeContext.Provider value={{ theme, currentTheme, setTheme, refreshTheme }}>

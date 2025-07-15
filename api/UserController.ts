@@ -13,7 +13,7 @@ export async function getUser(email: string): Promise<User> {
         }
 
         const data = await response.json()
-
+        console.log(data)
         if (!data || !data.email || !data.id) {
             console.log("Invalid user data received from API")
         }
@@ -34,7 +34,7 @@ export async function getUser(email: string): Promise<User> {
 
 export async function createNewUser(user: User): Promise<User> {
     const request: RequestInfo = formRequestWithBody(USER_BASE_URL, 'POST', user)
-
+    console.log(request)
     try {
         const response: Response = await fetch(request)
         const userData = await response.json()

@@ -1,11 +1,10 @@
 import React, {useContext, useEffect, useState} from 'react'
 import { ActivityIndicator, SafeAreaView, ScrollView, Text, TouchableOpacity, View } from 'react-native'
 import FontAwesome from '@expo/vector-icons/FontAwesome'
-import {Link, useLocalSearchParams} from 'expo-router'
+import { router, useLocalSearchParams} from 'expo-router'
 
 import Title from '@/app/components/Text/Title'
 import SubTitle from '@/app/components/Text/SubTitle'
-import CustomButton from '@/app/components/UI/General/CustomButton'
 import ExpenseDetailModal from '@/app/components/UI/Expense/ExpenseDetailModal'
 import {useThemeContext} from "@/theme/ThemeContext"
 import {AuthContext} from '@/app/ctx'
@@ -22,6 +21,7 @@ import {getBudgetByCategoryAndDate} from '@/api/BudgetController'
 import {getMostRecentResult} from '@/api/ResultController'
 import {getPeriodByDate} from '@/api/PeriodController'
 import {ConvertToPercentage} from '@/helpers/GeneralHelpers'
+import Button from "@/app/components/UI/General/Button";
 
 const CategoryDetails = (): React.JSX.Element => {
     const {user} = useContext(AuthContext)
@@ -128,15 +128,15 @@ const CategoryDetails = (): React.JSX.Element => {
 
             <ScrollView contentContainerStyle={styles.categoryList}>
                 {renderExpenses()}
-                <Link
-                    style={styles.touchable}
-                    href={{
-                        pathname: '/add/[categoryId]/[categoryName]',
-                        params: {categoryId: category.id, categoryName: category.name},
-                    }}
-                >
-                    <CustomButton text="Back" color="" textColor=""/>
-                </Link>
+                <Button
+                    text="Back"
+                    onPress={() =>
+                        router.push({
+                            pathname: '/add/[categoryId]/[categoryName]',
+                            params: { categoryId: category.id, categoryName: category.name },
+                        })
+                    }
+                />
             </ScrollView>
         </SafeAreaView>
     )

@@ -1,10 +1,9 @@
 import {StyleSheet} from 'react-native'
-import {Padding_LARGE} from "@/constants/UIConstants"
 
-export const styles_AddNew = (theme) => StyleSheet.create({
+export const styles_AddNew = (theme : any) => StyleSheet.create({
     container: {
-        paddingTop: Padding_LARGE,
-        alignItems: "center",
+        paddingTop: theme.spacing.lg,
+        alignItems: 'center',
         backgroundColor: theme.colors.background,
         flex: 1
     },
@@ -22,7 +21,7 @@ export const styles_AddNew = (theme) => StyleSheet.create({
         width: '100%',
         height: 200,
         borderWidth: 1,
-        padding: Padding_LARGE,
+        padding: theme.spacing.lg,
         backgroundColor: theme.colors.secondary,
         borderColor: theme.colors.primary
     },

@@ -1,6 +1,6 @@
-import {StyleSheet} from "react-native"
+import {StyleSheet} from 'react-native'
 
-export const styles_categorySlotPicker = (theme) => StyleSheet.create({
+export const styles_categorySlotPicker = (theme : any) => StyleSheet.create({
     cardRow: {
         flexDirection: 'row',
         justifyContent: 'center',

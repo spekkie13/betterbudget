@@ -1,16 +1,15 @@
-import {StyleSheet} from "react-native"
-import {Padding_MEDIUM} from "@/constants/UIConstants"
+import {StyleSheet} from 'react-native'
 
-export const pickerSelectStyles = (currentTheme) => StyleSheet.create({
+export const pickerSelectStyles = (theme : any) => StyleSheet.create({
     inputIOS: {
         width: 300,
         fontSize: 16,
         paddingVertical: 12,
         paddingHorizontal: 10,
         borderWidth: 1,
-        borderColor: currentTheme.colors.primary,
+        borderColor: theme.colors.primary,
         borderRadius: 4,
-        color: currentTheme.colors.primary,
+        color: theme.colors.primary,
         textAlign: 'center',
     },
     inputAndroid: {
@@ -19,19 +18,19 @@ export const pickerSelectStyles = (currentTheme) => StyleSheet.create({
         paddingHorizontal: 10,
         paddingVertical: 8,
         borderWidth: 1,
-        borderColor: currentTheme.colors.primary,
+        borderColor: theme.colors.primary,
         borderRadius: 8,
         color: 'white',
-        backgroundColor: currentTheme.colors.oppositeColor,
+        backgroundColor: theme.colors.oppositeColor,
         textAlign: 'center',
         marginBottom: 5,
     }
 })
 
-export const styles_AddExpense = (theme) => StyleSheet.create({
+export const styles_AddExpense = (theme : any) => StyleSheet.create({
     container: {
         backgroundColor: theme.colors.background,
-        paddingTop: Padding_MEDIUM,
+        paddingTop: theme.spacing.md,
         flex: 1,
         alignItems: 'center',
     },
@@ -64,7 +63,6 @@ export const styles_AddExpense = (theme) => StyleSheet.create({
     buttonView: {
         width: 225,
         height: 40,
-        backgroundColor: theme.colors.primary,
         alignItems: 'center',
         paddingTop: 'auto',
         borderRadius: 25,
@@ -77,11 +75,6 @@ export const styles_AddExpense = (theme) => StyleSheet.create({
         color: theme.colors.failureColor
     },
     addView: {
-        alignItems: 'center'
-    },
-    addButtonView: {
-        width: '100%',
-        justifyContent: 'center',
         alignItems: 'center'
     },
     backButtonView: {

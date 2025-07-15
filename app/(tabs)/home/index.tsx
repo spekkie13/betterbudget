@@ -4,16 +4,17 @@ import Logo from '@/app/components/UI/General/Logo'
 import React, {useCallback, useContext, useState} from 'react'
 import {AuthContext} from "@/app/ctx"
 import CategoryInfoPanel from "@/app/components/UI/Category/CategoryInfoPanel"
-import {Link, router, useFocusEffect} from "expo-router"
+import {useRouter, useFocusEffect} from "expo-router"
 import {genericFailureMessage} from "@/constants/messageConstants"
-import CustomButton from "@/app/components/UI/General/CustomButton"
 import {styles_home} from "@/styles/styles_home"
 import {determineSpendingRoom} from "@/api/BudgetController"
 import {preferenceStore} from "@/hooks/preferenceStore"
 import { useThemeContext } from '@/theme/ThemeContext'
+import Button from "@/app/components/UI/General/Button";
 
 const HomeScreen = () => {
     const {user} = useContext(AuthContext)
+    const router = useRouter()
     const {currentTheme} = useThemeContext()
     const styles = styles_home(currentTheme)
 
@@ -79,9 +80,9 @@ const HomeScreen = () => {
                 </View>
             </View>
             <View style={styles.body}>
-                <Link href={'/(tabs)/add/addExpense'}>
-                    <CustomButton text="Add expense" color="" textColor=""/>
-                </Link>
+                <Button
+                    text='Add Expense'
+                    onPress={() => router.push('/(tabs)/add/addExpense')} />
             </View>
             <View style={styles.categoryPanel}>
                 <CategoryInfoPanel theme={currentTheme}/>

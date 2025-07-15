@@ -1,15 +1,15 @@
 import React, {useContext, useEffect, useState} from 'react'
-import {TouchableOpacity, View} from 'react-native'
+import {View} from 'react-native'
 import {AuthContext} from '@/app/ctx'
 import {getCategories} from '@/api/CategoryController'
 import CategorySlotPicker, {Category} from '../../components/UI/Category/CategorySlotPicker'
 import CategorySlotPickerModal from '../../components/UI/Category/CategorySlotPickerModal'
-import CustomButton from '@/app/components/UI/General/CustomButton'
 import {useRouter} from "expo-router"
 import {styles_profile} from "@/styles/tabs/profile/styles_profile"
 import Title from "@/app/components/Text/Title"
 import SubTitle from "@/app/components/Text/SubTitle"
 import {useThemeContext} from "@/theme/ThemeContext"
+import Button from "@/app/components/UI/General/Button";
 
 const Profile = () => {
     const {user} = useContext(AuthContext)
@@ -39,9 +39,11 @@ const Profile = () => {
             <Title text={`Hello ${user?.username}`}/>
             <SubTitle text={'Favorite Categories:'}/>
 
-            <TouchableOpacity onPress={() => setModalVisible(true)} style={styles.touchable}>
-                <CustomButton text="Manage Categories" color="blue" textColor='#ffffff'/>
-            </TouchableOpacity>
+            <Button
+                text='Manage Categories'
+                onPress={() => setModalVisible(true)}
+                style={styles.touchable}
+            />
 
             <CategorySlotPicker selectedCategories={selectedSlots} theme={currentTheme}/>
 

@@ -1,11 +1,10 @@
 import {StyleSheet} from 'react-native'
-import {Padding_MEDIUM} from "@/constants/UIConstants"
 
 export const styles_settings = (theme: any) => StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: theme.colors.background,
-        paddingTop: Padding_MEDIUM,
+        paddingTop: theme.spacing.md,
         alignItems: 'center'
     },
     logoutView: {
@@ -21,7 +20,7 @@ export const styles_settings = (theme: any) => StyleSheet.create({
         textAlign: 'right',
         alignSelf: 'stretch',
         width: 150,
-        paddingRight: Padding_MEDIUM,
+        paddingRight: theme.spacing.md,
         color: theme.colors.textColor
     },
     picker: {
@@ -31,11 +30,20 @@ export const styles_settings = (theme: any) => StyleSheet.create({
         color: theme.colors.textColor,
         backgroundColor: theme.colors.background
     },
-    updateButton: {
-        marginTop: 10,
-        width: 175,
+    button: {
+        width: 200,
         justifyContent: 'center',
         alignItems: 'center',
+        marginTop: theme.spacing.sm,
+        marginBottom: theme.spacing.sm,
+    },
+    signOutButton: {
+        width: 200,
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginTop: theme.spacing.sm,
+        marginBottom: theme.spacing.sm,
+        color: theme.colors.failureColor,
     },
 })
 

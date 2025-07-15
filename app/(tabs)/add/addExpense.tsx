@@ -1,5 +1,4 @@
-import {Text, TouchableOpacity, View} from 'react-native'
-import {TextInput} from 'react-native-paper'
+import {Text, View} from 'react-native'
 import React, {useContext, useEffect, useState} from 'react'
 import Title from '@/app/components/Text/Title'
 import {createNewExpense} from "@/api/ExpenseController"
@@ -9,10 +8,11 @@ import RNPickerSelect from 'react-native-picker-select'
 import {Category} from "@/models/category"
 import {pickerSelectStyles, styles_AddExpense} from "@/styles/tabs/expense/styles_addExpense"
 import {AuthContext} from "@/app/ctx"
-import {Link} from "expo-router"
+import {useRouter} from "expo-router"
 import {genericFailureMessage, successCreateMessage} from "@/constants/messageConstants"
-import CustomButton from "@/app/components/UI/General/CustomButton"
 import {useThemeContext} from "@/theme/ThemeContext"
+import {InputField} from "@/app/components/UI/InputField";
+import Button from "@/app/components/UI/General/Button";
 
 const AddExpense = () => {
     const [pickerItems, setPickerItems] = useState([])
@@ -29,6 +29,7 @@ const AddExpense = () => {
     const [errorMessageVisible, setErrorMessageVisible] = useState(false)
 
     const {user} = useContext(AuthContext)
+    const router = useRouter()
 
     const { currentTheme } = useThemeContext()
     const styles = styles_AddExpense(currentTheme)
@@ -111,43 +112,26 @@ const AddExpense = () => {
             )}
             <View style={styles.addView}>
                 <View style={styles.view}>
-                    <TextInput
-                        style={styles.input}
-                        label={'date'}
-                        placeholder="(dd-MM-yyyy)"
-                        textAlign={'center'}
-                        keyboardType={'numeric'}
+                    <InputField
+                        label={'Date'}
+                        placeholder={'dd-MM-yyyy'}
+                        onChange={setDate}
                         value={date}
-                        placeholderTextColor={currentTheme.colors.textColor}
-                        onChangeText={text => {
-                            setDate(text)
-                        }}
-                    />
+                        secure={false}/>
                 </View>
                 <View style={styles.view}>
-                    <TextInput
-                        style={styles.input}
-                        label={`amount`}
-                        keyboardType={'numeric'}
-                        textAlign={'center'}
+                    <InputField
+                        label={'amount'}
+                        onChange={setAmount}
                         value={amount}
-                        placeholderTextColor={currentTheme.colors.textColor}
-                        onChangeText={text => {
-                            setAmount(text)
-                        }}
-                    />
+                        secure={false}/>
                 </View>
                 <View style={styles.view}>
-                    <TextInput
-                        style={styles.input}
+                    <InputField
                         label={'description'}
-                        textAlign={'center'}
+                        onChange={setDescription}
                         value={description}
-                        placeholderTextColor={currentTheme.colors.textColor}
-                        onChangeText={text => {
-                            setDescription(text)
-                        }}
-                    />
+                        secure={false}/>
                 </View>
                 <View style={styles.view}>
                     <RNPickerSelect
@@ -156,18 +140,14 @@ const AddExpense = () => {
                         placeholder={{label: 'Select a category...', value: ''}}
                         style={pickerSelectStyles(currentTheme)}/>
                 </View>
-                <View style={styles.addButtonView}>
-                    <TouchableOpacity
-                        style={styles.buttonView}
+                <View style={styles.buttonView}>
+                    <Button text='Add'
                         onPress={AddNewExpense}
-                    >
-                        <CustomButton text="ADD" color="" textColor=""/>
-                    </TouchableOpacity>
-                    <View style={styles.backButtonView}>
-                        <Link href={"/(tabs)/add/"}>
-                            <CustomButton text='Back' color="" textColor=""/>
-                        </Link>
-                    </View>
+                        style={styles.buttonView}/>
+
+                    <Button text='Back'
+                        onPress={() => router.replace('/(tabs)/add')}
+                        style={styles.buttonView}/>
                 </View>
             </View>
         </View>

@@ -1,7 +1,6 @@
-import {StyleSheet} from "react-native"
-import {Padding_LARGE, Padding_SMALL} from "@/constants/UIConstants"
+import {StyleSheet} from 'react-native'
 
-export const styles_expenseMonthSelection = (theme) => StyleSheet.create({
+export const styles_expenseMonthSelection = (theme : any) => StyleSheet.create({
     container: {
         backgroundColor: theme.colors.background,
         alignItems: 'center',
@@ -9,7 +8,7 @@ export const styles_expenseMonthSelection = (theme) => StyleSheet.create({
         flex: 1
     },
     scrollView: {
-        paddingBottom: Padding_LARGE
+        paddingBottom: theme.spacing.lg
     },
     dateItem: {
         padding: 10,
@@ -22,10 +21,10 @@ export const styles_expenseMonthSelection = (theme) => StyleSheet.create({
     },
     headerText: {
         color: theme.colors.text,
-        fontWeight: "bold",
+        fontWeight: 'bold',
         fontSize: 16,
         lineHeight: 20,
-        paddingTop: Padding_SMALL,
+        paddingTop: theme.spacing.sm,
         height: 40
     },
     buttonView: {

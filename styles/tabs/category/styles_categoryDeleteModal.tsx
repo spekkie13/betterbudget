@@ -1,6 +1,6 @@
-import {StyleSheet} from "react-native"
+import {StyleSheet} from 'react-native'
 
-export const styles_categoryDeleteModal = (theme) => StyleSheet.create({
+export const styles_categoryDeleteModal = (theme : any) => StyleSheet.create({
     backdrop: {
         flex: 1,
         justifyContent: 'center',

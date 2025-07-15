@@ -1,10 +1,9 @@
 import {StyleSheet} from 'react-native'
-import {Padding_MEDIUM} from "@/constants/UIConstants"
 
 export const styles_home = (theme) => StyleSheet.create({
     container: {
         backgroundColor: theme.colors.background,
-        paddingTop: Padding_MEDIUM
+        paddingTop: theme.spacing.md
     },
     header: {
         alignItems: 'center',

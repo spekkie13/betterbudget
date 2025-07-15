@@ -1,12 +1,11 @@
-import {StyleSheet} from "react-native"
-import {Padding_MEDIUM} from "@/constants/UIConstants"
+import {StyleSheet} from 'react-native'
 
-export const styles_addCategory = (theme) => StyleSheet.create({
+export const styles_addCategory = (theme : any) => StyleSheet.create({
     container: {
         backgroundColor: theme.colors.background,
         flex: 1,
-        paddingTop: Padding_MEDIUM,
-        alignItems: "center",
+        paddingTop: theme.spacing.md,
+        alignItems: 'center',
     },
     statusMessage: {
         fontStyle: "italic",
@@ -15,17 +14,17 @@ export const styles_addCategory = (theme) => StyleSheet.create({
     textView: {
         width: '100%',
         flexDirection: 'row',
-        marginBottom: 5,
+        marginBottom: theme.spacing.xs,
         alignItems: 'center',
         justifyContent: 'center',
     },
     text: {
-        width: 100,
+        width: theme.spacing.xl,
         color: theme.colors.text
     },
     input: {
         marginVertical: 4,
-        height: 50,
+        height: theme.spacing.lg,
         width: 300,
         borderWidth: 1,
         borderRadius: 4,
@@ -40,14 +39,12 @@ export const styles_addCategory = (theme) => StyleSheet.create({
     buttonView: {
         width: 225,
         height: 40,
-        backgroundColor: theme.colors.primary,
         alignItems: 'center',
         paddingTop: 'auto',
-        borderRadius: 25,
+        borderRadius: theme.radius.md,
         marginBottom: 5,
     },
     buttonText: {
-        color: theme.colors.textColor,
         textAlign: 'center',
         fontWeight: 'bold',
         lineHeight: 40,
@@ -60,7 +57,7 @@ export const styles_addCategory = (theme) => StyleSheet.create({
         color: theme.colors.failureColor
     },
     addButtonView: {
-        width: "100%",
-        alignItems: "center"
+        width: '100%',
+        alignItems: 'center'
     }
 })

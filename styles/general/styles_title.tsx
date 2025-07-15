@@ -10,7 +10,7 @@ export const styles_title = (theme : any) => StyleSheet.create({
     },
     titleText: {
         fontSize: 32,
-        color: theme.colors.titleColor,
+        color: theme.colors.accent,
         fontFamily: 'Manrope-Bold',
         fontWeight: 'bold',
     },
