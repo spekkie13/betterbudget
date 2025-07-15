@@ -14,9 +14,9 @@ export function usePreferences() {
         const cardsPref = preferenceStore.get('cards');
         const valutaPref = preferenceStore.get('valuta');
         const themePref = preferenceStore.get('colorScheme');
-        if (cardsPref) setCards(cardsPref.numberValue ?? 0);
-        if (valutaPref) setValuta(valutaPref.stringValue ?? '');
-        if (themePref) setThemeSelection(themePref.stringValue ?? '');
+        if (cardsPref) setCards(cardsPref.numberValue ?? 4);
+        if (valutaPref) setValuta(valutaPref.stringValue ?? '€');
+        if (themePref) setThemeSelection(themePref.stringValue ?? 'light');
     }, []);
 
     async function updatePreferences() {

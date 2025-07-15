@@ -1,51 +1,23 @@
 import {ActivityIndicator, ScrollView, Text, View} from 'react-native'
 import Title from '@/app/components/Text/Title'
 import Logo from '@/app/components/UI/General/Logo'
-import React, {useCallback, useContext, useState} from 'react'
-import {AuthContext} from "@/app/ctx"
+import React from 'react'
 import CategoryInfoPanel from "@/app/components/UI/Category/CategoryInfoPanel"
-import {useRouter, useFocusEffect} from "expo-router"
+import {useRouter} from "expo-router"
 import {genericFailureMessage} from "@/constants/messageConstants"
 import {styles_home} from "@/styles/styles_home"
-import {determineSpendingRoom} from "@/api/BudgetController"
-import {preferenceStore} from "@/hooks/preferenceStore"
 import { useThemeContext } from '@/theme/ThemeContext'
 import Button from "@/app/components/UI/General/Button";
+import {useSpendingRoom} from "@/hooks/useSpendingRoom";
+import {preferenceStore} from "@/hooks/preferenceStore";
 
 const HomeScreen = () => {
-    const {user} = useContext(AuthContext)
+    const { loading, error, spendingRoom, username } = useSpendingRoom()
+    const valuta: string = preferenceStore.get('valuta')?.stringValue ?? "$"
+
     const router = useRouter()
     const {currentTheme} = useThemeContext()
     const styles = styles_home(currentTheme)
-
-    const [loading, setLoading] = useState(false)
-    const [error, setError] = useState(null)
-    const [spendingRoom, setSpendingRoom] = useState(0)
-
-    const valuta: string = preferenceStore.get('valuta')?.stringValue ?? "$"
-
-    useFocusEffect(
-        useCallback((): void => {
-            const fetchData = async (): Promise<void> => {
-                setLoading(true)
-                if (!user) {
-                    router.replace('/sign-in')
-                    return
-                }
-                try {
-                    const sum: number = await determineSpendingRoom(user.id)
-                    setSpendingRoom(sum)
-                } catch (err) {
-                    console.log(err)
-                    setError(err)
-                } finally {
-                    setLoading(false)
-                }
-            }
-
-            fetchData()
-        }, [user])
-    )
 
     if (loading)
         return <ActivityIndicator/>
@@ -56,7 +28,7 @@ const HomeScreen = () => {
     return (
         <ScrollView style={styles.container}>
             <View>
-                <Title text={`Hello ${user?.username}`}/>
+                <Title text={`Hello ${username}`}/>
                 <Logo/>
             </View>
             <View style={styles.header}>
@@ -75,7 +47,7 @@ const HomeScreen = () => {
                             }
                         ]}
                     >
-                        {valuta} {spendingRoom.toLocaleString()}
+                        {valuta} {spendingRoom}
                     </Text>
                 </View>
             </View>

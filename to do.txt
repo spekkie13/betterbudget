@@ -1,4 +1,8 @@
 TO DO:
+-> update NaN on category status fetching => error fetching recent period data
+   => adding an expense in a non-existent period should cause a new period result to be created
+   => if the budget is non-existent too, copy the most recent budget for that category
+
 -> update status for category cards upon expense creation
    => spent
    => percentage spent

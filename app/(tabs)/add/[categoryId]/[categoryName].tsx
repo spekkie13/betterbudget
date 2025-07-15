@@ -1,76 +1,28 @@
-import React, {useContext, useEffect, useState} from 'react'
+import React, {useState} from 'react'
 import {ActivityIndicator, ScrollView, Text, TouchableOpacity, View} from 'react-native'
 import FontAwesome from '@expo/vector-icons/FontAwesome'
-import {Link, useLocalSearchParams, useRouter} from 'expo-router'
-import {AuthContext} from '@/app/ctx'
-import {categoryNameOther} from '@/constants/messageConstants'
+import {useLocalSearchParams, useRouter} from 'expo-router'
 import {styles_expenseMonthSelection} from '@/styles/tabs/expense/styles_expenseMonthSelection'
 
 import Title from '@/app/components/Text/Title'
 import CategoryDeleteModal from '@/app/components/UI/Category/CategoryDeleteModal'
 import CategoryEditModal from '@/app/components/UI/Category/CategoryEditModal'
 
-import {ConvertMonthToName} from '@/helpers/DateHelpers'
-import {getDistinctPeriods} from '@/api/PeriodController'
-import {checkForExistingExpenses} from '@/api/ExpenseController'
-
-import {Period} from '@/models/period'
 import {useThemeContext} from "@/theme/ThemeContext"
-import Button from "@/app/components/UI/General/Button";
+import Button from "@/app/components/UI/General/Button"
+import {usePeriods} from "@/hooks/usePeriods";
+import MonthsExpensePanel from "@/app/components/MonthsExpensePanel";
 
 const MonthSelection = () => {
-    const {user} = useContext(AuthContext)
     const router = useRouter()
     const {categoryId, categoryName} = useLocalSearchParams<{ categoryId: string; categoryName: string }>()
-
-    const [groupedDates, setGroupedDates] = useState<Map<number, number[]>>(new Map())
-    const [loading, setLoading] = useState(true)
-    const [error, setError] = useState<Error | null>(null)
-    const [deleteMessage, setDeleteMessage] = useState('')
+    const { loading, error, groupedDates, deleteMessage } = usePeriods({categoryId, categoryName})
 
     const [editModalVisible, setEditModalVisible] = useState(false)
     const [deleteModalVisible, setDeleteModalVisible] = useState(false)
 
     const { currentTheme } = useThemeContext()
     const styles = styles_expenseMonthSelection(currentTheme)
-
-    useEffect(() => {
-        const fetchData = async () => {
-            const categoryNumId : number = Number.parseInt(categoryId)
-            const periods: Period[] = await getDistinctPeriods(user.id, categoryNumId)
-            const grouped = new Map<number, number[]>()
-
-            periods.forEach(({startDate}) => {
-                const date = new Date(startDate)
-                const year : number = date.getFullYear()
-                const month : number = date.getMonth() + 1
-
-                if (!grouped.has(year)) grouped.set(year, [])
-                if (!grouped.get(year)!.includes(month)) {
-                    grouped.get(year)!.push(month)
-                }
-            })
-
-            for (const months of grouped.values()) {
-                months.sort((a : number, b : number) : number => b - a)
-            }
-
-            setGroupedDates(new Map([...grouped.entries()].sort((a, b) => b[0] - a[0])))
-
-            const expenses = await checkForExistingExpenses(user.id, categoryNumId)
-            const message = categoryName === categoryNameOther
-                ? 'Unable to delete this category'
-                : expenses.length > 0
-                    ? 'There are existing expenses in this category, are you sure you want to delete this category?'
-                    : 'Are you sure you want to delete this category?'
-
-            setDeleteMessage(message)
-            setError(null)
-            setLoading(false)
-        }
-
-        fetchData()
-    }, [categoryId, categoryName, user.id])
 
     const handleEdit = () => setEditModalVisible(true)
     const handleDelete = () => setDeleteModalVisible(true)
@@ -89,20 +41,7 @@ const MonthSelection = () => {
             <Title text={categoryName}/>
 
             <ScrollView contentContainerStyle={styles.scrollView}>
-                {Array.from(groupedDates.entries()).map(([year, months]) => (
-                    <View key={year}>
-                        <Text style={styles.headerText}>{year}</Text>
-                        {months.map(month => (
-                            <Link
-                                key={month}
-                                href={`/(tabs)/category/${categoryId}/${month}/${year}`}
-                                style={styles.monthItem}
-                            >
-                                <Text style={styles.dateItem}>- {ConvertMonthToName(month)}</Text>
-                            </Link>
-                        ))}
-                    </View>
-                ))}
+                <MonthsExpensePanel categoryId={categoryId} groupedDates={groupedDates}/>
 
                 <View style={styles.buttonView}>
                     <TouchableOpacity onPress={handleEdit} style={styles.touchable}>

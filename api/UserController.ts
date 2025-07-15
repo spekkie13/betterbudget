@@ -13,7 +13,6 @@ export async function getUser(email: string): Promise<User> {
         }
 
         const data = await response.json()
-        console.log(data)
         if (!data || !data.email || !data.id) {
             console.log("Invalid user data received from API")
         }

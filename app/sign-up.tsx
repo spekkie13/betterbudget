@@ -5,17 +5,21 @@ import {ActivityIndicator, KeyboardAvoidingView, ScrollView, Text, View } from "
 import Title from "@/app/components/Text/Title"
 import Logo from "@/app/components/UI/General/Logo"
 import {styles_login} from '@/styles/styles_login'
-import {Link} from "expo-router"
+import {useRouter} from "expo-router"
 import {useThemeContext} from "@/theme/ThemeContext"
 import {InputField} from "@/app/components/UI/InputField";
 import Button from "@/app/components/UI/General/Button";
 import {useAuth} from "@/hooks/useAuth";
 import {MessageBanner} from "@/app/components/Text/MessageBanner";
+import {CustomLink} from "@/app/components/Text/CustomLink";
+
 
 function Login(): React.JSX.Element {
-    const { signUp, loading, message } = useAuth()
+    const { message, loading, signUp } = useAuth()
     const { currentTheme } = useThemeContext()
     const styles = styles_login(currentTheme)
+
+    const router = useRouter()
 
     const [name, setName] = useState('')
     const [username, setUsername] = useState('')
@@ -64,15 +68,21 @@ function Login(): React.JSX.Element {
                                     <View style={styles.signInButtonView}>
                                         <Button
                                             text='Sign Up'
-                                            onPress={() => signUp(email, password, name, username)}
+                                            onPress={async () => {
+                                                await signUp(name, username, email, password)
+                                                setName('')
+                                                setEmail('')
+                                                setUsername('')
+                                                setPassword('')
+                                            }}
                                             style={styles.buttonView}/>
                                     </View>
                                 </KeyboardAvoidingView>
                                 <View style={styles.signUpView}>
-                                    <Link href="/sign-in">
-                                        <Text style={styles.signUpText}>Already have an account? Click here to
-                                            login</Text>
-                                    </Link>
+                                    <CustomLink
+                                        text='Already have an account? Click here to login'
+                                        onPress={() => router.replace('/sign-in')}
+                                        style={styles.signUpText}/>
                                 </View>
                             </View>
                         </View>

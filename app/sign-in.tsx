@@ -4,13 +4,14 @@ import { SafeAreaView} from "react-native-safe-area-context"
 import { ActivityIndicator, KeyboardAvoidingView, ScrollView, Text, View } from "react-native"
 import Logo from "@/app/components/UI/General/Logo"
 import { styles_login } from '@/styles/styles_login'
-import { Link } from 'expo-router'
+import {useRouter} from 'expo-router'
 import { useAuth } from "@/hooks/useAuth"
 
 import {useThemeContext} from "@/theme/ThemeContext"
 import {InputField} from "@/app/components/UI/InputField"
 import {MessageBanner} from "@/app/components/Text/MessageBanner";
 import Button from "@/app/components/UI/General/Button";
+import {CustomLink} from "@/app/components/Text/CustomLink";
 
 function Login(): React.JSX.Element {
     const { signIn, loading, message } = useAuth()
@@ -18,8 +19,8 @@ function Login(): React.JSX.Element {
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
 
+    const router = useRouter()
     const { currentTheme } = useThemeContext()
-
     const styles = styles_login(currentTheme)
 
     return (
@@ -53,9 +54,10 @@ function Login(): React.JSX.Element {
                                     </View>
                                 </KeyboardAvoidingView>
                                 <View style={styles.signUpView}>
-                                    <Link href="/sign-up">
-                                        <Text style={styles.signUpText}>Don't have an account yet? Click here to sign up</Text>
-                                    </Link>
+                                    <CustomLink
+                                        text="Don't have an account yet? Click here to sign up"
+                                        onPress={() => router.replace('/sign-up')}
+                                        style={styles.signUpText}/>
                                 </View>
                             </View>
                         </View>

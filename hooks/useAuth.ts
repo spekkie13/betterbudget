@@ -8,7 +8,7 @@ import {User} from "@/models/user"
 import {Team} from "@/models/team"
 import {getTeamById} from "@/api/TeamController"
 import {preferenceStore} from "@/hooks/preferenceStore"
-import {getUserPreferences, updateAllUserPreferences} from "@/api/PreferenceController"
+import {getUserPreferences, setupNewUserPrefs, updateAllUserPreferences} from "@/api/PreferenceController"
 import {useRouter} from "expo-router"
 
 export function useAuth() {
@@ -56,40 +56,44 @@ export function useAuth() {
     }
 
     // ✅ SIGN UP
-    async function signUp(email: string, password: string, name: string, username: string) {
-        setLoading(true);
-        if (!email || !password) {
-            showMessage(errorLoginMessage);
-            setLoading(false);
-            return;
+    const signUp = async (name: string, username: string, email: string, password: string): Promise<void> => {
+        setLoading(true)
+        if (!name || !username || !email || !password) {
+            setLoading(false)
+            return
         }
-
         try {
-            const { data, error } = await supabase.auth.signUp({ email, password });
-            if (error || !data.user) {
-                if (error.status === 429){
-                    showMessage('Too many requests, try again later...')
-                }else{
-                    showMessage(errorLoginMessage);
-                }
-                return;
+            const {data, error} = await supabase.auth.signUp({
+                email,
+                password,
+            })
+
+            if (error) {
+                alert('Registration failed: ' + error.message)
+                return
             }
 
-            const userData = {
-                id: 0,
-                email: data.user.email,
-                username: username,
-                name: name,
-                teamId: 0,
-            }
-            const user = await createNewUser(userData);
+            const user: User = User.empty()
+            user.name = name
+            user.username = username
+            user.email = data.user.email
 
-            login(user, Team.empty())
-        } catch (err) {
-            console.error('Error while signing up', err);
-            showMessage(genericFailureMessage);
+            const team: Team = Team.empty()
+            const dbUser : User = await createNewUser(user)
+
+            if (dbUser.name !== '') {
+                login(dbUser, team)
+                await setupNewUserPrefs(dbUser.id)
+                showMessage('Successfully registered user')
+                router.replace('/sign-in')
+            } else {
+                alert(genericFailureMessage)
+            }
+        } catch (e: any) {
+            console.error(e)
+            alert('An unexpected error occurred.')
         } finally {
-            setLoading(false);
+            setLoading(false)
         }
     }
 

@@ -16,6 +16,11 @@ export const styles_profile = (theme : any) => StyleSheet.create({
     },
     touchable: {
         alignItems: 'center',
-        marginVertical: 20
+        marginVertical: 20,
+        width: 200,
+    },
+    buttonView: {
+        alignItems: 'center',
+        width: '100%',
     }
 })

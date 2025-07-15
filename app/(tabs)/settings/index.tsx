@@ -48,7 +48,7 @@ const Settings = () => {
                     <Text style={styles.text}>Categories Shown</Text>
                     <RNPickerSelect
                         onValueChange={(value) => setCards(parseInt(value))}
-                        value={cards.toString()}
+                        value={cards != null ? String(cards) : ''}
                         items={['2', '4', '6', '8', '10'].map((val) => ({ key: val, label: val, value: val }))}
                         placeholder={{ label: 'How many cards?', value: '' }}
                         style={pickerStyles(currentTheme)}
@@ -59,7 +59,7 @@ const Settings = () => {
                     <Text style={styles.text}>Valuta</Text>
                     <RNPickerSelect
                         onValueChange={(value) => setValuta(value)}
-                        value={valuta}
+                        value={valuta != null ? valuta : ''}
                         items={[{ key: '1', label: '€', value: '€' }, { key: '2', label: '$', value: '$' }]}
                         placeholder={{ label: 'Valuta symbol', value: '' }}
                         style={pickerStyles(currentTheme)}
@@ -70,7 +70,7 @@ const Settings = () => {
                     <Text style={styles.text}>Theme</Text>
                     <RNPickerSelect
                         onValueChange={(value) => setThemeSelection(value)}
-                        value={themeSelection}
+                        value={themeSelection != null ? themeSelection : ''}
                         items={[{ key: '1', label: 'dark', value: 'dark' }, { key: '2', label: 'light', value: 'light' }]}
                         style={pickerStyles(currentTheme)}
                     />
