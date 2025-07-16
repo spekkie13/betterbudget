@@ -2,7 +2,7 @@ import {styles_title} from "@/styles/general/styles_title"
 import {Text, View} from 'react-native'
 import {useThemeContext} from "@/theme/ThemeContext"
 
-const Title = ({text}) => {
+export const Title = ({text}) => {
     const { currentTheme } = useThemeContext()
     const styles = styles_title(currentTheme)
 
@@ -12,5 +12,3 @@ const Title = ({text}) => {
         </View>
     )
 }
-
-export default Title

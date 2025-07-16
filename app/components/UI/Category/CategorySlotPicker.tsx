@@ -2,20 +2,8 @@ import React from 'react'
 import {Text, TouchableOpacity, View} from 'react-native'
 import CategoryCard from "@/app/components/UI/Category/CategoryCard"
 import {styles_categorySlotPicker} from "@/styles/tabs/profile/styles_categorySlotPicker"
-
-export interface Category {
-    id: number
-    name: string
-    color: string
-    icon: string
-    userId: number
-}
-
-interface CategorySlotPickerProps {
-    theme: any
-    selectedCategories: (Category | null)[]
-    onSlotPress?: (index: number) => void
-}
+import {Category} from "@/types/models";
+import {CategorySlotPickerProps} from "@/types/props";
 
 const CategorySlotPicker: React.FC<CategorySlotPickerProps> = ({selectedCategories, onSlotPress, theme}) => {
     const rows: (Category | null)[][] = []

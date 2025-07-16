@@ -1,15 +1,11 @@
 import {Text, View} from "react-native";
-import {CustomLink} from "@/app/components/Text/CustomLink";
+import {CustomLink} from "@/app/components/General/CustomLink";
 import {ConvertMonthToName} from "@/helpers/DateHelpers";
 import React from "react";
 import { useRouter } from "expo-router";
 import {useThemeContext} from "@/theme/ThemeContext";
 import {styles_expenseMonthSelection} from "@/styles/tabs/expense/styles_expenseMonthSelection";
-
-interface ExpensePanelProps {
-    groupedDates: any
-    categoryId: string
-}
+import {ExpensePanelProps} from "@/types/props";
 
 const MonthsExpensePanel = ({groupedDates, categoryId}: ExpensePanelProps) => {
     const router = useRouter()

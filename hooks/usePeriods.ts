@@ -1,16 +1,11 @@
 import {useContext, useEffect, useState} from "react";
-import {Period} from "@/models/period";
-import {getDistinctPeriods} from "@/api/PeriodController";
-import {checkForExistingExpenses} from "@/api/ExpenseController";
-import {categoryNameOther} from "@/constants/messageConstants";
-import {AuthContext} from "@/app/ctx";
+import {Period} from "@/types/models"
+import { getDistinctPeriods, checkForExistingExpenses } from '@/api'
+import {categoryNameOther} from "@/constants"
+import {AuthContext} from "@/app/ctx"
+import {PeriodProps} from "@/types/props"
 
-interface usePeriodsProps {
-    categoryId: string
-    categoryName: string
-}
-
-export function usePeriods({categoryId, categoryName}: usePeriodsProps) {
+export function usePeriods({categoryId, categoryName}: PeriodProps) {
     const { user } = useContext(AuthContext)
     const [groupedDates, setGroupedDates] = useState<Map<number, number[]>>(new Map())
     const [loading, setLoading] = useState(true)

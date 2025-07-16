@@ -1,17 +1,10 @@
 import React from "react"
 import {Modal, Text, TouchableOpacity, View} from "react-native"
 import {styles_expenseDetailModal} from "@/styles/tabs/expense/styles_expenseDetailModal"
-import {Expense} from "@/models/expense"
 import {useThemeContext} from "@/theme/ThemeContext"
+import {ExpenseDetailModalProps} from "@/types/props"
 
-type Props = {
-    visible: boolean
-    onClose: () => void
-    data: Expense
-    valuta: string
-}
-
-const ExpenseDetailModal: React.FC<Props> = ({visible, onClose, data, valuta}) => {
+const ExpenseDetailModal: React.FC<ExpenseDetailModalProps> = ({visible, onClose, data, valuta} : ExpenseDetailModalProps) => {
     const { currentTheme } = useThemeContext()
     const styles = styles_expenseDetailModal(currentTheme)
 

@@ -1,7 +1,7 @@
-import {useThemeContext} from "@/theme/ThemeContext";
-import {updateAllUserPreferences} from "@/api/PreferenceController";
-import {preferenceStore} from "@/hooks/preferenceStore";
-import {useEffect, useState} from "react";
+import {useEffect, useState} from "react"
+import {useThemeContext} from "@/theme/ThemeContext"
+import {updateAllUserPreferences} from "@/api"
+import {preferenceStore} from "@/hooks"
 
 export function usePreferences() {
     const { setTheme } = useThemeContext()

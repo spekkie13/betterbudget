@@ -1,17 +1,14 @@
 import { Text, View } from 'react-native'
-import Logo from '@/app/components/UI/General/Logo'
 import React, { useContext, useMemo } from 'react'
-import Title from '@/app/components/Text/Title'
-import { AuthContext } from '@/app/ctx'
-import { pickerStyles, styles_settings } from '@/styles/tabs/settings/styles_settings'
 import { router } from 'expo-router'
 import RNPickerSelect from 'react-native-picker-select'
+import { Logo, Title, Button } from '@/app/components/General'
+import { AuthContext } from '@/app/ctx'
+import { pickerStyles, styles_settings } from '@/styles/tabs/settings/styles_settings'
 import { supabase } from "@/lib/supabase"
-import { preferenceStore } from "@/hooks/preferenceStore"
-import { updateAllUserPreferences } from "@/api/PreferenceController"
+import { preferenceStore, usePreferences } from "@/hooks"
+import { updateAllUserPreferences } from "@/api"
 import { useThemeContext } from '@/theme/ThemeContext'
-import Button from "@/app/components/UI/General/Button";
-import {usePreferences} from "@/hooks/usePreferences";
 
 const Settings = () => {
     const {

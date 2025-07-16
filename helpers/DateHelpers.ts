@@ -1,4 +1,4 @@
-import {MonthNames} from '@/constants/monthNames'
+import {MonthNames} from '@/constants'
 
 export function ConvertMonthToName(month: number): string {
     const monthNumber = month - 1

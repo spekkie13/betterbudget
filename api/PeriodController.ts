@@ -1,6 +1,6 @@
-import {Period} from "@/models/period"
-import {DATE_BASE_URL, FIND_OR_CREATE_PERIOD_BASE_URL} from "@/constants/apiConstants"
-import {formRequestNoBody} from "@/helpers/ApiHelpers"
+import {Period} from "@/types/models"
+import {DATE_BASE_URL, FIND_OR_CREATE_PERIOD_BASE_URL} from "@/constants"
+import {formRequestNoBody} from "@/helpers"
 
 export async function getMostRecentPeriod(UserId: number, CategoryId: number) {
     const url: string = `${DATE_BASE_URL}?userId=${UserId}&categoryId=${CategoryId}/recent`

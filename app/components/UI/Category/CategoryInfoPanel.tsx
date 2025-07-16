@@ -1,11 +1,11 @@
 import React, {useCallback, useContext, useState} from "react"
 import {ActivityIndicator, Text, View} from "react-native"
+import {useFocusEffect} from "@react-navigation/native"
 import {AuthContext} from "@/app/ctx"
 import {styles_categoryInfoPanel} from "@/styles/tabs/category/styles_categoryInfoPanel"
-import SubTitle from "@/app/components/Text/SubTitle"
-import {useCategories} from "@/hooks/useCategories"
+import { SubTitle } from "@/app/components/General"
+import {useCategories} from "@/hooks"
 import CategoriesList from "@/app/components/UI/Category/CategoriesList"
-import {useFocusEffect} from "@react-navigation/native";
 
 const CategoryInfoPanel = ({ theme }: { theme: any }) => {
     const {user} = useContext(AuthContext)

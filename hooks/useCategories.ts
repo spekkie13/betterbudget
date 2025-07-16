@@ -1,15 +1,10 @@
 import {useEffect, useState} from "react"
-import {getCategories, getSelectedCategories} from "@/api/CategoryController"
-import {Category} from "@/models/category"
-import {preferenceStore} from "@/hooks/preferenceStore"
+import {getCategories, getSelectedCategories} from "@/api"
+import {Category} from "@/types/models"
+import {preferenceStore} from "@/hooks"
+import {CategoriesProps} from "@/types/props"
 
-type UseCategoriesOptions = {
-    userId: number
-    selectedOnly?: boolean
-    refreshTrigger?: any
-}
-
-export const useCategories = ({userId, selectedOnly = false, refreshTrigger }: UseCategoriesOptions) => {
+export const useCategories = ({userId, selectedOnly = false, refreshTrigger = 0 }: CategoriesProps) => {
     const [categories, setCategories] = useState<Category[]>([])
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState<string | null>(null)

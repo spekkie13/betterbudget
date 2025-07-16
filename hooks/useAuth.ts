@@ -1,15 +1,12 @@
 import {useContext, useState} from 'react'
+import {useRouter} from "expo-router"
 import {AuthContext} from '@/app/ctx'
 import { useThemeContext } from '@/theme/ThemeContext'
 import {supabase} from "@/lib/supabase"
-import {errorLoginMessage, genericFailureMessage} from "@/constants/messageConstants"
-import {createNewUser, getUser} from "@/api/UserController"
-import {User} from "@/models/user"
-import {Team} from "@/models/team"
-import {getTeamById} from "@/api/TeamController"
-import {preferenceStore} from "@/hooks/preferenceStore"
-import {getUserPreferences, setupNewUserPrefs, updateAllUserPreferences} from "@/api/PreferenceController"
-import {useRouter} from "expo-router"
+import {errorLoginMessage, genericFailureMessage} from "@/constants"
+import { createNewUser, getUser, getTeamById, getUserPreferences, setupNewUserPrefs, updateAllUserPreferences } from '@/api'
+import {Team, User} from "@/types/models"
+import {preferenceStore} from "@/hooks"
 
 export function useAuth() {
     const { login, logout } = useContext(AuthContext)
@@ -36,7 +33,8 @@ export function useAuth() {
         try {
             const { data, error } = await supabase.auth.signInWithPassword({ email, password });
             if (error || !data.user) {
-                showMessage(errorLoginMessage);
+                showMessage(error.message)
+                // showMessage(errorLoginMessage);
                 return;
             }
 

@@ -3,7 +3,7 @@ import {Text, TouchableOpacity, View} from "react-native"
 import {Router, useRouter} from "expo-router"
 import FontAwesome from "@expo/vector-icons/FontAwesome"
 
-import Title from "@/app/components/Text/Title"
+import {Title} from "@/app/components/General"
 import {styles_AddNew} from "@/styles/tabs/home/styles_AddNew"
 import {useThemeContext} from "@/theme/ThemeContext"
 

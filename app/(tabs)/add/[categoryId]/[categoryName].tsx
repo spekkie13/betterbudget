@@ -4,14 +4,13 @@ import FontAwesome from '@expo/vector-icons/FontAwesome'
 import {useLocalSearchParams, useRouter} from 'expo-router'
 import {styles_expenseMonthSelection} from '@/styles/tabs/expense/styles_expenseMonthSelection'
 
-import Title from '@/app/components/Text/Title'
+import { Title, Button } from '@/app/components/General'
 import CategoryDeleteModal from '@/app/components/UI/Category/CategoryDeleteModal'
 import CategoryEditModal from '@/app/components/UI/Category/CategoryEditModal'
+import MonthsExpensePanel from "@/app/components/UI/Expense/MonthsExpensePanel";
 
 import {useThemeContext} from "@/theme/ThemeContext"
-import Button from "@/app/components/UI/General/Button"
-import {usePeriods} from "@/hooks/usePeriods";
-import MonthsExpensePanel from "@/app/components/MonthsExpensePanel";
+import {usePeriods} from "@/hooks";
 
 const MonthSelection = () => {
     const router = useRouter()

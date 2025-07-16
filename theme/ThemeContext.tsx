@@ -1,7 +1,6 @@
 import React, { createContext, useContext, useEffect, useState, ReactNode } from "react"
-import { CustomDarkTheme } from "@/theme/Theme"
-import { CustomLightTheme } from "@/theme/Theme"
-import { preferenceStore } from "@/hooks/preferenceStore"
+import { CustomDarkTheme, CustomLightTheme } from "@/theme/Theme"
+import { preferenceStore } from "@/hooks"
 
 interface ThemeContextType {
     theme: "light" | "dark"

@@ -1,6 +1,6 @@
-import {INCOME_BASE_URL} from "@/constants/apiConstants"
-import {formRequestNoBody} from "@/helpers/ApiHelpers"
-import {Income} from "@/models/income"
+import {INCOME_BASE_URL} from "@/constants"
+import {formRequestNoBody} from "@/helpers"
+import {Income} from "@/types/models"
 
 export async function getIncomes(userId: number): Promise<Income[]> {
     const url = `${INCOME_BASE_URL}?userId=${userId}`

@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from "react"
 import {Modal, Text, TouchableOpacity, View} from "react-native"
 import {styles_categoryEditModal} from "@/styles/tabs/category/styles_categoryEditModal"
-import {getCategories} from "@/api/CategoryController"
+import {getCategories} from "@/api"
 import {useThemeContext} from "@/theme/ThemeContext"
 
 const CategoryEditModal = ({visible, onClose, categoryId}) => {

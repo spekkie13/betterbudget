@@ -1,7 +1,7 @@
 export interface IResult {
     id: number
     totalSpent: number
-    percentageSpent: number
+    percentageSpent?: number
     userId: number
     categoryId: number
     periodId: number
@@ -10,7 +10,7 @@ export interface IResult {
 export class Result implements IResult {
     id: number
     totalSpent: number
-    percentageSpent: number
+    percentageSpent?: number
     userId: number
     categoryId: number
     periodId: number

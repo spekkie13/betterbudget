@@ -1,8 +1,8 @@
-import {Result} from "@/models/periodresult"
-import {PERIOD_RESULT_BASE_URL} from "@/constants/apiConstants"
-import {formRequestNoBody} from "@/helpers/ApiHelpers"
+import {Result} from "@/types/models"
+import {PERIOD_RESULT_BASE_URL} from "@/constants"
+import {formRequestNoBody, formRequestWithBody} from "@/helpers"
 
-export async function getMostRecentResult(userId: number, categoryId: number, periodId: number): Promise<Result> {
+export async function getResultByCategoryAndPeriod(userId: number, categoryId: number, periodId: number): Promise<Result> {
     const url = `${PERIOD_RESULT_BASE_URL}?userId=${userId}&categoryId=${categoryId}&periodId=${periodId}`
     const request: RequestInfo = formRequestNoBody(url, 'GET')
     try {
@@ -24,4 +24,26 @@ export async function getMostRecentResult(userId: number, categoryId: number, pe
         console.error('Failed to fetch recent period data:', error)
         throw error
     }
+}
+
+export async function UpdateResult(id: number, result: Result){
+    const body = {
+        id,
+        totalSpent: result.totalSpent,
+        percentageSpent: result.percentageSpent,
+        userId: result.userId,
+        categoryId: result.categoryId,
+        periodId: result.periodId,
+    }
+
+    const request = formRequestWithBody(PERIOD_RESULT_BASE_URL, 'PUT', body)
+    const response = await fetch(request)
+
+    if (!response.ok) {
+        const errorText = await response.text()
+        console.error('Update failed:', errorText)
+        throw new Error(`Failed to update result with ID ${id}`)
+    }
+
+    return await response.json()
 }

@@ -1,20 +1,14 @@
 import React, {useContext, useState} from 'react'
 import {FlatList, Modal, Text, TouchableOpacity, View} from 'react-native'
-import CategorySlotPicker, {Category} from './CategorySlotPicker'
-import {saveCategorySlots} from "@/api/PreferenceController"
+import CategorySlotPicker from './CategorySlotPicker'
+import {saveCategorySlots} from "@/api"
 import {styles_categorySlotPickerModal} from "@/styles/tabs/profile/styles_categorySlotPickerModal"
-import {useCategories} from "@/hooks/useCategories";
-import {AuthContext} from "@/app/ctx";
+import {useCategories} from "@/hooks"
+import {AuthContext} from "@/app/ctx"
+import { CategorySlotPickerModalProps } from "@/types/props"
+import {Category} from "@/types/models"
 
-interface Props {
-    theme: any
-    visible: boolean
-    onClose: () => void
-    selected: (Category | null)[]
-    onChange: (updated: (Category | null)[]) => void
-}
-
-const CategorySlotPickerModal: React.FC<Props> = ({theme, visible, onClose, selected, onChange}) => {
+const CategorySlotPickerModal: React.FC<CategorySlotPickerModalProps> = ({theme, visible, onClose, selected, onChange} : CategorySlotPickerModalProps) => {
     const [localSelected, setLocalSelected] = useState<(Category | null)[]>(selected)
     const [activeSlot, setActiveSlot] = useState<number | null>(null)
     const styles = styles_categorySlotPickerModal(theme)

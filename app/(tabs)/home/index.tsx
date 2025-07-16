@@ -1,15 +1,13 @@
-import {ActivityIndicator, ScrollView, Text, View} from 'react-native'
-import Title from '@/app/components/Text/Title'
-import Logo from '@/app/components/UI/General/Logo'
 import React from 'react'
-import CategoryInfoPanel from "@/app/components/UI/Category/CategoryInfoPanel"
 import {useRouter} from "expo-router"
-import {genericFailureMessage} from "@/constants/messageConstants"
+import {ActivityIndicator, ScrollView, Text, View} from 'react-native'
+import { Title, Logo, Button } from '@/app/components/General'
+
+import CategoryInfoPanel from "@/app/components/UI/Category/CategoryInfoPanel"
+import {genericFailureMessage} from "@/constants"
 import {styles_home} from "@/styles/styles_home"
 import { useThemeContext } from '@/theme/ThemeContext'
-import Button from "@/app/components/UI/General/Button";
-import {useSpendingRoom} from "@/hooks/useSpendingRoom";
-import {preferenceStore} from "@/hooks/preferenceStore";
+import {useSpendingRoom, preferenceStore} from "@/hooks"
 
 const HomeScreen = () => {
     const { loading, error, spendingRoom, username } = useSpendingRoom()

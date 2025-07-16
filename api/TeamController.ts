@@ -1,6 +1,6 @@
-import {Team} from '@/models/team'
-import {TEAM_BASE_URL} from "@/constants/apiConstants"
-import {formRequestNoBody} from "@/helpers/ApiHelpers"
+import {Team} from '@/types/models'
+import {TEAM_BASE_URL} from "@/constants"
+import {formRequestNoBody} from "@/helpers"
 
 export async function getTeamById(teamId: number): Promise<Team> {
     const url = `${TEAM_BASE_URL}?teamId=${teamId}`

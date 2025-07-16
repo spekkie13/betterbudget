@@ -1,4 +1,4 @@
-import {UserPreference} from "@/models/preference"
+import {UserPreference} from "@/types/models"
 
 export class PreferenceStore {
     private preferences: UserPreference[] = []

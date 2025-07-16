@@ -1,18 +1,11 @@
-import * as React from "react"
-import {useState} from "react"
+import React, { useState } from "react"
+import {useRouter} from "expo-router"
 import {SafeAreaView} from "react-native-safe-area-context"
 import {ActivityIndicator, KeyboardAvoidingView, ScrollView, Text, View } from "react-native"
-import Title from "@/app/components/Text/Title"
-import Logo from "@/app/components/UI/General/Logo"
+import { Button, CustomLink, InputField, Logo, MessageBanner, Title } from '@/app/components/General'
 import {styles_login} from '@/styles/styles_login'
-import {useRouter} from "expo-router"
 import {useThemeContext} from "@/theme/ThemeContext"
-import {InputField} from "@/app/components/UI/InputField";
-import Button from "@/app/components/UI/General/Button";
-import {useAuth} from "@/hooks/useAuth";
-import {MessageBanner} from "@/app/components/Text/MessageBanner";
-import {CustomLink} from "@/app/components/Text/CustomLink";
-
+import {useAuth} from "@/hooks"
 
 function Login(): React.JSX.Element {
     const { message, loading, signUp } = useAuth()

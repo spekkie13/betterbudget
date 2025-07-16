@@ -2,7 +2,7 @@ import {styles_subtitle} from "@/styles/general/styles_subtitle"
 import {Text, View} from 'react-native'
 import {useThemeContext} from "@/theme/ThemeContext"
 
-const SubTitle = ({text}) => {
+export const SubTitle = ({text}) => {
     const { currentTheme } = useThemeContext()
     const styles = styles_subtitle(currentTheme)
 
@@ -12,5 +12,3 @@ const SubTitle = ({text}) => {
         </View>
     )
 }
-
-export default SubTitle

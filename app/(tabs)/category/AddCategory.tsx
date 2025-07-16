@@ -1,16 +1,12 @@
 import React, {useContext, useState} from "react"
 import {Text, View} from "react-native"
 import {useRouter} from "expo-router"
-import Title from "@/app/components/Text/Title"
+import { Title, Button, InputField } from '@/app/components/General'
 import {AuthContext} from "@/app/ctx"
-import {genericFailureMessage, successCreateMessage} from "@/constants/messageConstants"
+import {genericFailureMessage, successCreateMessage, CATEGORY_WITH_BUDGET_BASE_URL} from "@/constants"
 import {styles_addCategory} from "@/styles/tabs/category/styles_addCategory"
-import {CATEGORY_WITH_BUDGET_BASE_URL} from "@/constants/apiConstants"
-import {getNextPeriod} from "@/api/PeriodController"
-import {checkIfCategoryExists} from "@/api/CategoryController"
+import { getNextPeriod, checkIfCategoryExists,  } from '@/api'
 import {useThemeContext} from "@/theme/ThemeContext"
-import { InputField } from "@/app/components/UI/InputField"
-import Button from "@/app/components/UI/General/Button";
 
 const AddCategory = () => {
     const [category, setCategory] = useState("")

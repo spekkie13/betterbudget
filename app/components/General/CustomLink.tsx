@@ -1,10 +1,5 @@
 import {Text, Pressable} from 'react-native'
-
-interface CustomLinkProps {
-    text: string
-    onPress: () => void
-    style?: any
-}
+import {CustomLinkProps} from "@/types/props";
 
 export function CustomLink({text, onPress, style}: CustomLinkProps) {
     return (

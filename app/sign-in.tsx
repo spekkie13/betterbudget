@@ -2,16 +2,11 @@ import * as React from "react"
 import { useState } from "react"
 import { SafeAreaView} from "react-native-safe-area-context"
 import { ActivityIndicator, KeyboardAvoidingView, ScrollView, Text, View } from "react-native"
-import Logo from "@/app/components/UI/General/Logo"
+import { Button, CustomLink, InputField, Logo, MessageBanner } from '@/app/components/General'
 import { styles_login } from '@/styles/styles_login'
 import {useRouter} from 'expo-router'
-import { useAuth } from "@/hooks/useAuth"
-
+import { useAuth } from "@/hooks"
 import {useThemeContext} from "@/theme/ThemeContext"
-import {InputField} from "@/app/components/UI/InputField"
-import {MessageBanner} from "@/app/components/Text/MessageBanner";
-import Button from "@/app/components/UI/General/Button";
-import {CustomLink} from "@/app/components/Text/CustomLink";
 
 function Login(): React.JSX.Element {
     const { signIn, loading, message } = useAuth()

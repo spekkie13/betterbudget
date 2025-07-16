@@ -1,14 +1,9 @@
-import {PERIOD_BUDGET_BASE_URL} from "@/constants/apiConstants"
-import {Budget} from "@/models/budget"
-import {formRequestNoBody, formRequestWithBody} from "@/helpers/ApiHelpers"
-import {getIncomes} from "@/api/IncomeController"
-import {getExpensesByUser} from "@/api/ExpenseController"
-import {Income} from "@/models/income"
-import {Expense} from "@/models/expense"
-import {getPeriodByDate} from "@/api/PeriodController"
-import {Period} from "@/models/period"
+import {PERIOD_BUDGET_BASE_URL} from "@/constants"
+import {Budget, Expense, Income, Period} from "@/types/models"
+import {formRequestNoBody, formRequestWithBody} from "@/helpers"
+import {getExpensesByUser, getIncomes, getPeriodByDate} from "@/api"
 
-export async function getBudgetByCategoryAndDate(userId: number, categoryId: number, periodId: number): Promise<Budget> {
+export async function getBudgetByCategoryAndPeriod(userId: number, categoryId: number, periodId: number): Promise<Budget> {
     const url = `${PERIOD_BUDGET_BASE_URL}?userId=${userId}&categoryId=${categoryId}&periodId=${periodId}`
     const request: RequestInfo = formRequestNoBody(url, 'GET')
 

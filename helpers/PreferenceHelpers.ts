@@ -1,6 +1,6 @@
-import {IUserPreference} from "@/models/preference";
+import {UserPreference} from "@/types/models";
 
-export function createDefaultPreferences(userId: number): IUserPreference[] {
+export function createDefaultPreferences(userId: number): UserPreference[] {
     return [
         {
             id: 0,

@@ -1,8 +1,7 @@
 import React, { createContext, useEffect, useState } from 'react'
 import { supabase } from '@/lib/supabase'
-import { User } from '@/models/user'
-import { Team } from '@/models/team'
-import { getUser } from '@/api/UserController'
+import { Team, User } from '@/types/models'
+import { getUser } from '@/api'
 
 interface AuthContextType {
     user: User | null

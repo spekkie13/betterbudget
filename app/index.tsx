@@ -1,7 +1,7 @@
 import {Redirect} from 'expo-router'
 import {AuthContext} from "@/app/ctx"
 import {useContext, useEffect, useState} from "react"
-import {useCustomFonts} from "@/hooks/useFonts"
+import {useCustomFonts} from "@/hooks"
 
 const StartPage = () => {
     const [fontsLoaded, setFontsLoaded] = useState(false)

@@ -1,16 +1,9 @@
-import {StyleSheet, Pressable, Text, ViewStyle} from "react-native"
+import {StyleSheet, Pressable, Text} from "react-native"
 import React from "react"
 import {useThemeContext} from "@/theme/ThemeContext";
+import {ButtonProps} from "@/types/props"
 
-interface ButtonProps {
-    text: string,
-    onPress?: () => void,
-    color?: string,
-    style?: ViewStyle,
-    disabled?: boolean,
-}
-
-export default function Button({
+export function Button({
     text,
     onPress,
     color,

@@ -2,16 +2,10 @@ import React, {useState} from "react";
 import {Text, TouchableOpacity, View} from "react-native";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import ExpenseDetailModal from "@/app/components/UI/Expense/ExpenseDetailModal";
-import {Expense} from "@/models/expense";
-import { Category } from "./UI/Category/CategorySlotPicker";
-import {preferenceStore} from "@/hooks/preferenceStore";
+import {preferenceStore} from "@/hooks";
 import {useThemeContext} from "@/theme/ThemeContext";
 import {styles_categoryDetails} from "@/styles/tabs/category/styles_categoryDetails";
-
-interface ExpensePanelProps {
-    expenses: Expense[]
-    category: Category
-}
+import {ExpensePanelProps} from "@/types/props";
 
 const ExpensePanel = ({ expenses, category}: ExpensePanelProps) => {
     const valuta = preferenceStore.get('valuta').stringValue

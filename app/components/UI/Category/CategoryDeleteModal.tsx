@@ -1,10 +1,8 @@
 import React, { useContext, useEffect, useState } from "react"
 import { Modal, Text, TouchableOpacity, View } from "react-native"
 import { styles_categoryDeleteModal } from '@/styles/tabs/category/styles_categoryDeleteModal'
-import { deleteCategoryById, getCategories } from "@/api/CategoryController"
-import { getBudgetByCategory, updateBudgets } from "@/api/BudgetController"
-import { getExpensesByCategory, updateExpenses } from "@/api/ExpenseController"
-import { Budget } from "@/models/budget"
+import { deleteCategoryById, getCategories, getBudgetByCategory, updateBudgets, getExpensesByCategory, updateExpenses } from "@/api"
+import { Budget } from "@/types/models"
 import { AuthContext } from "@/app/ctx"
 import {useThemeContext} from "@/theme/ThemeContext"
 

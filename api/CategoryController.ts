@@ -1,8 +1,7 @@
-import {Category} from "@/models/category"
-import {CATEGORY_BASE_URL, CATEGORY_EXISTS_URL} from "@/constants/apiConstants"
-import {formRequestNoBody,} from "@/helpers/ApiHelpers"
-import {UserPreference} from "@/models/preference"
-import {preferenceStore} from "@/hooks/preferenceStore"
+import {Category, UserPreference } from "@/types/models"
+import {CATEGORY_BASE_URL, CATEGORY_EXISTS_URL} from "@/constants"
+import {formRequestNoBody} from "@/helpers"
+import {preferenceStore} from "@/hooks"
 
 export async function getCategories(userId: number): Promise<Category[]> {
     const url = `${CATEGORY_BASE_URL}?userId=${userId}`

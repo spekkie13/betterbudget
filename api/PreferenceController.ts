@@ -1,12 +1,10 @@
-import {USER_PREFERENCES_BASE_URL} from '@/constants/apiConstants'
-import {formRequestNoBody, formRequestWithBody} from "@/helpers/ApiHelpers"
-import {IUserPreference, UserPreference} from "@/models/preference"
-import {Category} from "@/models/category"
-import {preferenceStore} from "@/hooks/preferenceStore"
-import {createDefaultPreferences} from "@/helpers/PreferenceHelpers";
+import {USER_PREFERENCES_BASE_URL} from '@/constants'
+import {formRequestNoBody, formRequestWithBody, createDefaultPreferences} from "@/helpers"
+import {Category, UserPreference} from "@/types/models"
+import {preferenceStore} from "@/hooks"
 
 export async function setupNewUserPrefs(userId: number): Promise<void> {
-    const preferences : IUserPreference[] = createDefaultPreferences(userId)
+    const preferences : UserPreference[] = createDefaultPreferences(userId)
 
     await Promise.all(
         preferences.map(async (pref) => {

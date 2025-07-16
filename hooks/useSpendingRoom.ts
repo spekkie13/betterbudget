@@ -1,6 +1,6 @@
 import {AuthContext} from "@/app/ctx";
 import {useContext, useEffect, useState} from "react";
-import {determineSpendingRoom} from "@/api/BudgetController";
+import {determineSpendingRoom} from "@/api";
 import {useRouter} from "expo-router";
 
 export function useSpendingRoom() {

@@ -1,13 +1,12 @@
 import React, {useContext, useState} from 'react'
 import {View} from 'react-native'
+import { Title, Button, SubTitle } from '@/app/components/General'
 import {AuthContext} from '@/app/ctx'
-import CategorySlotPicker, {Category} from '../../components/UI/Category/CategorySlotPicker'
+import CategorySlotPicker from '../../components/UI/Category/CategorySlotPicker'
 import CategorySlotPickerModal from '../../components/UI/Category/CategorySlotPickerModal'
 import {styles_profile} from "@/styles/tabs/profile/styles_profile"
-import Title from "@/app/components/Text/Title"
-import SubTitle from "@/app/components/Text/SubTitle"
 import {useThemeContext} from "@/theme/ThemeContext"
-import Button from "@/app/components/UI/General/Button";
+import {Category} from "@/types/models";
 
 const Profile = () => {
     const {user} = useContext(AuthContext)
