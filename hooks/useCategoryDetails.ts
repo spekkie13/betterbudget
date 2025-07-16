@@ -2,8 +2,6 @@ import { useContext, useEffect, useState } from "react"
 import { AuthContext } from "@/app/ctx"
 import { preferenceStore } from "@/hooks"
 import {
-    getMostRecentPeriod,
-    getPeriodByDate,
     getCategoryById,
     getExpensesByCategoryAndDate,
     getBudgetByCategoryAndPeriod,
@@ -12,60 +10,41 @@ import {
 import {Category, Expense, Period, Result} from "@/types/models"
 
 interface UseCategoryDetailsOptions {
-    date?: Date;
-    periodId?: number;
     categoryId: number;
+    period: Period;
     fetchCategory?: boolean;
     fetchExpenses?: boolean;
     fetchBudget?: boolean;
     fetchResult?: boolean;
-    mostRecent?: boolean;
 }
 
 interface EnhancedResult extends Result {
     percentageSpent?: number
 }
 
-export function useCategoryDetails({ date, periodId, categoryId, fetchCategory = true, fetchExpenses = true, fetchBudget = true, fetchResult = true, mostRecent }: UseCategoryDetailsOptions) {
+export function useCategoryDetails({ categoryId, period, fetchCategory = true, fetchExpenses = true, fetchBudget = true, fetchResult = true }: UseCategoryDetailsOptions) {
     const { user } = useContext(AuthContext);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [category, setCategory] = useState<Category | null>(null);
     const [expenses, setExpenses] = useState<Expense[]>([]);
-    const [period, setPeriod] = useState<Period>();
     const [budgetAmount, setBudgetAmount] = useState<number>(0);
     const [result, setResult] = useState<EnhancedResult | null>(null);
     const valutaPref = preferenceStore.get('valuta')
     const valuta = valutaPref.stringValue
 
     useEffect(() => {
-        if (!user?.id) return;
+        if (!user?.id || !period?.id) return;
 
         const loadData = async () => {
             setLoading(true);
             setError(null);
 
             try {
-                let resolvedPeriodId = periodId;
-                if (!resolvedPeriodId) {
-                    if (!date && !mostRecent) {
-                        console.log("Must provide either date or periodId")
-                    }
-                    if (mostRecent) {
-                        const period = await getMostRecentPeriod(user.id, categoryId)
-                        setPeriod(period)
-                        resolvedPeriodId = period.id;
-                    } else {
-                        const period = await getPeriodByDate(user.id, date);
-                        setPeriod(period);
-                        resolvedPeriodId = period.id;
-                    }
-                }
-
                 const categoryPromise : Promise<Category | null> = fetchCategory ? getCategoryById(user.id, categoryId) : Promise.resolve(null);
-                const expensesPromise : Promise<Expense[]> = fetchExpenses ? getExpensesByCategoryAndDate(user.id, categoryId, resolvedPeriodId!) : Promise.resolve([]);
-                const budgetPromise : Promise<{ amount: number }> = fetchBudget ? getBudgetByCategoryAndPeriod(user.id, categoryId, resolvedPeriodId!) : Promise.resolve({ amount: 0 });
-                const resultPromise : Promise<Result | null> = fetchResult ? getResultByCategoryAndPeriod(user.id, categoryId, resolvedPeriodId!) : Promise.resolve(null);
+                const expensesPromise : Promise<Expense[]> = fetchExpenses ? getExpensesByCategoryAndDate(user.id, categoryId, period.id) : Promise.resolve([]);
+                const budgetPromise : Promise<{ amount: number }> = fetchBudget ? getBudgetByCategoryAndPeriod(user.id, categoryId, period.id) : Promise.resolve({ amount: 0 });
+                const resultPromise : Promise<Result | null> = fetchResult ? getResultByCategoryAndPeriod(user.id, categoryId, period.id) : Promise.resolve(null);
 
                 const [cat, exps, budget, resultRaw] = await Promise.all([
                     categoryPromise,
@@ -98,13 +77,12 @@ export function useCategoryDetails({ date, periodId, categoryId, fetchCategory =
         };
 
         loadData();
-    }, [user?.id, categoryId, date?.getTime(), periodId, fetchCategory, fetchExpenses, fetchBudget, fetchResult]);
+    }, [user?.id, categoryId, period, fetchCategory, fetchExpenses, fetchBudget, fetchResult]);
 
     return {
         category,
         expenses,
         budgetAmount,
-        period,
         result,
         valuta,
         loading,

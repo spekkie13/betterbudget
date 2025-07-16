@@ -11,6 +11,8 @@ export function useUpdateCategory({category, expenses, period} : UpdateCategoryP
     const [budget, setBudget] = useState<Budget | null>(null)
 
     useEffect(() => {
+        if (!user?.id || !category?.id || !period?.id) return;
+
         const fetchData = async () => {
             const res = await getResultByCategoryAndPeriod(user.id, category.id, period.id)
             const bud = await getBudgetByCategoryAndPeriod(user.id, category.id, period.id)
@@ -31,5 +33,5 @@ export function useUpdateCategory({category, expenses, period} : UpdateCategoryP
         await UpdateResult(result.id, result)
     }
 
-    return { result }
+    return { result, updateResult }
 }

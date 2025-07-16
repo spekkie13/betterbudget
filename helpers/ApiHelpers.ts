@@ -1,6 +1,5 @@
 function getHeaders(): Headers {
     const headers: Headers = new Headers()
-    headers.set("Accept", "plain/text")
     headers.set("Content-Type", "application/json")
     return headers
 }

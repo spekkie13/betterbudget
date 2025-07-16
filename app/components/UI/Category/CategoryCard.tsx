@@ -1,15 +1,16 @@
 import {ActivityIndicator, Text, View} from 'react-native'
 import {styles_categoryCard} from "@/styles/tabs/category/styles_categoryCard"
 import React from "react"
-import {useCategoryDetails} from "@/hooks"
+import {useCategoryDetails, usePeriod} from "@/hooks"
 import {CategoryCardProps} from "@/types/props"
 
 const CategoryCard: React.FC<CategoryCardProps> = ({ category, theme } : CategoryCardProps) => {
+    const { period } = usePeriod({ category: category, mostRecent: true })
     const { spent, percentageSpent, budgetAmount, valuta, loading, error } = useCategoryDetails({
         categoryId: category.id,
         fetchCategory: false,
         fetchExpenses: false,
-        mostRecent: true,
+        period: period,
     })
 
     const styles = styles_categoryCard(theme)

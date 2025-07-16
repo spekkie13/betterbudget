@@ -28,15 +28,16 @@ export async function getResultByCategoryAndPeriod(userId: number, categoryId: n
 
 export async function UpdateResult(id: number, result: Result){
     const body = {
-        id,
-        totalSpent: result.totalSpent,
-        percentageSpent: result.percentageSpent,
+        resultId: id,
         userId: result.userId,
         categoryId: result.categoryId,
         periodId: result.periodId,
+        totalSpent: result.totalSpent,
+        percentageSpent: result.percentageSpent,
     }
 
-    const request = formRequestWithBody(PERIOD_RESULT_BASE_URL, 'PUT', body)
+    console.log(body)
+    const request = formRequestWithBody(`${PERIOD_RESULT_BASE_URL}/${id}`, 'PUT', body)
     const response = await fetch(request)
 
     if (!response.ok) {
