@@ -45,7 +45,7 @@ const HomeScreen = () => {
                             }
                         ]}
                     >
-                        {valuta} {spendingRoom}
+                        {valuta} {spendingRoom.toFixed(2).toLocaleString()}
                     </Text>
                 </View>
             </View>

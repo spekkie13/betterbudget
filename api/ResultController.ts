@@ -36,7 +36,6 @@ export async function UpdateResult(id: number, result: Result){
         percentageSpent: result.percentageSpent,
     }
 
-    console.log(body)
     const request = formRequestWithBody(`${PERIOD_RESULT_BASE_URL}/${id}`, 'PUT', body)
     const response = await fetch(request)
 

@@ -1,6 +1,3 @@
 TO DO:
--> update status for category cards upon expense creation
-   => spent
-   => percentage spent
-   => starting amount for spending room
+-> update category status upon loading (or even login)
 -> expand error logging to include more precise error messages

@@ -16,7 +16,7 @@ const CategoryDetails = (): React.JSX.Element => {
     const numericCategoryId = Number(CategoryId)
 
     const { period } = usePeriod({date: date})
-    const { category, expenses, budgetAmount, result, valuta, error, loading } = useCategoryDetails({ period, categoryId: numericCategoryId })
+    const { category, expenses, budget, result, valuta, error, loading } = useCategoryDetails({ period, categoryId: numericCategoryId })
 
     const { updateResult } = useUpdateCategory({category, expenses, period})
     const { currentTheme } = useThemeContext()
@@ -30,10 +30,10 @@ const CategoryDetails = (): React.JSX.Element => {
         <SafeAreaView style={styles.container}>
             <Title text={category.name} />
             <SubTitle
-                text={`${valuta}${result.totalSpent.toFixed(2)} / ${valuta}${budgetAmount.toFixed(2)}`}
+                text={`${valuta}${result.totalSpent.toFixed(2)} / ${valuta}${budget.amount.toFixed(2)}`}
             />
             <Text style={styles.titleText}>
-                Status: {ConvertToPercentage(result.totalSpent, budgetAmount).toFixed(2)}%
+                Status: {ConvertToPercentage(result.totalSpent, budget.amount).toFixed(2)}%
             </Text>
             <Text style={styles.titleText}>Expenses</Text>
 
@@ -42,7 +42,7 @@ const CategoryDetails = (): React.JSX.Element => {
                 <Button
                     text="Back"
                     onPress={async () => {
-                        await updateResult()
+                        await updateResult(budget)
                         router.push({
                             pathname: '/add/[categoryId]/[categoryName]',
                             params: { categoryId: category.id, categoryName: category.name },

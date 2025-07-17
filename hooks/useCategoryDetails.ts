@@ -7,7 +7,7 @@ import {
     getBudgetByCategoryAndPeriod,
     getResultByCategoryAndPeriod
 } from "@/api"
-import {Category, Expense, Period, Result} from "@/types/models"
+import {Budget, Category, Expense, Period, Result} from "@/types/models"
 
 interface UseCategoryDetailsOptions {
     categoryId: number;
@@ -28,7 +28,7 @@ export function useCategoryDetails({ categoryId, period, fetchCategory = true, f
     const [error, setError] = useState<string | null>(null);
     const [category, setCategory] = useState<Category | null>(null);
     const [expenses, setExpenses] = useState<Expense[]>([]);
-    const [budgetAmount, setBudgetAmount] = useState<number>(0);
+    const [budget, setBudget] = useState<Budget>(null);
     const [result, setResult] = useState<EnhancedResult | null>(null);
     const valutaPref = preferenceStore.get('valuta')
     const valuta = valutaPref.stringValue
@@ -43,7 +43,7 @@ export function useCategoryDetails({ categoryId, period, fetchCategory = true, f
             try {
                 const categoryPromise : Promise<Category | null> = fetchCategory ? getCategoryById(user.id, categoryId) : Promise.resolve(null);
                 const expensesPromise : Promise<Expense[]> = fetchExpenses ? getExpensesByCategoryAndDate(user.id, categoryId, period.id) : Promise.resolve([]);
-                const budgetPromise : Promise<{ amount: number }> = fetchBudget ? getBudgetByCategoryAndPeriod(user.id, categoryId, period.id) : Promise.resolve({ amount: 0 });
+                const budgetPromise : Promise<Budget> = fetchBudget ? getBudgetByCategoryAndPeriod(user.id, categoryId, period.id) : Promise.resolve(Budget.empty());
                 const resultPromise : Promise<Result | null> = fetchResult ? getResultByCategoryAndPeriod(user.id, categoryId, period.id) : Promise.resolve(null);
 
                 const [cat, exps, budget, resultRaw] = await Promise.all([
@@ -55,7 +55,7 @@ export function useCategoryDetails({ categoryId, period, fetchCategory = true, f
 
                 if (cat) setCategory(cat);
                 if (Array.isArray(exps)) setExpenses(exps);
-                if (budget && typeof budget.amount === "number") setBudgetAmount(budget.amount);
+                if (budget) setBudget(budget);
 
                 if (resultRaw) {
                     const percentageSpent =
@@ -82,7 +82,7 @@ export function useCategoryDetails({ categoryId, period, fetchCategory = true, f
     return {
         category,
         expenses,
-        budgetAmount,
+        budget,
         result,
         valuta,
         loading,

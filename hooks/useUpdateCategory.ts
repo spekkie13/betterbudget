@@ -1,6 +1,6 @@
 import { UpdateCategoryProps } from "@/types/props"
 import {useContext, useEffect, useState} from "react";
-import {getBudgetByCategoryAndPeriod, getResultByCategoryAndPeriod, UpdateResult} from "@/api";
+import { getResultByCategoryAndPeriod, UpdateResult } from "@/api";
 import {AuthContext} from "@/app/ctx";
 import {ConvertToPercentage} from "@/helpers";
 import {Budget, Result} from "@/types/models";
@@ -8,29 +8,31 @@ import {Budget, Result} from "@/types/models";
 export function useUpdateCategory({category, expenses, period} : UpdateCategoryProps) {
     const { user } = useContext(AuthContext)
     const [result, setResult] = useState<Result | null>(null)
-    const [budget, setBudget] = useState<Budget | null>(null)
 
     useEffect(() => {
         if (!user?.id || !category?.id || !period?.id) return;
 
         const fetchData = async () => {
             const res = await getResultByCategoryAndPeriod(user.id, category.id, period.id)
-            const bud = await getBudgetByCategoryAndPeriod(user.id, category.id, period.id)
             setResult(res)
-            setBudget(bud)
         }
 
         fetchData()
     }, [category, expenses, period])
 
-    async function updateResult () {
+    async function updateResult (budget : Budget) {
+        const result = await getResultByCategoryAndPeriod(user.id, category.id, period.id)
+
         const expenseSum = expenses.reduce((sum, expense) => sum + expense.amount, 0)
-        const percentageSpent = ConvertToPercentage(expenseSum, budget.amount)
+        const percentageSpent = Number(ConvertToPercentage(expenseSum, budget.amount ?? 0).toFixed(2))
 
-        result.totalSpent = expenseSum
-        result.percentageSpent = percentageSpent
+        const updatedResult = {
+            ...result,
+            totalSpent: expenseSum,
+            percentageSpent: percentageSpent,
+        }
 
-        await UpdateResult(result.id, result)
+        await UpdateResult(result.id, updatedResult)
     }
 
     return { result, updateResult }
