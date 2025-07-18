@@ -50,6 +50,7 @@ export const styles_expenseMonthSelection = (theme : any) => StyleSheet.create({
         color: theme.colors.failureColor
     },
     monthItem: {
+        color: theme.colors.textColor,
         height: 30
     }
 })

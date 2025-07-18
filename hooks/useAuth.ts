@@ -13,7 +13,7 @@ export function useAuth() {
     const { refreshTheme } = useThemeContext()
     const router = useRouter()
 
-    const [loading, setLoading] = useState<boolean>(false)
+    const [loading, setLoading] = useState(false)
     const [message, setMessage] = useState<string | null>('')
 
     function showMessage(msg: string) {

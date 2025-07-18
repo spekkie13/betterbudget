@@ -1,7 +1,7 @@
 import {PERIOD_BUDGET_BASE_URL} from "@/constants"
 import {Budget, Expense, Income, Period} from "@/types/models"
 import {formRequestNoBody, formRequestWithBody} from "@/helpers"
-import {getExpensesByUser, getIncomes, getPeriodByDate} from "@/api"
+import {getAllPeriods, getExpensesByUser, getIncomes, getPeriodByDate} from "@/api"
 
 export async function getBudgetByCategoryAndPeriod(userId: number, categoryId: number, periodId: number): Promise<Budget> {
     const url = `${PERIOD_BUDGET_BASE_URL}?userId=${userId}&categoryId=${categoryId}&periodId=${periodId}`
@@ -67,6 +67,9 @@ export async function updateBudgets(periodBudgets: Budget[], newCategoryId: numb
 export async function determineSpendingRoom(userId: number): Promise<number> {
     const mostRecentPeriod : Period = await getPeriodByDate(userId, new Date())
 
+    const secondMostRecentPeriod : Period = await getAllPeriods(userId)
+    const startingAmount = secondMostRecentPeriod.startAmount
+
     let incomes : Income[] = await getIncomes(userId)
     let expenses : Expense[] = await getExpensesByUser(userId)
 
@@ -76,7 +79,7 @@ export async function determineSpendingRoom(userId: number): Promise<number> {
     const expenseSum: number = expenses.reduce((sum : number, current : Expense) : number => sum + Number(current.amount), 0)
     const incomeSum: number = incomes.reduce((sum : number, current : Income) : number => sum + Number(current.amount), 0)
 
-    let spendingRoom: number = Number.parseFloat(incomeSum.toFixed(2)) - Number.parseFloat(expenseSum.toFixed(2))
+    let spendingRoom: number = startingAmount + Number.parseFloat(incomeSum.toFixed(2)) - Number.parseFloat(expenseSum.toFixed(2))
     if (Number.isNaN(spendingRoom)) {
         spendingRoom = 0
     }

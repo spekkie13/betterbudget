@@ -1,5 +1,8 @@
+import {StyleProp, TextStyle} from "react-native";
+
 export interface CustomLinkProps {
     text: string
     onPress: () => void
-    style?: any
+    style?: StyleProp<TextStyle>
+    accessibilityLabel?: string
 }

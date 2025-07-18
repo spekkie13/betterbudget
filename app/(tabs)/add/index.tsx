@@ -2,8 +2,6 @@ import React from "react"
 import {Text, TouchableOpacity, View} from "react-native"
 import {Router, useRouter} from "expo-router"
 import FontAwesome from "@expo/vector-icons/FontAwesome"
-
-import {Title} from "@/app/components/General"
 import {styles_AddNew} from "@/styles/tabs/home/styles_AddNew"
 import {useThemeContext} from "@/theme/ThemeContext"
 
@@ -14,8 +12,6 @@ const AddNew = () => {
 
     return (
         <View style={styles.container}>
-            <Title text="Add a new Item"/>
-
             <View style={styles.addItems}>
                 <View style={styles.itemView}>
                     <TouchableOpacity
@@ -33,6 +29,15 @@ const AddNew = () => {
                     >
                         <FontAwesome name="dollar" size={32} color={currentTheme.colors.textColor}/>
                         <Text style={styles.item}>Add an expense</Text>
+                    </TouchableOpacity>
+                </View>
+                <View style={styles.itemView}>
+                    <TouchableOpacity
+                        style={styles.touchable}
+                        onPress={() => router.replace("/(tabs)/add/addIncome")}
+                    >
+                        <FontAwesome name="money" size={32} color={currentTheme.colors.textColor}/>
+                        <Text style={styles.item}>Add an income</Text>
                     </TouchableOpacity>
                 </View>
             </View>

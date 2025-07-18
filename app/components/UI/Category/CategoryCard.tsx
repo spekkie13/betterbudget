@@ -47,7 +47,7 @@ const CategoryCard: React.FC<CategoryCardProps> = ({ category, theme } : Categor
             <View style={styles.categoryCard}>
                 <Text style={styles.categoryName}>{category.name}</Text>
                 <Text style={styles.spent}>
-                    {valuta} {spent.toFixed(2)} / {valuta} {budget.amount.toFixed(2)}
+                    {valuta} {spent.toFixed(2)} / {valuta} {budget?.amount?.toFixed(2) ?? "0.00"}
                 </Text>
                 <Text style={styles.status}>
                     Status: {percentageSpent.toFixed(2)}%

@@ -9,29 +9,35 @@ export function usePreferences() {
     const [cards, setCards] = useState(0);
     const [valuta, setValuta] = useState('');
     const [themeSelection, setThemeSelection] = useState('');
+    const [startingAmount, setStartingAmount] = useState(0);
 
     useEffect(() => {
         const cardsPref = preferenceStore.get('cards');
         const valutaPref = preferenceStore.get('valuta');
         const themePref = preferenceStore.get('colorScheme');
+        const startingAmountPref = preferenceStore.get('Starting Amount');
         if (cardsPref) setCards(cardsPref.numberValue ?? 4);
         if (valutaPref) setValuta(valutaPref.stringValue ?? '€');
         if (themePref) setThemeSelection(themePref.stringValue ?? 'light');
+        if (startingAmountPref) setStartingAmount(startingAmountPref.numberValue ?? 0);
     }, []);
 
     async function updatePreferences() {
         const cardsPref = preferenceStore.get('cards');
         const valutaPref = preferenceStore.get('valuta');
         const themePref = preferenceStore.get('colorScheme');
-        if (!cardsPref || !valutaPref || !themePref) return;
+        const startingAmountPref = preferenceStore.get('Starting Amount');
+        if (!cardsPref || !valutaPref || !themePref || !startingAmountPref) return;
 
         cardsPref.numberValue = cards;
         valutaPref.stringValue = valuta;
         themePref.stringValue = themeSelection;
+        startingAmountPref.numberValue = startingAmount;
 
         preferenceStore.set(cardsPref);
         preferenceStore.set(valutaPref);
         preferenceStore.set(themePref);
+        preferenceStore.set(startingAmountPref);
 
         if (themeSelection === 'light' || themeSelection === 'dark') {
             setTheme(themeSelection);
@@ -41,12 +47,10 @@ export function usePreferences() {
     }
 
     return {
-        cards,
-        setCards,
-        valuta,
-        setValuta,
-        themeSelection,
-        setThemeSelection,
+        cards, setCards,
+        valuta, setValuta,
+        themeSelection, setThemeSelection,
+        startingAmount, setStartingAmount,
         updatePreferences,
     };
 }

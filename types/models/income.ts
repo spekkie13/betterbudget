@@ -1,14 +1,14 @@
 export interface IIncome {
     id: number
     amount: number
-    date: Date
+    date: string
     userId: number
 }
 
 export class Income implements IIncome {
     id: number
     amount: number
-    date: Date
+    date: string
     userId: number
 
     constructor(data: IIncome) {
@@ -22,7 +22,7 @@ export class Income implements IIncome {
         const incomeData = {
             id: 0,
             amount: 0,
-            date: new Date(),
+            date: new Date().toISOString(),
             userId: 0,
         }
 

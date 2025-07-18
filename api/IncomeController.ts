@@ -1,5 +1,5 @@
 import {INCOME_BASE_URL} from "@/constants"
-import {formRequestNoBody} from "@/helpers"
+import {formRequestNoBody, formRequestWithBody} from "@/helpers"
 import {Income} from "@/types/models"
 
 export async function getIncomes(userId: number): Promise<Income[]> {
@@ -10,6 +10,12 @@ export async function getIncomes(userId: number): Promise<Income[]> {
     return await data.map((item: any) => {
         return formIncome(item)
     })
+}
+
+export async function createNewIncome(income: Income): Promise<boolean> {
+    const request: RequestInfo = formRequestWithBody(INCOME_BASE_URL, 'POST', income)
+    const response: Response = await fetch(request)
+    return await response.json()
 }
 
 export function formIncome(item: any): Income {

@@ -76,7 +76,7 @@ export async function updateUserPreference(id: number, pref: Partial<UserPrefere
         userId: pref.userId ?? 0,
     }
 
-    const request = formRequestWithBody(USER_PREFERENCES_BASE_URL, 'PUT', body)
+    const request = formRequestWithBody(`${USER_PREFERENCES_BASE_URL}/${id}`, 'PUT', body)
     const response = await fetch(request)
 
     if (!response.ok) {

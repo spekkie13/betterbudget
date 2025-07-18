@@ -2,12 +2,22 @@ import {Period} from "@/types/models"
 import {DATE_BASE_URL, FIND_OR_CREATE_PERIOD_BASE_URL} from "@/constants"
 import {formRequestNoBody} from "@/helpers"
 
+export async function getAllPeriods(userId: number){
+    const url: string = `${DATE_BASE_URL}?userId=${userId}`
+    const request: RequestInfo = formRequestNoBody(url, 'GET')
+
+    const response: Response = await fetch(request)
+    const data = await response.json()
+    return formPeriod(data)
+}
+
 export async function getMostRecentPeriod(UserId: number, CategoryId: number) {
     const url: string = `${DATE_BASE_URL}?userId=${UserId}&categoryId=${CategoryId}/recent`
 
     const request: RequestInfo = formRequestNoBody(url, 'GET')
 
     const response: Response = await fetch(request)
+    console.log(response)
     const data = await response.json()
 
     return formPeriod(data)
@@ -38,6 +48,7 @@ export function formPeriod(item: any): Period {
         id: item.id,
         startDate: item.startDate,
         endDate: item.endDate,
+        startAmount: Number(item.startingAmount),
     }
     return new Period(periodData)
 }

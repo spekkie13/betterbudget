@@ -6,7 +6,7 @@ import {CategoriesProps} from "@/types/props"
 
 export const useCategories = ({userId, selectedOnly = false, refreshTrigger = 0 }: CategoriesProps) => {
     const [categories, setCategories] = useState<Category[]>([])
-    const [loading, setLoading] = useState(true)
+    const [loading, setLoading] = useState(false)
     const [error, setError] = useState<string | null>(null)
     const cardsShown = preferenceStore.get('cards')?.numberValue
     const categoryPreferences = preferenceStore.nameContains('category').length > 0
@@ -14,6 +14,7 @@ export const useCategories = ({userId, selectedOnly = false, refreshTrigger = 0 
     useEffect(() => {
         const fetchData = async () => {
             try {
+                setLoading(true)
                 if (userId === undefined) {
                     return
                 }

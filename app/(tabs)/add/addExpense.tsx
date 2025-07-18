@@ -5,10 +5,10 @@ import {useRouter} from "expo-router"
 import {Title, Button, InputField, MessageBanner} from '@/app/components/General'
 import {pickerSelectStyles, styles_AddExpense} from "@/styles/tabs/expense/styles_addExpense"
 import {useThemeContext} from "@/theme/ThemeContext"
-import {useAddExpense} from "@/hooks/useAddExpense";
+import {useAddTransaction} from "@/hooks/useAddTransaction";
 
 const AddExpense = () => {
-    const { message, date, setDate, amount, setAmount, description, setDescription, setSelectedValue, pickerItems, addNewExpense } = useAddExpense()
+    const { message, date, setDate, amount, setAmount, description, setDescription, setSelectedValue, pickerItems, addNewExpense } = useAddTransaction()
     const router = useRouter()
 
     const { currentTheme } = useThemeContext()

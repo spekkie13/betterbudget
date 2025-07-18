@@ -19,6 +19,12 @@ export function createDefaultPreferences(userId: number): UserPreference[] {
             name: 'Cards',
             numberValue: 4,
             userId,
-        }
+        },
+        {
+            id: 0,
+            name: 'Starting Amount',
+            numberValue: 0,
+            userId,
+        },
     ]
 }

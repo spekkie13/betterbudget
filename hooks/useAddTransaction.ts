@@ -1,11 +1,11 @@
 import {useContext, useEffect, useState} from "react";
 import {AuthContext} from "@/app/ctx";
-import {Expense} from "@/types/models";
-import {createNewExpense} from "@/api";
+import {Expense, Income} from "@/types/models";
+import {createNewExpense, createNewIncome} from "@/api";
 import {genericFailureMessage, successCreateMessage} from "@/constants";
 import {useCategories} from "@/hooks/useCategories";
 
-export function useAddExpense() {
+export function useAddTransaction() {
     const { user } = useContext(AuthContext)
     const { categories } = useCategories({userId: user?.id})
 
@@ -64,6 +64,32 @@ export function useAddExpense() {
         }
     }
 
+    const addNewIncome = async () => {
+        if (!date || !amount || !user?.id) {
+            showMessage("Please fill in the required information")
+            return
+        } else {
+            console.log('add new income: ', amount)
+            const [day, month, year] = date.split("-").map(Number)
+            const data = {
+                id: 0,
+                amount: parseFloat(amount),
+                date: new Date(year, month - 1, day).toISOString(),
+                userId: Number(user.id),
+            }
+            const income = new Income(data)
+            const success = await createNewIncome(income)
+
+            if (success) {
+                showMessage(successCreateMessage)
+                setDate('')
+                setAmount('')
+            } else {
+                showMessage(genericFailureMessage)
+            }
+        }
+    }
+
     return {
         message,
         date, setDate,
@@ -71,6 +97,6 @@ export function useAddExpense() {
         description, setDescription,
         selectedValue, setSelectedValue,
         pickerItems,
-        addNewExpense,
+        addNewExpense, addNewIncome,
     }
 }

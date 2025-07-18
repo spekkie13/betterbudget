@@ -24,14 +24,14 @@ interface EnhancedResult extends Result {
 
 export function useCategoryDetails({ categoryId, period, fetchCategory = true, fetchExpenses = true, fetchBudget = true, fetchResult = true }: UseCategoryDetailsOptions) {
     const { user } = useContext(AuthContext);
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [category, setCategory] = useState<Category | null>(null);
     const [expenses, setExpenses] = useState<Expense[]>([]);
-    const [budget, setBudget] = useState<Budget>(null);
+    const [budget, setBudget] = useState<Budget | null>(null);
     const [result, setResult] = useState<EnhancedResult | null>(null);
     const valutaPref = preferenceStore.get('valuta')
-    const valuta = valutaPref.stringValue
+    const valuta = valutaPref?.stringValue ?? "€"
 
     useEffect(() => {
         if (!user?.id || !period?.id) return;

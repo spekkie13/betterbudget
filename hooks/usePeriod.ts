@@ -5,24 +5,45 @@ import {AuthContext} from "@/app/ctx";
 import {UsePeriodProps} from "@/types/props/usePeriodProps";
 
 export function usePeriod({ category, mostRecent, date}: UsePeriodProps) {
-    const [period, setPeriod] = useState<Period>(null)
+    const [period, setPeriod] = useState<Period | null>(null)
+    const [loading, setLoading] = useState(false)
+    const [error, setError] = useState<Error | null>(null)
     const { user } = useContext(AuthContext);
 
     useEffect(() => {
+        if (!user?.id || !category?.id) return;
+
+        let isMounted = true;
+
         const fetchData = async () => {
-            if (mostRecent) {
-                const per = await getMostRecentPeriod(user.id, category.id)
-                setPeriod(per)
-            } else {
-                const per = await getPeriodByDate(user.id, date)
-                setPeriod(per)
+            try {
+                setLoading(true);
+                const per = mostRecent
+                    ? await getMostRecentPeriod(user.id, category.id)
+                    : await getPeriodByDate(user.id, date);
+
+                if (isMounted) {
+                    setPeriod(per);
+                }
+            } catch (err) {
+                if (isMounted) {
+                    setError(err instanceof Error ? err : new Error('Failed to fetch period'));
+                }
+            } finally {
+                setLoading(false);
             }
         }
 
-        fetchData()
-    }, [])
+        fetchData();
+
+        return () => {
+            isMounted = false;
+        };
+    }, [user?.id, category?.id, mostRecent, date]);
 
     return {
-        period
+        period,
+        loading,
+        error
     }
 }

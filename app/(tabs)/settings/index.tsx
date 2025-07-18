@@ -2,7 +2,7 @@ import { Text, View } from 'react-native'
 import React, { useContext, useMemo } from 'react'
 import { router } from 'expo-router'
 import RNPickerSelect from 'react-native-picker-select'
-import { Logo, Title, Button } from '@/app/components/General'
+import {Logo, Title, Button} from '@/app/components/General'
 import { AuthContext } from '@/app/ctx'
 import { pickerStyles, styles_settings } from '@/styles/tabs/settings/styles_settings'
 import { supabase } from "@/lib/supabase"

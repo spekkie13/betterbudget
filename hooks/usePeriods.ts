@@ -8,7 +8,7 @@ import {PeriodProps} from "@/types/props"
 export function usePeriods({categoryId, categoryName}: PeriodProps) {
     const { user } = useContext(AuthContext)
     const [groupedDates, setGroupedDates] = useState<Map<number, number[]>>(new Map())
-    const [loading, setLoading] = useState(true)
+    const [loading, setLoading] = useState(false)
     const [error, setError] = useState<Error | null>(null)
     const [deleteMessage, setDeleteMessage] = useState('')
 

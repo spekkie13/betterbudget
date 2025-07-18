@@ -3,12 +3,14 @@ import { StyleSheet } from 'react-native'
 import * as React from "react";
 import {useThemeContext} from "@/theme/ThemeContext";
 
-export function InputField({ value, onChange, label, secure, placeholder } : {
+export function InputField({ value, onChange, label, secure, placeholder, disabled } : {
     value: string;
-    onChange: (t: string) => void;
+    onChange?: (t: string) => void;
     label: string;
     secure: boolean;
     placeholder?: string;
+    disabled?: boolean;
+
 }) {
     const { currentTheme } = useThemeContext()
     const styles = styles_inputField(currentTheme)
@@ -21,6 +23,7 @@ export function InputField({ value, onChange, label, secure, placeholder } : {
             label={label}
             secureTextEntry={secure}
             placeholder={placeholder}
+            disabled={disabled}
             placeholderTextColor={currentTheme.colors.textColor}/>
     )
 }
