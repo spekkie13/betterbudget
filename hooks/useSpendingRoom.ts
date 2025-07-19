@@ -4,39 +4,55 @@ import {determineSpendingRoom} from "@/api";
 import {useRouter} from "expo-router";
 
 export function useSpendingRoom() {
-    const { user } = useContext(AuthContext)
+    const { userState } = useContext(AuthContext)
+    const user = userState.user
+    const userId = user?.id
+
     const router = useRouter()
 
-    const [loading, setLoading] = useState(false)
-    const [error, setError] = useState<string>()
-    const [spendingRoom, setSpendingRoom] = useState(0)
+    const [spendingRoomState, setSpendingRoomState] = useState({
+        loading: false,
+        error: undefined as string | undefined,
+        spendingRoom: 0,
+    })
+
     const username = user?.username
 
     useEffect(() => {
         const fetchData = async () => {
-            setLoading(true)
+            setSpendingRoomState(prev => ({
+                ...prev,
+                loading: true
+            }))
             if (!user) {
                 router.replace('/sign-in')
                 return
             }
             try {
                 const sum: number = await determineSpendingRoom(user.id)
-                setSpendingRoom(sum)
+                setSpendingRoomState(prev => ({
+                    ...prev,
+                    spendingRoom: sum
+                }))
             } catch (err) {
                 console.log(err)
-                setError(err)
+                setSpendingRoomState(prev => ({
+                    ...prev,
+                    error: err.message,
+                }))
             } finally {
-                setLoading(false)
+                setSpendingRoomState(prev => ({
+                    ...prev,
+                    loading: false
+                }))
             }
         }
 
         fetchData()
-    }, [user])
+    }, [userId])
 
     return {
-        loading,
-        error,
-        spendingRoom,
+        spendingRoomState,
         username
     }
 }

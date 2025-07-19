@@ -1,4 +1,4 @@
-import React, {useContext, useState} from 'react'
+import React, {useCallback, useContext, useMemo, useState} from 'react'
 import {View} from 'react-native'
 import { Title, Button, SubTitle } from '@/app/components/General'
 import {AuthContext} from '@/app/ctx'
@@ -9,21 +9,24 @@ import {useThemeContext} from "@/theme/ThemeContext"
 import {Category} from "@/types/models";
 
 const Profile = () => {
-    const {user} = useContext(AuthContext)
+    const {userState} = useContext(AuthContext)
     const [selectedSlots, setSelectedSlots] = useState<(Category | null)[]>([null, null, null, null])
     const [modalVisible, setModalVisible] = useState(false)
     const { currentTheme } = useThemeContext()
-    const styles = styles_profile(currentTheme)
+    const styles = useMemo(() => styles_profile(currentTheme), [currentTheme])
 
+    const handleSetModalVisible = useCallback(() => {
+        setModalVisible(true)
+    }, [])
     return (
         <View style={styles.container}>
-            <Title text={`Hello ${user?.username}`}/>
+            <Title text={`Hello ${userState.user?.username}`}/>
             <SubTitle text={'Favorite Categories:'}/>
 
             <View style={styles.buttonView}>
                 <Button
                     text='Manage Categories'
-                    onPress={() => setModalVisible(true)}
+                    onPress={handleSetModalVisible}
                     style={styles.touchable}
                 />
             </View>

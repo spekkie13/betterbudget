@@ -1,4 +1,4 @@
-import {useContext, useState} from 'react'
+import {useCallback, useContext, useState} from 'react'
 import {useRouter} from "expo-router"
 import {AuthContext} from '@/app/ctx'
 import { useThemeContext } from '@/theme/ThemeContext'
@@ -22,7 +22,7 @@ export function useAuth() {
     }
 
     // ✅ SIGN IN
-    async function signIn(email: string, password: string) {
+    const signIn = useCallback(async (email: string, password: string) => {
         setLoading(true);
         if (!email || !password) {
             showMessage(errorLoginMessage);
@@ -34,7 +34,6 @@ export function useAuth() {
             const { data, error } = await supabase.auth.signInWithPassword({ email, password });
             if (error || !data.user) {
                 showMessage(error.message)
-                // showMessage(errorLoginMessage);
                 return;
             }
 
@@ -51,10 +50,10 @@ export function useAuth() {
         } finally {
             setLoading(false);
         }
-    }
+    }, [router, login, refreshTheme])
 
     // ✅ SIGN UP
-    const signUp = async (name: string, username: string, email: string, password: string): Promise<void> => {
+    const signUp = useCallback(async (name: string, username: string, email: string, password: string): Promise<void> => {
         setLoading(true)
         if (!name || !username || !email || !password) {
             setLoading(false)
@@ -93,10 +92,10 @@ export function useAuth() {
         } finally {
             setLoading(false)
         }
-    }
+    }, [router, signIn, refreshTheme])
 
     // ✅ LOGOUT
-    async function signOut() {
+    const signOut = useCallback(async () => {
         setLoading(true);
         try {
             await supabase.auth.signOut();
@@ -110,7 +109,7 @@ export function useAuth() {
         } finally {
             setLoading(false);
         }
-    }
+    }, [router, refreshTheme])
 
     return {
         signIn,

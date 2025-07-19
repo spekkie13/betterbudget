@@ -1,5 +1,5 @@
 import {ActivityIndicator, SafeAreaView, ScrollView, Text, View,} from 'react-native'
-import React, {useContext} from 'react'
+import React, {useCallback, useContext, useMemo} from 'react'
 import {AuthContext} from '@/app/ctx'
 import {useRouter} from 'expo-router'
 import {styles_categoryOverview} from '@/styles/tabs/category/styles_categoryOverview'
@@ -9,22 +9,31 @@ import CategoriesList from "@/app/components/UI/Category/CategoriesList"
 import {useThemeContext} from "@/theme/ThemeContext"
 
 const CategoryOverviewScreen = () => {
-    const {user} = useContext(AuthContext)
+    const {userState} = useContext(AuthContext)
     const router = useRouter()
 
-    const {categories, loading, error} = useCategories({userId: user.id})
-    const cardsShown = categories.length
+    const {categoriesState} = useCategories({selectedOnly: false})
+    const cardsShown = categoriesState.categories.length
 
     const { currentTheme } = useThemeContext()
-    const styles = styles_categoryOverview(currentTheme)
+    const styles = useMemo(() => styles_categoryOverview(currentTheme), [currentTheme])
 
-    if (!user) {
+    const handleAddCategory = useCallback(() => {
+        router.replace('/(tabs)/category/AddCategory')
+    }, [router])
+
+    if (!userState.user) {
         router.replace('/')
         return
     }
 
-    if (loading) return <ActivityIndicator/>
-    if (error) return <Text>{error}</Text>
+    if (categoriesState.loading)
+        return (
+        <View style={styles.container}>
+            <ActivityIndicator/>
+        </View>
+        )
+    if (categoriesState.error) return <Text>{categoriesState.error}</Text>
 
     return (
         <SafeAreaView style={styles.container}>
@@ -32,15 +41,15 @@ const CategoryOverviewScreen = () => {
             <View style={styles.buttonView}>
                 <Button
                     text='Add Category'
-                    onPress={() => router.replace('/(tabs)/category/AddCategory')}/>
+                    onPress={handleAddCategory}/>
             </View>
             <ScrollView contentContainerStyle={styles.scrollContainer}>
-                {categories.length === 0 ? (
+                {categoriesState.categories.length === 0 ? (
                     <Text style={styles.text}>
                         No categories to display.
                     </Text>
                 ) : (
-                    <CategoriesList categories={categories} max={cardsShown} theme={currentTheme}/>
+                    <CategoriesList categories={categoriesState.categories} max={cardsShown} />
                 )}
             </ScrollView>
         </SafeAreaView>

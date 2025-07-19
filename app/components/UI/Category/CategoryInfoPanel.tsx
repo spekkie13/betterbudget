@@ -1,32 +1,23 @@
-import React, {useCallback, useContext, useState} from "react"
+import React, {useMemo} from "react"
 import {ActivityIndicator, Text, View} from "react-native"
-import {useFocusEffect} from "@react-navigation/native"
-import {AuthContext} from "@/app/ctx"
 import {styles_categoryInfoPanel} from "@/styles/tabs/category/styles_categoryInfoPanel"
 import { SubTitle } from "@/app/components/General"
 import {useCategories} from "@/hooks"
 import CategoriesList from "@/app/components/UI/Category/CategoriesList"
+import {useThemeContext} from "@/theme/ThemeContext";
 
-const CategoryInfoPanel = ({ theme }: { theme: any }) => {
-    const {user} = useContext(AuthContext)
-    const styles = styles_categoryInfoPanel(theme)
+const CategoryInfoPanel = () => {
+    const { currentTheme } = useThemeContext()
+    const styles = useMemo(() => styles_categoryInfoPanel(currentTheme), [currentTheme])
 
-    const [refreshKey, setRefreshKey] = useState(0)
-
-    useFocusEffect(
-        useCallback(() => {
-            setRefreshKey(prev => prev + 1)
-        }, [])
-    )
-
-    let {categories, loading, error, cardsShown} = useCategories({userId: user?.id, selectedOnly: true, refreshTrigger: refreshKey})
-    if (cardsShown === undefined) {
-        cardsShown = 0
+    let {categoriesState} = useCategories({selectedOnly: true})
+    if (categoriesState.cardsShown === undefined) {
+        categoriesState.cardsShown = 0
     }
 
-    const title: string = 'Top ' + cardsShown + ' categories'
+    const title: string = 'Top ' + categoriesState.cardsShown + ' categories'
 
-    if (loading) {
+    if (categoriesState.loading) {
         return (
             <View style={styles.container}>
                 <ActivityIndicator/>
@@ -34,10 +25,11 @@ const CategoryInfoPanel = ({ theme }: { theme: any }) => {
         )
     }
 
-    if (error) {
+
+    if (categoriesState.error) {
         return (
             <View style={styles.container}>
-                <Text style={styles.errorText}>{error}</Text>
+                <Text style={styles.errorText}>{categoriesState.error}</Text>
             </View>
         )
     }
@@ -46,12 +38,12 @@ const CategoryInfoPanel = ({ theme }: { theme: any }) => {
         <View style={styles.container}>
             <SubTitle text={title}/>
             <View style={styles.categoryView}>
-                {categories.length === 0 ? (
+                {categoriesState?.categories?.length === 0 ? (
                     <Text style={styles.notFoundText}>
                         No categories to display.
                     </Text>
                 ) : (
-                    <CategoriesList categories={categories} max={cardsShown} theme={theme}/>
+                    <CategoriesList categories={categoriesState.categories} max={categoriesState.cardsShown}/>
                 )}
             </View>
         </View>

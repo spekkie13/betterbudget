@@ -1,6 +1,6 @@
 import {View} from 'react-native'
 import RNPickerSelect from 'react-native-picker-select'
-import React from 'react'
+import React, {useCallback, useMemo} from 'react'
 import {useRouter} from "expo-router"
 import {Title, Button, InputField, MessageBanner} from '@/app/components/General'
 import {pickerSelectStyles, styles_AddExpense} from "@/styles/tabs/expense/styles_addExpense"
@@ -8,44 +8,47 @@ import {useThemeContext} from "@/theme/ThemeContext"
 import {useAddTransaction} from "@/hooks/useAddTransaction";
 
 const AddExpense = () => {
-    const { message, date, setDate, amount, setAmount, description, setDescription, setSelectedValue, pickerItems, addNewExpense } = useAddTransaction()
+    const { transactionState, updateField, addNewExpense } = useAddTransaction()
     const router = useRouter()
 
     const { currentTheme } = useThemeContext()
-    const styles = styles_AddExpense(currentTheme)
+    const styles = useMemo(() => styles_AddExpense(currentTheme), [currentTheme])
 
+    const handleBack = useCallback(() => {
+        router.replace('/(tabs)/add')
+    }, [router])
     return (
         <View style={styles.container}>
             <Title text={'Add Expense'}/>
 
-            <MessageBanner message={message ?? ''} />
+            <MessageBanner message={transactionState.message ?? ''} />
             <View style={styles.addView}>
                 <View style={styles.view}>
                     <InputField
                         label={'Date'}
                         placeholder={'dd-MM-yyyy'}
-                        onChange={setDate}
-                        value={date}
+                        onChange={updateField('Date')}
+                        value={transactionState.date}
                         secure={false}/>
                 </View>
                 <View style={styles.view}>
                     <InputField
                         label={'amount'}
-                        onChange={setAmount}
-                        value={amount}
+                        onChange={updateField('Amount')}
+                        value={transactionState.amount}
                         secure={false}/>
                 </View>
                 <View style={styles.view}>
                     <InputField
                         label={'description'}
-                        onChange={setDescription}
-                        value={description}
+                        onChange={updateField('Description')}
+                        value={transactionState.description}
                         secure={false}/>
                 </View>
                 <View style={styles.view}>
                     <RNPickerSelect
-                        onValueChange={(value) => setSelectedValue(value)}
-                        items={pickerItems}
+                        onValueChange={updateField('selectedValue')}
+                        items={transactionState.pickerItems}
                         placeholder={{label: 'Select a category...', value: ''}}
                         style={pickerSelectStyles(currentTheme)}/>
                 </View>
@@ -55,7 +58,7 @@ const AddExpense = () => {
                         style={styles.buttonView}/>
 
                     <Button text='Back'
-                        onPress={() => router.replace('/(tabs)/add')}
+                        onPress={handleBack}
                         style={styles.buttonView}/>
                 </View>
             </View>

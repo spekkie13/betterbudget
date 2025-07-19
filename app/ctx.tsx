@@ -4,8 +4,10 @@ import { Team, User } from '@/types/models'
 import { getUser } from '@/api'
 
 interface AuthContextType {
-    user: User | null
-    team: Team | null
+    userState: {
+        user: User | null
+        team: Team | null
+    }
     login: (userData: User, teamData: Team) => void
     logout: () => Promise<void>
 }
@@ -13,18 +15,24 @@ interface AuthContextType {
 export const AuthContext = createContext<AuthContextType | null>(null)
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
-    const [user, setUser] = useState<User | null>(null)
-    const [team, setTeam] = useState<Team | null>(null)
+    const [userState, setUserState] = useState({
+        user: null as User | null,
+        team: null as Team | null,
+    })
 
     const login = (userData: User, teamData: Team) => {
-        setUser(userData)
-        setTeam(teamData)
+        setUserState({
+            user: userData,
+            team: teamData,
+        })
     }
 
     const logout = async () => {
         await supabase.auth.signOut()
-        setUser(null)
-        setTeam(null)
+        setUserState({
+            user: null,
+            team: null,
+        })
     }
 
     useEffect(() => {
@@ -35,7 +43,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
             if (session?.user?.email) {
                 try {
                     const userData = await getUser(session.user.email)
-                    setUser(userData)
+                    setUserState({
+                        ...userState,
+                        user: userData,
+                    })
                 } catch (error) {
                     console.error('Failed to restore user from Supabase session:', error)
                 }
@@ -49,14 +60,19 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         const { data: listener } = supabase.auth.onAuthStateChange(
             async (event, session) => {
                 if (event === 'SIGNED_OUT') {
-                    setUser(null)
-                    setTeam(null)
+                    setUserState({
+                        user: null,
+                        team: null,
+                    })
                 }
 
                 if (event === 'SIGNED_IN' && session?.user?.email) {
                     try {
                         const userData = await getUser(session.user.email)
-                        setUser(userData)
+                        setUserState({
+                            ...userState,
+                            user: userData,
+                        })
                     } catch (error) {
                         console.error('Failed to load user on sign in:', error)
                     }
@@ -70,7 +86,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }, [])
 
     return (
-        <AuthContext.Provider value={{ user, team, login, logout }}>
+        <AuthContext.Provider value={{ userState, login, logout }}>
             {children}
         </AuthContext.Provider>
     )

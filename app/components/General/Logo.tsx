@@ -1,7 +1,8 @@
 import {Image, View} from 'react-native'
 import {styles_logo} from "@/styles/general/styles_logo"
+import React from "react";
 
-export const Logo = () => {
+export const Logo = React.memo(() => {
     return (
         <View style={styles_logo.imgView}>
             <Image
@@ -11,4 +12,4 @@ export const Logo = () => {
                 />
         </View>
     )
-}
+})

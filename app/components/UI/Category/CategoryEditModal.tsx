@@ -1,14 +1,15 @@
-import React, {useEffect, useState} from "react"
+import React, {useEffect, useMemo, useState} from "react"
 import {Modal, Text, TouchableOpacity, View} from "react-native"
 import {styles_categoryEditModal} from "@/styles/tabs/category/styles_categoryEditModal"
 import {getCategories} from "@/api"
 import {useThemeContext} from "@/theme/ThemeContext"
+import {CategoryProps} from "@/types/props/CategoryProps";
 
-const CategoryEditModal = ({visible, onClose, categoryId}) => {
+const CategoryEditModal = React.memo(({visible, onClose, categoryId}: CategoryProps) => {
     const [category, setCategory] = useState(null)
 
     const { currentTheme } = useThemeContext()
-    const styles = styles_categoryEditModal(currentTheme)
+    const styles = useMemo(() => styles_categoryEditModal(currentTheme), [currentTheme])
 
     useEffect(() => {
         const fetchData = async () => {
@@ -45,6 +46,6 @@ const CategoryEditModal = ({visible, onClose, categoryId}) => {
             </TouchableOpacity>
         </Modal>
     )
-}
+})
 
 export default CategoryEditModal

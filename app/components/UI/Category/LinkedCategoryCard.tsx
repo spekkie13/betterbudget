@@ -1,9 +1,18 @@
 import CategoryCard from "@/app/components/UI/Category/CategoryCard"
 import {Link} from "expo-router"
 import {Category} from "@/types/models"
+import {useMemo} from "react";
 
-export const LinkedCategoryCard = ({category, theme}: { category: Category, theme: any }) => (
-    <Link href={`/(tabs)/add/${category.id}/${category.name}`}>
-        <CategoryCard category={category} theme={theme}/>
-    </Link>
-)
+// Na
+export const LinkedCategoryCard = ({category}: { category: Category }) => {
+    const href = useMemo(() =>
+        `/(tabs)/add/${category.id}/${category.name}`,
+        [category.id, category.name]
+    )
+
+    return (
+        <Link href={href}>
+            <CategoryCard category={category}/>
+        </Link>
+    )
+}

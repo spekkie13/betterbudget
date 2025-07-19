@@ -1,43 +1,34 @@
-import {StyleSheet, Pressable, Text} from "react-native"
-import React from "react"
+import {Pressable, Text} from "react-native"
+import React, { useCallback } from "react"
 import {useThemeContext} from "@/theme/ThemeContext";
 import {ButtonProps} from "@/types/props"
+import {styles_button} from "@/styles/general/styles_button"
 
-export function Button({
-    text,
-    onPress,
-    color,
-    style,
-    disabled,}: ButtonProps) {
-
+// Na
+export function Button({text, onPress, color, style, disabled}: ButtonProps) {
     const { currentTheme } = useThemeContext()
+
+    const handlePress = useCallback(() => {
+        if (!disabled && onPress) {
+            onPress()
+        }
+    }, [disabled, onPress])
+
+    const buttonStyle = useCallback(({ pressed }: { pressed: boolean }) => [
+        styles_button.button,
+        {
+            backgroundColor: disabled ? currentTheme.colors.accent : color ? color : currentTheme.colors.accent,
+            opacity: pressed ? 0.8 : 1
+        },
+        style
+    ], [disabled, color, currentTheme.colors.accent, style])
+
     return (
         <Pressable
-            onPress={onPress}
+            onPress={handlePress}
             disabled={disabled}
-            style={({ pressed }) => [
-                styles.button,
-                {backgroundColor: disabled ? currentTheme.colors.accent : color ? color : currentTheme.colors.accent, opacity: pressed ? 0.8 : 1},
-                style
-            ]
-            }>
-            <Text style={[styles.text, {color: currentTheme.colors.textColor}]}>{text}</Text>
-
+            style={buttonStyle}>
+            <Text style={[styles_button.text, {color: currentTheme.colors.textColor}]}>{text}</Text>
         </Pressable>
     )
 }
-
-const styles = StyleSheet.create({
-    button: {
-        paddingVertical: 12,
-        paddingHorizontal: 16,
-        borderRadius: 12,
-        alignItems: 'center',
-        justifyContent: 'center',
-        elevation: 2,
-    },
-    text: {
-        fontSize: 16,
-        fontWeight: '600',
-    },
-});

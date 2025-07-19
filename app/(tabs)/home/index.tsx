@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, {useMemo, useState} from 'react'
 import {useRouter} from "expo-router"
 import {ActivityIndicator, ScrollView, Text, TouchableOpacity, View} from 'react-native'
 import {Title, Logo, Button} from '@/app/components/General'
@@ -11,19 +11,24 @@ import {useSpendingRoom, preferenceStore, usePreferences} from "@/hooks"
 import StartingAmountDialog from "@/app/components/UI/StartingAmountDialog";
 
 const HomeScreen = () => {
-    const { loading, error, spendingRoom, username } = useSpendingRoom()
-    const valuta: string = preferenceStore.get('valuta')?.stringValue ?? "$"
-
     const router = useRouter()
+
     const {currentTheme} = useThemeContext()
-    const styles = styles_home(currentTheme)
-    const { startingAmount } = usePreferences()
-    const [startingAmountDialogVisible, setStartingAmountDialogVisible] = useState<boolean>(startingAmount === 0)
+    const styles = useMemo(() => styles_home(currentTheme), [currentTheme])
 
-    if (loading)
-        return <ActivityIndicator/>
+    const { preferenceState } = usePreferences()
+    const { spendingRoomState, username } = useSpendingRoom()
+    const valuta: string = preferenceStore.get('valuta')?.stringValue ?? "$"
+    const [startingAmountDialogVisible, setStartingAmountDialogVisible] = useState<boolean>(preferenceState.startingAmount === 0)
 
-    if (error)
+    if (spendingRoomState.loading)
+        return (
+            <View style={styles.container}>
+                <ActivityIndicator/>
+            </View>
+        )
+
+    if (spendingRoomState.error)
         return <Text>Error: {genericFailureMessage}</Text>
 
     return (
@@ -32,7 +37,7 @@ const HomeScreen = () => {
                 <Title text={`Hello ${username}`}/>
                 <Logo/>
             </View>
-            {startingAmount === 0 && (
+            {preferenceState.startingAmount === 0 && (
                 <StartingAmountDialog
                     visible={startingAmountDialogVisible}
                     onClose={() => setStartingAmountDialogVisible(false)}
@@ -52,13 +57,13 @@ const HomeScreen = () => {
                                 styles.spendingRoomText,
                                 {
                                     color:
-                                        spendingRoom >= 0
+                                        spendingRoomState.spendingRoom >= 0
                                             ? currentTheme.colors.successColor
                                             : currentTheme.colors.failureColor
                                 }
                             ]}
                         >
-                            {valuta} {spendingRoom.toFixed(2).toLocaleString()}
+                            {valuta} {spendingRoomState.spendingRoom.toFixed(2).toLocaleString()}
                         </Text>
                     </TouchableOpacity>
                 </View>
@@ -69,7 +74,7 @@ const HomeScreen = () => {
                     onPress={() => router.push('/(tabs)/add/addExpense')} />
             </View>
             <View style={styles.categoryPanel}>
-                <CategoryInfoPanel theme={currentTheme}/>
+                <CategoryInfoPanel />
             </View>
         </ScrollView>
     )

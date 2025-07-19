@@ -1,5 +1,5 @@
 import { Text, View } from 'react-native'
-import React, { useContext, useMemo } from 'react'
+import React, {useContext, useMemo} from 'react'
 import { router } from 'expo-router'
 import RNPickerSelect from 'react-native-picker-select'
 import {Logo, Title, Button} from '@/app/components/General'
@@ -12,9 +12,8 @@ import { useThemeContext } from '@/theme/ThemeContext'
 
 const Settings = () => {
     const {
-        cards, setCards,
-        valuta, setValuta,
-        themeSelection, setThemeSelection,
+        preferenceState,
+        handleUpdateField,
         updatePreferences,
     } = usePreferences();
 
@@ -30,6 +29,8 @@ const Settings = () => {
         router.replace('/sign-in')
     }
 
+
+
     return (
         <View style={styles.container}>
             <Title text={'Settings'} />
@@ -44,8 +45,8 @@ const Settings = () => {
                 <View style={styles.view}>
                     <Text style={styles.text}>Categories Shown</Text>
                     <RNPickerSelect
-                        onValueChange={(value) => setCards(parseInt(value))}
-                        value={cards != null ? String(cards) : ''}
+                        onValueChange={handleUpdateField('categoriesShown')}
+                        value={preferenceState.cards != null ? String(preferenceState.cards) : ''}
                         items={['2', '4', '6', '8', '10'].map((val) => ({ key: val, label: val, value: val }))}
                         placeholder={{ label: 'How many cards?', value: '' }}
                         style={pickerStyles(currentTheme)}
@@ -55,8 +56,8 @@ const Settings = () => {
                 <View style={styles.view}>
                     <Text style={styles.text}>Valuta</Text>
                     <RNPickerSelect
-                        onValueChange={(value) => setValuta(value)}
-                        value={valuta != null ? valuta : ''}
+                        onValueChange={handleUpdateField('valuta')}
+                        value={preferenceState.valuta != null ? preferenceState.valuta : ''}
                         items={[{ key: '1', label: '€', value: '€' }, { key: '2', label: '$', value: '$' }]}
                         placeholder={{ label: 'Valuta symbol', value: '' }}
                         style={pickerStyles(currentTheme)}
@@ -66,8 +67,8 @@ const Settings = () => {
                 <View style={styles.view}>
                     <Text style={styles.text}>Theme</Text>
                     <RNPickerSelect
-                        onValueChange={(value) => setThemeSelection(value)}
-                        value={themeSelection != null ? themeSelection : ''}
+                        onValueChange={handleUpdateField('theme')}
+                        value={preferenceState.themeSelection != null ? preferenceState.themeSelection : ''}
                         items={[{ key: '1', label: 'dark', value: 'dark' }, { key: '2', label: 'light', value: 'light' }]}
                         style={pickerStyles(currentTheme)}
                     />

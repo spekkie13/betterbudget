@@ -1,40 +1,73 @@
-import {useEffect, useState} from "react"
+import {useContext, useEffect, useState} from "react"
 import {getCategories, getSelectedCategories} from "@/api"
 import {Category} from "@/types/models"
-import {preferenceStore} from "@/hooks"
 import {CategoriesProps} from "@/types/props"
+import {preferenceStore} from "@/hooks/preferenceStore";
+import {AuthContext} from "@/app/ctx";
 
-export const useCategories = ({userId, selectedOnly = false, refreshTrigger = 0 }: CategoriesProps) => {
-    const [categories, setCategories] = useState<Category[]>([])
-    const [loading, setLoading] = useState(false)
-    const [error, setError] = useState<string | null>(null)
-    const cardsShown = preferenceStore.get('cards')?.numberValue
-    const categoryPreferences = preferenceStore.nameContains('category').length > 0
+export const useCategories = ({selectedOnly = false, refreshTrigger = 0 }: CategoriesProps) => {
+    const { userState } = useContext(AuthContext)
+    const userId = userState.user?.id
+
+    const [categoriesState, setCategoriesState] = useState({
+        categories: [] as Category[] | null,
+        loading: false,
+        error: null as string | null,
+        cardsShown: 0,
+        categoryPreferences: false
+    })
 
     useEffect(() => {
+        let mounted = true;
+
         const fetchData = async () => {
             try {
-                setLoading(true)
-                if (userId === undefined) {
-                    return
-                }
-                if (selectedOnly && categoryPreferences) {
-                    const selected = await getSelectedCategories(userId, cardsShown)
-                    setCategories(selected)
+                const val = preferenceStore.get('cards')?.numberValue
+                const prefs = preferenceStore.nameContains('category').length > 0
+
+                if (!userId) return;
+
+                let categories: Category[];
+                if (selectedOnly && prefs) {
+                    categories = await getSelectedCategories(userId, val || 0);
                 } else {
-                    const all = await getCategories(userId)
-                    setCategories(all)
+                    categories = await getCategories(userId);
                 }
+
+                if (!mounted) return;
+
+                // Single state update with all changes
+                setCategoriesState({
+                    loading: false,
+                    error: null,
+                    categories,
+                    cardsShown: val || 0,
+                    categoryPreferences: prefs,
+                });
+
             } catch (err) {
-                console.error(err)
-                setError("Failed to load categories")
-            } finally {
-                setLoading(false)
+                console.error(err);
+                if (!mounted) return;
+
+                setCategoriesState(prev => ({
+                    ...prev,
+                    loading: false,
+                    error: "Failed to load categories"
+                }));
             }
-        }
+        };
 
-        fetchData()
-    }, [userId, selectedOnly, refreshTrigger])
+        setCategoriesState(prev => ({
+            ...prev,
+            loading: true
+        }));
 
-    return {categories, loading, error, cardsShown}
+        fetchData();
+
+        return () => {
+            mounted = false;
+        };
+    }, [userId, selectedOnly, refreshTrigger]);
+
+    return {categoriesState};
 }

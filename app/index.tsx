@@ -15,8 +15,8 @@ const StartPage = () => {
         loadFonts()
     }, [])
 
-    const {user} = useContext(AuthContext)
-    const href = user ? "/(tabs)/home" : "/sign-in"
+    const {userState} = useContext(AuthContext)
+    const href = userState?.user ? "/(tabs)/home" : "/sign-in"
     return <Redirect href={href}/>
 }
 
