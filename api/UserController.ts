@@ -33,7 +33,6 @@ export async function getUser(email: string): Promise<User> {
 
 export async function createNewUser(user: User): Promise<User> {
     const request: RequestInfo = formRequestWithBody(USER_BASE_URL, 'POST', user)
-    console.log(request)
     try {
         const response: Response = await fetch(request)
         const userData = await response.json()

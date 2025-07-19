@@ -7,7 +7,7 @@ import {useThemeContext} from "@/theme/ThemeContext";
 
 const CategoryCard: React.FC<CategoryCardProps> = ({ category } : CategoryCardProps) => {
     const { periodState } = usePeriod({ categoryId: category.id, mostRecent: true })
-    console.log(periodState)
+
     const { categoryDetailsState, valuta } = useCategoryDetails({
         categoryId: category.id,
         fetchCategory: false,

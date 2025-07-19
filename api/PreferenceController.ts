@@ -46,7 +46,6 @@ export async function saveCategorySlots(selectedSlots: (Category | null)[]) {
                 numberValue: category?.id ?? null,
             }
             preferenceStore.set(newPref)
-            console.log(preferenceStore.nameContains('category'))
         })
     )
 }

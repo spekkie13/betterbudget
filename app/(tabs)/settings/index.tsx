@@ -45,8 +45,8 @@ const Settings = () => {
                 <View style={styles.view}>
                     <Text style={styles.text}>Categories Shown</Text>
                     <RNPickerSelect
-                        onValueChange={handleUpdateField('categoriesShown')}
-                        value={preferenceState.cards != null ? String(preferenceState.cards) : ''}
+                        onValueChange={handleUpdateField('cards')}
+                        value={preferenceState?.cards || ''}
                         items={['2', '4', '6', '8', '10'].map((val) => ({ key: val, label: val, value: val }))}
                         placeholder={{ label: 'How many cards?', value: '' }}
                         style={pickerStyles(currentTheme)}
@@ -57,7 +57,7 @@ const Settings = () => {
                     <Text style={styles.text}>Valuta</Text>
                     <RNPickerSelect
                         onValueChange={handleUpdateField('valuta')}
-                        value={preferenceState.valuta != null ? preferenceState.valuta : ''}
+                        value={preferenceState?.valuta || ''}
                         items={[{ key: '1', label: '€', value: '€' }, { key: '2', label: '$', value: '$' }]}
                         placeholder={{ label: 'Valuta symbol', value: '' }}
                         style={pickerStyles(currentTheme)}
@@ -67,8 +67,8 @@ const Settings = () => {
                 <View style={styles.view}>
                     <Text style={styles.text}>Theme</Text>
                     <RNPickerSelect
-                        onValueChange={handleUpdateField('theme')}
-                        value={preferenceState.themeSelection != null ? preferenceState.themeSelection : ''}
+                        onValueChange={handleUpdateField('themeSelection')}
+                        value={preferenceState?.themeSelection || ''}
                         items={[{ key: '1', label: 'dark', value: 'dark' }, { key: '2', label: 'light', value: 'light' }]}
                         style={pickerStyles(currentTheme)}
                     />

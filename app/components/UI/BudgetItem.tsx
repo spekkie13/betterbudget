@@ -8,13 +8,10 @@ const BudgetItem = React.memo(({ name, budget }: { name: string; budget: number 
     return (
         <View
             style={{
-                marginBottom: 12,
                 flex: 1,
-                width: 300,
+                width: '100%',
                 alignItems: "center",
                 padding: 8,
-                borderWidth: 1,
-                borderColor: "#ccc",
                 borderRadius: 8,
             }}
         >
