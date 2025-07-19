@@ -1,9 +1,9 @@
 import { Text, View } from "react-native";
 import { InputField } from "@/app/components/General";
 import {useThemeContext} from "@/theme/ThemeContext";
+import React from "react";
 
-// ✅ Custom component voor één item
-const BudgetItem = ({ name, budget }: { name: string; budget: number }) => {
+const BudgetItem = React.memo(({ name, budget }: { name: string; budget: number }) => {
     const { currentTheme } = useThemeContext();
     return (
         <View
@@ -25,10 +25,10 @@ const BudgetItem = ({ name, budget }: { name: string; budget: number }) => {
                 value={budget.toString()}
                 label="Budget"
                 secure={false}
-                disabled={true} // jouw InputField ondersteunt disabled
+                disabled={true}
             />
         </View>
     );
-};
+});
 
 export default BudgetItem;

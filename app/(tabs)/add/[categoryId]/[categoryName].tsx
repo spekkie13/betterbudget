@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, {useCallback, useMemo, useState} from 'react'
 import {ActivityIndicator, ScrollView, Text, TouchableOpacity, View} from 'react-native'
 import FontAwesome from '@expo/vector-icons/FontAwesome'
 import {useLocalSearchParams, useRouter} from 'expo-router'
@@ -15,13 +15,13 @@ import {usePeriods} from "@/hooks";
 const MonthSelection = () => {
     const router = useRouter()
     const {categoryId, categoryName} = useLocalSearchParams<{ categoryId: string; categoryName: string }>()
-    const { loading, error, groupedDates, deleteMessage } = usePeriods({categoryId, categoryName})
+    const { periodsState } = usePeriods({categoryId, categoryName})
 
     const [editModalVisible, setEditModalVisible] = useState(false)
     const [deleteModalVisible, setDeleteModalVisible] = useState(false)
 
     const { currentTheme } = useThemeContext()
-    const styles = styles_expenseMonthSelection(currentTheme)
+    const styles = useMemo(() => styles_expenseMonthSelection(currentTheme), [currentTheme])
 
     const handleEdit = () => setEditModalVisible(true)
     const handleDelete = () => setDeleteModalVisible(true)
@@ -32,15 +32,24 @@ const MonthSelection = () => {
         router.back()
     }
 
-    if (loading) return <ActivityIndicator/>
-    if (error) return <Text style={styles.errorMessage}>Error: {error.message}</Text>
+    const handleBack = useCallback(() => {
+        router.replace('/(tabs)/category')
+    }, [router])
+
+    if (periodsState.loading)
+        return (
+            <View style={styles.container}>
+                <ActivityIndicator/>
+            </View>
+        )
+    if (periodsState.error) return <Text style={styles.errorMessage}>Error: {periodsState.error}</Text>
 
     return (
         <View style={styles.container}>
             <Title text={categoryName}/>
 
             <ScrollView contentContainerStyle={styles.scrollView}>
-                <MonthsExpensePanel categoryId={categoryId} groupedDates={groupedDates}/>
+                <MonthsExpensePanel categoryId={categoryId} groupedDates={periodsState.groupedDates}/>
 
                 <View style={styles.buttonView}>
                     <TouchableOpacity onPress={handleEdit} style={styles.touchable}>
@@ -60,20 +69,20 @@ const MonthSelection = () => {
                     <CategoryDeleteModal
                         visible={deleteModalVisible}
                         onClose={closeAndNavigateBack}
-                        categoryId={categoryId}
-                        message={deleteMessage}
+                        categoryId={Number(categoryId)}
+                        message={periodsState.deleteMessage}
                     />
 
                     <CategoryEditModal
                         visible={editModalVisible}
                         onClose={closeAndNavigateBack}
-                        categoryId={categoryId}
+                        categoryId={Number(categoryId)}
                     />
                 </View>
 
                 <Button
                     text='Back'
-                    onPress={() => router.replace('/(tabs)/category')}/>
+                    onPress={handleBack}/>
             </ScrollView>
         </View>
     )

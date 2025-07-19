@@ -1,4 +1,4 @@
-import React, {useContext, useState} from "react"
+import React, {useCallback, useContext, useMemo, useState} from "react"
 import {Text, View} from "react-native"
 import {useRouter} from "expo-router"
 import { Title, Button, InputField } from '@/app/components/General'
@@ -9,39 +9,56 @@ import { getNextPeriod, checkIfCategoryExists,  } from '@/api'
 import {useThemeContext} from "@/theme/ThemeContext"
 
 const AddCategory = () => {
-    const [category, setCategory] = useState("")
-    const [budget, setBudget] = useState("")
-    const [successMessage, setSuccessMessage] = useState("")
-    const [errorMessage, setErrorMessage] = useState("")
-    const [showSuccess, setShowSuccess] = useState(false)
-    const [showError, setShowError] = useState(false)
-
-    const {user} = useContext(AuthContext)
+    const [categoryState, setCategoryState] = useState({
+        category: "",
+        budget: "",
+        successMessage: "",
+        errorMessage: "",
+        showSuccess: false,
+        showError: false,
+    })
+    const {userState} = useContext(AuthContext)
     const router = useRouter()
     const { currentTheme } = useThemeContext()
-    const styles = styles_addCategory(currentTheme)
+    const styles = useMemo(() => styles_addCategory(currentTheme), [currentTheme])
 
     const showTemporaryMessage = (type: "success" | "error", message: string) => {
         if (type === "success") {
-            setSuccessMessage(message)
-            setShowSuccess(true)
-            setTimeout(() => setShowSuccess(false), 3000)
-            setCategory('')
-            setBudget('')
+            setCategoryState({
+                ...categoryState,
+                successMessage: message,
+                showSuccess: true
+            })
+            setTimeout(() => setCategoryState({
+                ...categoryState,
+                showSuccess: false
+            }), 3000)
+
+            setCategoryState({
+                ...categoryState,
+                category: '',
+                budget: '',
+            })
         } else {
-            setErrorMessage(message)
-            setShowError(true)
-            setTimeout(() => setShowError(false), 3000)
+            setCategoryState({
+                ...categoryState,
+                errorMessage: message,
+                showError: true
+            })
+            setTimeout(() => setCategoryState({
+                ...categoryState,
+                showError: false
+            }), 3000)
         }
     }
 
     const handleAddCategory = async (): Promise<void> => {
-        if (!category || !budget) {
+        if (!categoryState.category || !categoryState.budget) {
             showTemporaryMessage("error", "Please fill in the required information")
             return
         }
 
-        const exists = await checkIfCategoryExists(category, user.id)
+        const exists = await checkIfCategoryExists(categoryState.category, userState?.user?.id)
         if (exists) {
             showTemporaryMessage("error", "The category already exists!")
         } else {
@@ -49,20 +66,20 @@ const AddCategory = () => {
 
             const payload = {
                 category: {
-                    name: category,
+                    name: categoryState.category,
                     color: currentTheme.colors.background,
                     icon: "N/A",
-                    userId: user.id,
+                    userId: userState?.user?.id,
                 },
                 budget: {
-                    amount: parseInt(budget),
-                    userId: user.id,
+                    amount: parseInt(categoryState.budget),
+                    userId: userState.user.id,
                     periodId: period.id,
                 },
                 result: {
                     totalSpent: 0,
                     percentageSpent: 0,
-                    userId: user.id,
+                    userId: userState.user.id,
                     periodId: period.id,
                 }
             }
@@ -88,31 +105,41 @@ const AddCategory = () => {
         }
     }
 
+    const handleUpdateField = useCallback((fieldName: string) => (value: string) => {
+        setCategoryState(prev => ({
+            ...prev,
+            [fieldName]: value
+        }))
+    }, [])
+
+    const handleBack = useCallback(() => {
+        router.replace('/(tabs)/add')
+    }, [router])
     return (
         <View style={styles.container}>
             <Title text="Add category"/>
 
-            {showSuccess && (
-                <Text style={styles.successMessage}>{successMessage}</Text>
+            {categoryState.showSuccess && (
+                <Text style={styles.successMessage}>{categoryState.successMessage}</Text>
             )}
 
-            {showError && (
-                <Text style={styles.errorMessage}>{errorMessage}</Text>
+            {categoryState.showError && (
+                <Text style={styles.errorMessage}>{categoryState.errorMessage}</Text>
             )}
 
             <View style={styles.textView}>
                 <InputField
                     label={'Category Name'}
-                    value={category}
-                    onChange={setCategory}
+                    value={categoryState.category}
+                    onChange={handleUpdateField('category')}
                     secure={false} />
             </View>
 
             <View style={styles.textView}>
                 <InputField
                     label={'Budget'}
-                    value={budget}
-                    onChange={setBudget}
+                    value={categoryState.budget}
+                    onChange={handleUpdateField('budget')}
                     secure={false} />
             </View>
 
@@ -123,7 +150,7 @@ const AddCategory = () => {
                     style={styles.buttonView}/>
 
                 <Button text='Back'
-                        onPress={() => router.replace('/(tabs)/add')}
+                        onPress={handleBack}
                         style={styles.buttonView}/>
             </View>
         </View>

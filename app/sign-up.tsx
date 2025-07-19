@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, {useCallback, useMemo, useState} from "react"
 import {useRouter} from "expo-router"
 import {SafeAreaView} from "react-native-safe-area-context"
 import {ActivityIndicator, KeyboardAvoidingView, ScrollView, Text, View } from "react-native"
@@ -10,14 +10,26 @@ import {useAuth} from "@/hooks"
 function Login(): React.JSX.Element {
     const { message, loading, signUp } = useAuth()
     const { currentTheme } = useThemeContext()
-    const styles = styles_login(currentTheme)
+    const styles = useMemo(() => styles_login(currentTheme), [currentTheme])
 
     const router = useRouter()
+    const [signUpState, setSignUpState] = useState({
+        name: '',
+        username: '',
+        email: '',
+        password: ''
+    })
 
-    const [name, setName] = useState('')
-    const [username, setUsername] = useState('')
-    const [email, setEmail] = useState('')
-    const [password, setPassword] = useState('')
+    const handleUpdateField = useCallback((fieldName: string) => (value: string) => {
+        setSignUpState(prev => ({
+            ...prev,
+            [fieldName]: value
+        }))
+    }, [])
+
+    const handleGoToSignIn = useCallback(() => {
+        router.replace('/sign-in')
+    }, [])
 
     return (
         <SafeAreaView style={styles.safeContainer}>
@@ -35,26 +47,26 @@ function Login(): React.JSX.Element {
                                 <MessageBanner message={message ?? ''} />
                                 <KeyboardAvoidingView behavior={'padding'}>
                                     <InputField
-                                        value={name}
-                                        onChange={setName}
+                                        value={signUpState.name}
+                                        onChange={handleUpdateField('name')}
                                         label={'Name'}
                                         secure={false}
                                     />
                                     <InputField
-                                        value={username}
-                                        onChange={setUsername}
+                                        value={signUpState.username}
+                                        onChange={handleUpdateField('username')}
                                         label={'Username'}
                                         secure={false}
                                     />
                                     <InputField
-                                        value={email}
-                                        onChange={setEmail}
+                                        value={signUpState.email}
+                                        onChange={handleUpdateField('email')}
                                         label={'Email'}
                                         secure={false}
                                     />
                                     <InputField
-                                        value={password}
-                                        onChange={setPassword}
+                                        value={signUpState.password}
+                                        onChange={handleUpdateField('password')}
                                         label={'Password'}
                                         secure={true}
                                     />
@@ -62,11 +74,13 @@ function Login(): React.JSX.Element {
                                         <Button
                                             text='Sign Up'
                                             onPress={async () => {
-                                                await signUp(name, username, email, password)
-                                                setName('')
-                                                setEmail('')
-                                                setUsername('')
-                                                setPassword('')
+                                                await signUp(signUpState.name, signUpState.username, signUpState.email, signUpState.password)
+                                                setSignUpState({
+                                                    name: '',
+                                                    username: '',
+                                                    email: '',
+                                                    password: ''
+                                                })
                                             }}
                                             style={styles.buttonView}/>
                                     </View>
@@ -74,7 +88,7 @@ function Login(): React.JSX.Element {
                                 <View style={styles.signUpView}>
                                     <CustomLink
                                         text='Already have an account? Click here to login'
-                                        onPress={() => router.replace('/sign-in')}
+                                        onPress={handleGoToSignIn}
                                         style={styles.signUpText}/>
                                 </View>
                             </View>

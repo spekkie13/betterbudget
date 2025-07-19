@@ -1,17 +1,18 @@
 import {Text, Modal, TouchableOpacity, View} from "react-native"
 import {InputField} from "@/app/components/General";
-import React, {useContext, useEffect, useState} from "react";
+import React, {useContext, useEffect, useMemo, useState} from "react";
 import {useThemeContext} from "@/theme/ThemeContext";
 import {styles_startingAmountDialog} from "@/styles/styles_startingAmountDialog";
 import {updateUserPreference} from "@/api";
 import {preferenceStore} from "@/hooks";
 import {AuthContext} from "@/app/ctx";
 
-const StartingAmountDialog = ({ visible, onClose }) => {
+const StartingAmountDialog = React.memo(({ visible, onClose } : {visible: boolean, onClose: () => void}) => {
     const [startingAmount, setStartingAmount] = useState('0')
-    const { user } = useContext(AuthContext)
+    const { userState } = useContext(AuthContext)
+    const user = userState.user
     const { currentTheme } = useThemeContext()
-    const styles = styles_startingAmountDialog(currentTheme)
+    const styles = useMemo(() => styles_startingAmountDialog(currentTheme), [currentTheme])
 
     useEffect(() => {
         const pref = preferenceStore.get('Starting Amount')
@@ -70,6 +71,6 @@ const StartingAmountDialog = ({ visible, onClose }) => {
             </View>
         </Modal>
     )
-}
+})
 
 export default StartingAmountDialog

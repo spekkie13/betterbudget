@@ -3,14 +3,20 @@ import React, {useContext, useEffect, useState} from "react";
 import {getBudgetByCategoryAndPeriod, getCategories, getMostRecentPeriod} from "@/api";
 import {AuthContext} from "@/app/ctx";
 import BudgetItem from "@/app/components/UI/BudgetItem";
+import {useThemeContext} from "@/theme/ThemeContext";
 
 const BudgetPanel = () => {
-    const { user } = useContext(AuthContext);
+    const { userState } = useContext(AuthContext);
+    const user = userState.user;
+
+    const { currentTheme } = useThemeContext()
+
     const [loading, setLoading] = useState(false);
     const [categoryBudgets, setCategoryBudgets] = useState<
         { categoryName: string; budget: number }[]
     >([]);
 
+    const userId = user?.id
     useEffect(() => {
         const loadBudgets = async () => {
             try {
@@ -46,7 +52,7 @@ const BudgetPanel = () => {
         };
 
         loadBudgets();
-    }, [user.id]);
+    }, [userId]);
 
     const pairs: React.JSX.Element[] = []
     for (const budget of categoryBudgets){
@@ -56,7 +62,16 @@ const BudgetPanel = () => {
             </View>
         )
     }
-    if (loading) return <ActivityIndicator />;
+    if (loading) return (
+        <View style={{
+            marginTop: 10,
+            flex: 1,
+            backgroundColor: currentTheme.colors.background,
+            paddingBottom: currentTheme.spacing.xl,
+        }}>
+            <ActivityIndicator/>
+        </View>
+    )
 
     return (
         <View>

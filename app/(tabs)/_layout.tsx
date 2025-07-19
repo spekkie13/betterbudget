@@ -1,5 +1,5 @@
 import {Href, Tabs, useRouter} from "expo-router"
-import React from "react"
+import React, {useMemo, useCallback} from "react"
 import FontAwesome from "@expo/vector-icons/FontAwesome"
 import {Pressable, View} from "react-native"
 import {styles_tabLayout} from "@/styles/styles_tabLayout"
@@ -9,7 +9,7 @@ type FontAwesomeIconName = keyof typeof FontAwesome.glyphMap
 
 export default function TabsLayout() {
     const { currentTheme } = useThemeContext()
-    const styles = styles_tabLayout(currentTheme)
+    const styles = useMemo(() => styles_tabLayout(currentTheme), [currentTheme])
     const router = useRouter()
 
     const getIcon = (name: string): FontAwesomeIconName => {
@@ -31,25 +31,33 @@ export default function TabsLayout() {
         settings: '/settings',
     }
 
+    const TabButton = useCallback(({route, navigation, props}) => {
+        const handlePress = useCallback((e : any) => {
+            if (navigation.isFocused()) {
+                const path = tabRoutes[route.name]
+                if (path) {
+                    router.replace({pathname: path} as Href)
+                }
+            } else {
+                props.onPress?.(e)
+            }
+        }, [navigation, route.name, router, props.onPress]);
+
+        return (
+            <Pressable
+                {...props}
+                onPress={handlePress}
+            />
+        );
+    }, [router, tabRoutes]);
+
     return (
         <Tabs
             screenOptions={({route, navigation}) => ({
                 headerShown: false,
                 tabBarStyle: styles.tabBar,
                 tabBarButton: (props) => (
-                    <Pressable
-                        {...props}
-                        onPress={(e) => {
-                            if (navigation.isFocused()) {
-                                const path = tabRoutes[route.name]
-                                if (path) {
-                                    router.replace({pathname: path} as Href)
-                                }
-                            } else {
-                                props.onPress?.(e)
-                            }
-                        }}
-                    />
+                    <TabButton route={route} navigation={navigation} props={props}/>
                 ),
                 tabBarIcon: () => {
                     if (route.name === "add") {

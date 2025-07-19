@@ -1,55 +1,70 @@
-import React, { useContext, useEffect, useState } from "react"
+import React, {useContext, useEffect, useMemo, useState} from "react"
 import { Modal, Text, TouchableOpacity, View } from "react-native"
 import { styles_categoryDeleteModal } from '@/styles/tabs/category/styles_categoryDeleteModal'
-import { deleteCategoryById, getCategories, getBudgetByCategory, updateBudgets, getExpensesByCategory, updateExpenses } from "@/api"
-import { Budget } from "@/types/models"
+import {
+    deleteCategoryById,
+    getBudgetByCategory,
+    updateBudgets,
+    getExpensesByCategory,
+    updateExpenses,
+    getCategoryById
+} from "@/api"
+import {Budget, Category, Expense} from "@/types/models"
 import { AuthContext } from "@/app/ctx"
 import {useThemeContext} from "@/theme/ThemeContext"
+import {CategoryProps} from "@/types/props/CategoryProps";
 
-const CategoryDeleteModal = ({ visible, onClose, categoryId, message }) => {
-    const { user } = useContext(AuthContext)
-    const [category, setCategory] = useState(null)
-    const [expenses, setExpenses] = useState([])
+const CategoryDeleteModal = React.memo(({ visible, onClose, categoryId, message } : CategoryProps) => {
+    const { userState } = useContext(AuthContext)
+    const user = userState.user
+
+    const [categoryDeleteState, setCategoryDeleteState] = useState({
+        category: null as Category | null,
+        expenses: null as Expense[] | null
+    })
 
     const { currentTheme } = useThemeContext()
-    const styles = styles_categoryDeleteModal(currentTheme)
+    const styles = useMemo(() => styles_categoryDeleteModal(currentTheme), [currentTheme])
+    const userId = user?.id
 
     useEffect(() => {
         const loadCategoryData = async () => {
             const [cat, exp] = await Promise.all([
-                getCategories(categoryId),
+                getCategoryById(user.id, categoryId),
                 getExpensesByCategory(user.id, categoryId),
             ])
-            setCategory(cat)
-            setExpenses(exp)
+            setCategoryDeleteState({
+                expenses: exp,
+                category: cat
+            })
         }
 
         if (visible) loadCategoryData()
-    }, [visible, categoryId, user.id])
+    }, [visible, categoryId, userId])
 
     const deleteCategory = async () => {
-        if (!category) return
+        if (!categoryDeleteState.category) return
 
-        const isOtherCategory = category.name === "Overig"
+        const isOtherCategory = categoryDeleteState.category.name === "Overig"
         if (isOtherCategory) return onClose()
 
-        if (expenses.length > 0) {
+        if (categoryDeleteState.expenses.length > 0) {
             const categories = await deleteCategoryById(user.id)
             const otherCategory = categories.find((c) => c.name === "Overig")
             if (!otherCategory) return
 
             const newCategoryId = otherCategory.id
 
-            const expenseUpdated = await updateExpenses(expenses, newCategoryId)
+            const expenseUpdated = await updateExpenses(categoryDeleteState.expenses, newCategoryId)
             if (expenseUpdated) {
-                const budgets: Budget[] = await getBudgetByCategory(user.id, category.id)
+                const budgets: Budget[] = await getBudgetByCategory(userId, categoryDeleteState.category.id)
                 const budgetsUpdated = await updateBudgets(budgets, newCategoryId)
                 if (budgetsUpdated) {
-                    await deleteCategoryById(category.id)
+                    await deleteCategoryById(categoryDeleteState.category.id)
                 }
             }
         } else {
-            await deleteCategoryById(category.id)
+            await deleteCategoryById(categoryDeleteState.category.id)
         }
 
         onClose()
@@ -77,6 +92,6 @@ const CategoryDeleteModal = ({ visible, onClose, categoryId, message }) => {
             </TouchableOpacity>
         </Modal>
     )
-}
+})
 
 export default CategoryDeleteModal

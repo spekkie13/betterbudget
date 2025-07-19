@@ -1,4 +1,4 @@
-import {useContext, useEffect, useState} from "react";
+import {useCallback, useContext, useEffect, useState} from "react";
 import {AuthContext} from "@/app/ctx";
 import {Expense, Income} from "@/types/models";
 import {createNewExpense, createNewIncome} from "@/api";
@@ -6,47 +6,68 @@ import {genericFailureMessage, successCreateMessage} from "@/constants";
 import {useCategories} from "@/hooks/useCategories";
 
 export function useAddTransaction() {
-    const { user } = useContext(AuthContext)
-    const { categories } = useCategories({userId: user?.id})
+    const { userState } = useContext(AuthContext)
+    const { categoriesState } = useCategories({userId: userState?.user?.id})
 
-    const [date, setDate] = useState('')
-    const [amount, setAmount] = useState('')
-    const [description, setDescription] = useState('')
-    const [pickerItems, setPickerItems] = useState([])
-    const [selectedValue, setSelectedValue] = useState(undefined)
+    const [transactionState, setTransactionState] = useState({
+        date: '',
+        amount: '',
+        description: '',
+        pickerItems: [],
+        selectedValue: undefined,
+        message: '',
+    })
 
-    const [message, setMessage] = useState<string | null>('')
+    const updateField = useCallback((fieldName: string) => (value: string) => {
+        setTransactionState(prevState => ({
+            ...prevState,
+            [fieldName]: value
+        }));
+    }, []);
 
     function showMessage(msg: string) {
-        setMessage(msg);
-        setTimeout(() => setMessage(null), 3000);
+        setTransactionState(prev => ({
+            ...prev,
+            message: msg,
+        }))
+        setTimeout(() => setTransactionState(prev => ({
+            ...prev,
+            message: null,
+        })), 3000);
     }
 
     useEffect(() => {
         const fetchData = async () => {
-            const formattedItems = categories.map(item => ({
+            const formattedItems = categoriesState.categories.map(item => ({
                 label: item.name,
                 value: item.id
             }))
-            setPickerItems(formattedItems)
+            setTransactionState(prev => ({
+                ...prev,
+                pickerItems: formattedItems,
+            }))
         }
 
         fetchData()
-    }, [categories])
+    }, [categoriesState.categories])
 
     const addNewExpense = async (): Promise<boolean> => {
-        if (!date || !amount || !description || !pickerItems) {
+        if (!transactionState.date ||
+            !transactionState.amount ||
+            !transactionState.description ||
+            !transactionState.pickerItems
+        ) {
             showMessage("Please fill in the required information")
             return
         } else {
-            const [day, month, year] = date.split("-").map(Number)
+            const [day, month, year] = transactionState.date.split("-").map(Number)
             const data = {
                 id: 0,
-                description: description,
-                categoryId: Number(selectedValue),
-                amount: parseFloat(amount),
+                description: transactionState.description,
+                categoryId: Number(transactionState.selectedValue),
+                amount: parseFloat(transactionState.amount),
                 date: new Date(year, month - 1, day).toISOString(),
-                userId: Number(user.id),
+                userId: Number(userState?.user?.id),
                 isRecurring: false
             }
             const expense = new Expense(data)
@@ -54,10 +75,13 @@ export function useAddTransaction() {
 
             if (success) {
                 showMessage(successCreateMessage)
-                setSelectedValue('')
-                setDate('')
-                setDescription('')
-                setAmount('')
+                setTransactionState(prev => ({
+                    ...prev,
+                    selectedValue: '',
+                    date: '',
+                    description: '',
+                    amount: ''
+                }))
             } else {
                 showMessage(genericFailureMessage)
             }
@@ -65,25 +89,27 @@ export function useAddTransaction() {
     }
 
     const addNewIncome = async () => {
-        if (!date || !amount || !user?.id) {
+        if (!transactionState.date || !transactionState.amount || !userState?.user?.id) {
             showMessage("Please fill in the required information")
             return
         } else {
-            console.log('add new income: ', amount)
-            const [day, month, year] = date.split("-").map(Number)
+            const [day, month, year] = transactionState.date.split("-").map(Number)
             const data = {
                 id: 0,
-                amount: parseFloat(amount),
+                amount: parseFloat(transactionState.amount),
                 date: new Date(year, month - 1, day).toISOString(),
-                userId: Number(user.id),
+                userId: Number(userState?.user?.id),
             }
             const income = new Income(data)
             const success = await createNewIncome(income)
 
             if (success) {
                 showMessage(successCreateMessage)
-                setDate('')
-                setAmount('')
+                setTransactionState(prev => ({
+                    ...prev,
+                    date: '',
+                    amount: ''
+                }))
             } else {
                 showMessage(genericFailureMessage)
             }
@@ -91,12 +117,7 @@ export function useAddTransaction() {
     }
 
     return {
-        message,
-        date, setDate,
-        amount, setAmount,
-        description, setDescription,
-        selectedValue, setSelectedValue,
-        pickerItems,
+        transactionState, updateField,
         addNewExpense, addNewIncome,
     }
 }

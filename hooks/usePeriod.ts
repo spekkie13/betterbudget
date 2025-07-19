@@ -5,33 +5,67 @@ import {AuthContext} from "@/app/ctx";
 import {UsePeriodProps} from "@/types/props/usePeriodProps";
 
 export function usePeriod({ categoryId, mostRecent, date}: UsePeriodProps) {
-    const [period, setPeriod] = useState<Period | null>(null)
-    const [loading, setLoading] = useState(false)
-    const [error, setError] = useState<Error | null>(null)
-    const { user } = useContext(AuthContext);
+    const [periodState, setPeriodState] = useState({
+        loading: true,
+        error: undefined as string | undefined,
+        period: null as Period | null,
+    })
+
+    const { userState } = useContext(AuthContext);
+    const user = userState.user;
+    const userId = user?.id;
 
     useEffect(() => {
-        if (!user?.id || (!date && mostRecent == false)) return;
+        console.log('usePeriod inputs:', {
+            userId: user?.id,
+            date,
+            categoryId
+        });
+
+        if (!user?.id) {
+            console.log('Early return: no userId');
+            return;
+        }
+        if (!date && !mostRecent) {
+            console.log('Early return: no date and no mostRecent');
+            return;
+        }
 
         let isMounted = true;
 
         const fetchData = async () => {
+            console.log('Fetching period data');
+
             const category = await getCategoryById(user.id, categoryId);
             try {
-                setLoading(true);
-                const per = mostRecent
+                setPeriodState(prev => ({
+                    ...prev,
+                    error: undefined,
+                    loading: true
+                }))
+                const per = mostRecent === true
                     ? await getMostRecentPeriod(user.id, category.id)
                     : await getPeriodByDate(user.id, date);
 
-                if (isMounted) {
-                    setPeriod(per);
-                }
+                setPeriodState(prev => ({
+                    ...prev,
+                    period: per,
+                    loading: false
+                }))
+                console.log('Period fetched:', per);
+
             } catch (err) {
                 if (isMounted) {
-                    setError(err instanceof Error ? err : new Error('Failed to fetch period'));
+                    setPeriodState(prev => ({
+                        ...prev,
+                        error: err.message
+                    }))
                 }
             } finally {
-                setLoading(false);
+                setPeriodState(prev => ({
+                    ...prev,
+                    loading: false
+                }))
             }
         }
 
@@ -40,11 +74,9 @@ export function usePeriod({ categoryId, mostRecent, date}: UsePeriodProps) {
         return () => {
             isMounted = false;
         };
-    }, [user?.id, mostRecent, date]);
+    }, [userId, mostRecent, date, categoryId]);
 
     return {
-        period,
-        loading,
-        error
+        periodState
     }
 }

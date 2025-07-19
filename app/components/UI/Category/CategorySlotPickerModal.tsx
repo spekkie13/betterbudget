@@ -1,4 +1,4 @@
-import React, {useContext, useState} from 'react'
+import React, {useContext, useMemo, useState} from 'react'
 import {FlatList, Modal, Text, TouchableOpacity, View} from 'react-native'
 import CategorySlotPicker from './CategorySlotPicker'
 import {saveCategorySlots} from "@/api"
@@ -8,13 +8,14 @@ import {AuthContext} from "@/app/ctx"
 import { CategorySlotPickerModalProps } from "@/types/props"
 import {Category} from "@/types/models"
 
-const CategorySlotPickerModal: React.FC<CategorySlotPickerModalProps> = ({theme, visible, onClose, selected, onChange} : CategorySlotPickerModalProps) => {
+const CategorySlotPickerModal: React.FC<CategorySlotPickerModalProps> = React.memo(({theme, visible, onClose, selected, onChange} : CategorySlotPickerModalProps) => {
     const [localSelected, setLocalSelected] = useState<(Category | null)[]>(selected)
     const [activeSlot, setActiveSlot] = useState<number | null>(null)
-    const styles = styles_categorySlotPickerModal(theme)
 
-    const { user } = useContext(AuthContext)
-    const { categories } = useCategories({userId: user.id})
+    const styles = useMemo(() => styles_categorySlotPickerModal(theme), [theme])
+
+    const { userState } = useContext(AuthContext)
+    const { categoriesState } = useCategories({userId: userState.user.id})
 
     const handleSlotPress = (index: number) => {
         setActiveSlot(index)
@@ -50,7 +51,7 @@ const CategorySlotPickerModal: React.FC<CategorySlotPickerModalProps> = ({theme,
                         <>
                             <Text style={styles.selectText}>Pick Category for Slot {activeSlot + 1}:</Text>
                             <FlatList
-                                data={categories}
+                                data={categoriesState.categories}
                                 keyExtractor={(item) => item.id.toString()}
                                 renderItem={({item}) => (
                                     <TouchableOpacity
@@ -76,6 +77,6 @@ const CategorySlotPickerModal: React.FC<CategorySlotPickerModalProps> = ({theme,
             </View>
         </Modal>
     )
-}
+})
 
 export default CategorySlotPickerModal

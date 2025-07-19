@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useMemo} from 'react'
 import {Text, TouchableOpacity, View} from 'react-native'
 import CategoryCard from "@/app/components/UI/Category/CategoryCard"
 import {styles_categorySlotPicker} from "@/styles/tabs/profile/styles_categorySlotPicker"
@@ -7,7 +7,7 @@ import {CategorySlotPickerProps} from "@/types/props";
 
 const CategorySlotPicker: React.FC<CategorySlotPickerProps> = ({selectedCategories, onSlotPress, theme}) => {
     const rows: (Category | null)[][] = []
-    const styles = styles_categorySlotPicker(theme)
+    const styles = useMemo(() => styles_categorySlotPicker(theme), [theme])
 
     for (let i = 0; i < selectedCategories.length; i += 2) {
         rows.push(selectedCategories.slice(i, i + 2))
@@ -27,7 +27,7 @@ const CategorySlotPicker: React.FC<CategorySlotPickerProps> = ({selectedCategori
                                 style={styles.touchable}
                             >
                                 {category ? (
-                                    <CategoryCard category={category} theme={theme}/>
+                                    <CategoryCard category={category} />
                                 ) : (
                                     <Text style={styles.emptyCard}>-</Text>
                                 )}

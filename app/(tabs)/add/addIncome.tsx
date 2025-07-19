@@ -1,5 +1,5 @@
 import {View} from 'react-native'
-import React from 'react'
+import React, {useCallback, useMemo} from 'react'
 import {useRouter} from "expo-router"
 import {Title, Button, InputField, MessageBanner} from '@/app/components/General'
 import {useThemeContext} from "@/theme/ThemeContext"
@@ -8,36 +8,38 @@ import {styles_addIncome} from "@/styles/tabs/expense/styles_addIncome";
 
 const AddIncome = () => {
     const {
-        message,
-        date, setDate,
-        amount, setAmount,
+        transactionState,
+        updateField,
         addNewIncome
     } = useAddTransaction()
 
     const router = useRouter()
 
     const { currentTheme } = useThemeContext()
-    const styles = styles_addIncome(currentTheme)
+    const styles = useMemo(() => styles_addIncome(currentTheme), [currentTheme])
 
+    const handleBack = useCallback(() => {
+        router.replace('/(tabs)/add')
+    }, [router])
     return (
         <View style={styles.container}>
             <Title text='Add Income'/>
 
-            <MessageBanner message={message ?? ''} />
+            <MessageBanner message={transactionState.message ?? ''} />
             <View style={styles.addView}>
                 <View style={styles.view}>
                     <InputField
                         label={'Date'}
                         placeholder={'dd-MM-yyyy'}
-                        onChange={setDate}
-                        value={date}
+                        onChange={updateField('date')}
+                        value={transactionState.date}
                         secure={false}/>
                 </View>
                 <View style={styles.view}>
                     <InputField
                         label={'amount'}
-                        onChange={setAmount}
-                        value={amount}
+                        onChange={updateField('amount')}
+                        value={transactionState.amount}
                         secure={false}/>
                 </View>
                 <View style={styles.buttonView}>
@@ -46,7 +48,7 @@ const AddIncome = () => {
                             style={styles.buttonView}/>
 
                     <Button text='Back'
-                            onPress={() => router.replace('/(tabs)/add')}
+                            onPress={handleBack}
                             style={styles.buttonView}/>
                 </View>
             </View>

@@ -1,12 +1,12 @@
-import React from "react"
+import React, {useMemo} from "react"
 import {Modal, Text, TouchableOpacity, View} from "react-native"
 import {styles_expenseDetailModal} from "@/styles/tabs/expense/styles_expenseDetailModal"
 import {useThemeContext} from "@/theme/ThemeContext"
 import {ExpenseDetailModalProps} from "@/types/props"
 
-const ExpenseDetailModal: React.FC<ExpenseDetailModalProps> = ({visible, onClose, data, valuta} : ExpenseDetailModalProps) => {
+const ExpenseDetailModal: React.FC<ExpenseDetailModalProps> = React.memo(({visible, onClose, data, valuta} : ExpenseDetailModalProps) => {
     const { currentTheme } = useThemeContext()
-    const styles = styles_expenseDetailModal(currentTheme)
+    const styles = useMemo(() => styles_expenseDetailModal(currentTheme), [currentTheme])
 
     const formattedDate = data?.date
         ? new Date(data.date).toLocaleDateString()
@@ -37,6 +37,6 @@ const ExpenseDetailModal: React.FC<ExpenseDetailModalProps> = ({visible, onClose
             </TouchableOpacity>
         </Modal>
     )
-}
+})
 
 export default ExpenseDetailModal

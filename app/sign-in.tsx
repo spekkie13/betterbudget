@@ -1,5 +1,5 @@
 import * as React from "react"
-import { useState } from "react"
+import {useCallback, useMemo, useState} from "react"
 import { SafeAreaView} from "react-native-safe-area-context"
 import { ActivityIndicator, KeyboardAvoidingView, ScrollView, Text, View } from "react-native"
 import { Button, CustomLink, InputField, Logo, MessageBanner } from '@/app/components/General'
@@ -10,13 +10,31 @@ import {useThemeContext} from "@/theme/ThemeContext"
 
 function Login(): React.JSX.Element {
     const { signIn, loading, message } = useAuth()
+    const [loginState, setLoginState] = useState({
+        email: '',
+        password: ''
+    })
 
-    const [email, setEmail] = useState('')
-    const [password, setPassword] = useState('')
+    const handleUpdateField = useCallback((fieldName: string) => (value: string) => {
+        setLoginState(prev => ({
+            ...prev,
+            [fieldName]: value
+        }))
+    }, [])
+
 
     const router = useRouter()
+
     const { currentTheme } = useThemeContext()
-    const styles = styles_login(currentTheme)
+    const styles = useMemo(() => styles_login(currentTheme), [currentTheme])
+
+    const handleGoToSignUp = useCallback(() => {
+        router.replace('/sign-up')
+    }, [router])
+
+    const handleSignIn = useCallback(async () => {
+        await signIn(loginState.email, loginState.password)
+    }, [loginState])
 
     return (
         <SafeAreaView style={styles.safeContainer}>
@@ -32,26 +50,28 @@ function Login(): React.JSX.Element {
                                 <MessageBanner message={message ?? ''}/>
                                 <KeyboardAvoidingView behavior={'padding'}>
                                     <InputField
-                                        value={email}
-                                        onChange={setEmail}
+                                        value={loginState.email}
+                                        onChange={handleUpdateField('email')}  // Update deze regel
                                         secure={false}
-                                        label={'Email'}/>
+                                        label={'Email'}
+                                    />
                                     <InputField
-                                        value={password}
-                                        onChange={setPassword}
+                                        value={loginState.password}
+                                        onChange={handleUpdateField('password')}  // Update deze regel
                                         secure={true}
-                                        label={'Password'}/>
+                                        label={'Password'}
+                                    />
                                     <View style={styles.signInButtonView}>
                                         <Button
                                             text='Sign in'
-                                            onPress={() => signIn(email, password)}
+                                            onPress={handleSignIn}
                                             style={styles.buttonView} />
                                     </View>
                                 </KeyboardAvoidingView>
                                 <View style={styles.signUpView}>
                                     <CustomLink
                                         text="Don't have an account yet? Click here to sign up"
-                                        onPress={() => router.replace('/sign-up')}
+                                        onPress={handleGoToSignUp}
                                         style={styles.signUpText}/>
                                 </View>
                             </View>

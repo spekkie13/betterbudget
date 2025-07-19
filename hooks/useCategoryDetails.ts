@@ -18,32 +18,39 @@ interface UseCategoryDetailsOptions {
     fetchResult?: boolean;
 }
 
-interface EnhancedResult extends Result {
-    percentageSpent?: number
-}
-
 export function useCategoryDetails({ categoryId, period, fetchCategory = true, fetchExpenses = true, fetchBudget = true, fetchResult = true }: UseCategoryDetailsOptions) {
-    const { user } = useContext(AuthContext);
-    const [loading, setLoading] = useState(false);
-    const [error, setError] = useState<string | null>(null);
-    const [category, setCategory] = useState<Category | null>(null);
-    const [expenses, setExpenses] = useState<Expense[]>([]);
-    const [budget, setBudget] = useState<Budget | null>(null);
-    const [result, setResult] = useState<EnhancedResult | null>(null);
+    const { userState } = useContext(AuthContext);
+    const [categoryDetailsState, setCategoryDetailsState] = useState({
+        loading: true,
+        error: null as string | null,
+        category: null as Category | null,
+        expenses: [] as Expense[],
+        budget: null as Budget | null,
+        result: null as Result | null,
+    })
+
     const valutaPref = preferenceStore.get('valuta')
     const valuta = valutaPref?.stringValue ?? "€"
 
+    const userId = userState.user?.id
     useEffect(() => {
-        if (!user?.id || !period?.id) return;
+        if (!userState.user?.id || !period?.id) return;
+        let isMounted = true;
+
         const loadData = async () => {
-            setLoading(true);
-            setError(null);
+            if (!isMounted) return;
+
+            setCategoryDetailsState(prev => ({
+                ...prev,
+                loading: true,
+                error: null
+            }))
 
             try {
-                const categoryPromise : Promise<Category | null> = fetchCategory ? getCategoryById(user.id, categoryId) : Promise.resolve(null);
-                const expensesPromise : Promise<Expense[]> = fetchExpenses ? getExpensesByCategoryAndDate(user.id, categoryId, period.id) : Promise.resolve([]);
-                const budgetPromise : Promise<Budget> = fetchBudget ? getBudgetByCategoryAndPeriod(user.id, categoryId, period.id) : Promise.resolve(Budget.empty());
-                const resultPromise : Promise<Result | null> = fetchResult ? getResultByCategoryAndPeriod(user.id, categoryId, period.id) : Promise.resolve(null);
+                const categoryPromise : Promise<Category | null> = fetchCategory ? getCategoryById(userId, categoryId) : Promise.resolve(null);
+                const expensesPromise : Promise<Expense[]> = fetchExpenses ? getExpensesByCategoryAndDate(userId, categoryId, period.id) : Promise.resolve([]);
+                const budgetPromise : Promise<Budget> = fetchBudget ? getBudgetByCategoryAndPeriod(userId, categoryId, period.id) : Promise.resolve(Budget.empty());
+                const resultPromise : Promise<Result | null> = fetchResult ? getResultByCategoryAndPeriod(userId, categoryId, period.id) : Promise.resolve(null);
 
                 const [cat, exps, budget, resultRaw] = await Promise.all([
                     categoryPromise,
@@ -52,41 +59,50 @@ export function useCategoryDetails({ categoryId, period, fetchCategory = true, f
                     resultPromise,
                 ]);
 
-                if (cat) setCategory(cat);
-                if (Array.isArray(exps)) setExpenses(exps);
-                if (budget) setBudget(budget);
+                if (!isMounted) return;
 
-                if (resultRaw) {
+                setCategoryDetailsState(prev => {
                     const percentageSpent =
-                        budget && budget.amount > 0 && !isNaN(resultRaw.totalSpent)
+                        budget && budget.amount > 0 && resultRaw && !isNaN(resultRaw.totalSpent)
                             ? (resultRaw.totalSpent / budget.amount) * 100
                             : 0;
 
-                    setResult({
-                        ...resultRaw,
-                        percentageSpent,
-                    });
-                }
+                    return {
+                        ...prev,
+                        loading: false,
+                        category: cat || prev.category,
+                        expenses: Array.isArray(exps) ? exps : prev.expenses,
+                        budget: budget || prev.budget,
+                        result: resultRaw ? {
+                            ...resultRaw,
+                            percentageSpent
+                        } : prev.result
+                    };
+                });
             } catch (err) {
-                console.error("Error in useCategoryDetails:", err);
-                setError("Failed to load category details");
+                if (!isMounted) return;
+
+                setCategoryDetailsState(prev => ({
+                    ...prev,
+                    error: "Failed to load category details"
+                }))
             } finally {
-                setLoading(false);
+                setCategoryDetailsState(prev => ({
+                    ...prev,
+                    loading: false
+                }))
             }
         };
 
         loadData();
-    }, [user?.id, categoryId, period, fetchCategory, fetchExpenses, fetchBudget, fetchResult]);
+
+        return () => {
+            isMounted = false;
+        }
+    }, [userId, categoryId, period?.id, fetchCategory, fetchExpenses, fetchBudget, fetchResult]);
 
     return {
-        category,
-        expenses,
-        budget,
-        result,
+        categoryDetailsState,
         valuta,
-        loading,
-        error,
-        spent: result?.totalSpent ?? 0,
-        percentageSpent: result?.percentageSpent ?? 0
     };
 }
