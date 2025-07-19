@@ -5,7 +5,7 @@ import {useCategoryDetails, usePeriod, useUpdateCategory} from "@/hooks"
 import {CategoryCardProps} from "@/types/props"
 
 const CategoryCard: React.FC<CategoryCardProps> = ({ category, theme } : CategoryCardProps) => {
-    const { period } = usePeriod({ category: category, mostRecent: true })
+    const { period } = usePeriod({ categoryId: category.id, mostRecent: true })
     const {
         spent,
         percentageSpent,

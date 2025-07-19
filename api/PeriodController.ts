@@ -17,7 +17,6 @@ export async function getMostRecentPeriod(UserId: number, CategoryId: number) {
     const request: RequestInfo = formRequestNoBody(url, 'GET')
 
     const response: Response = await fetch(request)
-    console.log(response)
     const data = await response.json()
 
     return formPeriod(data)

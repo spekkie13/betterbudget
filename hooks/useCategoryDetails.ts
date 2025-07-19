@@ -35,7 +35,6 @@ export function useCategoryDetails({ categoryId, period, fetchCategory = true, f
 
     useEffect(() => {
         if (!user?.id || !period?.id) return;
-
         const loadData = async () => {
             setLoading(true);
             setError(null);

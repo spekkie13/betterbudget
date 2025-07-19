@@ -1,11 +1,13 @@
-import React from "react"
+import React, {useMemo} from "react"
 import {View} from "react-native"
 import {LinkedCategoryCard} from "@/app/components/UI/Category/LinkedCategoryCard"
 import {styles_categoriesList} from "@/styles/tabs/category/styles_categoriesList"
 import {CategoryListProps} from "@/types/props";
 
 const CategoryList: React.FC<CategoryListProps> = ({categories, max, theme} : CategoryListProps) => {
-    const categoriesToRender = max ? categories.slice(0, max).sort() : categories
+    const categoriesToRender = useMemo(() => {
+        return max ? categories.slice(0, max).sort() : categories;
+    }, [categories, max]);
     const pairs: React.JSX.Element[] = []
 
     for (let i = 0; i < categoriesToRender.length; i += 2) {

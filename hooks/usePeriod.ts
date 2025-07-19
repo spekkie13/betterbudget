@@ -1,21 +1,22 @@
 import {useContext, useEffect, useState} from "react";
 import {Period} from "@/types/models";
-import {getMostRecentPeriod, getPeriodByDate} from "@/api";
+import {getCategoryById, getMostRecentPeriod, getPeriodByDate} from "@/api";
 import {AuthContext} from "@/app/ctx";
 import {UsePeriodProps} from "@/types/props/usePeriodProps";
 
-export function usePeriod({ category, mostRecent, date}: UsePeriodProps) {
+export function usePeriod({ categoryId, mostRecent, date}: UsePeriodProps) {
     const [period, setPeriod] = useState<Period | null>(null)
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState<Error | null>(null)
     const { user } = useContext(AuthContext);
 
     useEffect(() => {
-        if (!user?.id || !category?.id) return;
+        if (!user?.id || (!date && mostRecent == false)) return;
 
         let isMounted = true;
 
         const fetchData = async () => {
+            const category = await getCategoryById(user.id, categoryId);
             try {
                 setLoading(true);
                 const per = mostRecent
@@ -39,7 +40,7 @@ export function usePeriod({ category, mostRecent, date}: UsePeriodProps) {
         return () => {
             isMounted = false;
         };
-    }, [user?.id, category?.id, mostRecent, date]);
+    }, [user?.id, mostRecent, date]);
 
     return {
         period,

@@ -14,37 +14,44 @@ export function usePeriods({categoryId, categoryName}: PeriodProps) {
 
     useEffect(() => {
         const fetchData = async () => {
-            const categoryNumId : number = Number.parseInt(categoryId)
-            const periods: Period[] = await getDistinctPeriods(user.id, categoryNumId)
-            const grouped = new Map<number, number[]>()
+            try{
+                setLoading(true)
+                const categoryNumId : number = Number.parseInt(categoryId)
+                const periods: Period[] = await getDistinctPeriods(user.id, categoryNumId)
+                const grouped = new Map<number, number[]>()
 
-            periods.forEach(({startDate}) => {
-                const date = new Date(startDate)
-                const year : number = date.getFullYear()
-                const month : number = date.getMonth() + 1
+                periods.forEach(({startDate}) => {
+                    const date = new Date(startDate)
+                    const year : number = date.getFullYear()
+                    const month : number = date.getMonth() + 1
 
-                if (!grouped.has(year)) grouped.set(year, [])
-                if (!grouped.get(year)!.includes(month)) {
-                    grouped.get(year)!.push(month)
+                    if (!grouped.has(year)) grouped.set(year, [])
+                    if (!grouped.get(year)!.includes(month)) {
+                        grouped.get(year)!.push(month)
+                    }
+                })
+
+                for (const months of grouped.values()) {
+                    months.sort((a : number, b : number) : number => b - a)
                 }
-            })
 
-            for (const months of grouped.values()) {
-                months.sort((a : number, b : number) : number => b - a)
+                setGroupedDates(new Map([...grouped.entries()].sort((a, b) => b[0] - a[0])))
+
+                const expenses = await checkForExistingExpenses(user.id, categoryNumId)
+                const message = categoryName === categoryNameOther
+                    ? 'Unable to delete this category'
+                    : expenses.length > 0
+                        ? 'There are existing expenses in this category, are you sure you want to delete this category?'
+                        : 'Are you sure you want to delete this category?'
+
+                setDeleteMessage(message)
+                setError(null)
+            } catch (error) {
+                setError(error)
+                console.error(error)
+            } finally {
+                setLoading(false)
             }
-
-            setGroupedDates(new Map([...grouped.entries()].sort((a, b) => b[0] - a[0])))
-
-            const expenses = await checkForExistingExpenses(user.id, categoryNumId)
-            const message = categoryName === categoryNameOther
-                ? 'Unable to delete this category'
-                : expenses.length > 0
-                    ? 'There are existing expenses in this category, are you sure you want to delete this category?'
-                    : 'Are you sure you want to delete this category?'
-
-            setDeleteMessage(message)
-            setError(null)
-            setLoading(false)
         }
 
         fetchData()

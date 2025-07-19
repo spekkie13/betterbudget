@@ -15,7 +15,7 @@ const CategoryDetails = (): React.JSX.Element => {
     const date = new Date(Number(Year), Number(Month) - 1, 1)
     const numericCategoryId = Number(CategoryId)
 
-    const { period } = usePeriod({date: date})
+    const { period } = usePeriod({date: date, categoryId: numericCategoryId})
     const { category, expenses, budget, result, valuta, error, loading } = useCategoryDetails({ period, categoryId: numericCategoryId })
 
     const { updateResult } = useUpdateCategory({category, expenses, period})
