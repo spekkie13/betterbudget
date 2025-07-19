@@ -19,7 +19,7 @@ const CategoryOverviewScreen = () => {
     const styles = useMemo(() => styles_categoryOverview(currentTheme), [currentTheme])
 
     const handleAddCategory = useCallback(() => {
-        router.replace('/(tabs)/category/AddCategory')
+        router.replace('/add/addCategory')
     }, [router])
 
     if (!userState.user) {

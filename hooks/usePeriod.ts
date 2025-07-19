@@ -16,26 +16,16 @@ export function usePeriod({ categoryId, mostRecent, date}: UsePeriodProps) {
     const userId = user?.id;
 
     useEffect(() => {
-        console.log('usePeriod inputs:', {
-            userId: user?.id,
-            date,
-            categoryId
-        });
-
         if (!user?.id) {
-            console.log('Early return: no userId');
             return;
         }
         if (!date && !mostRecent) {
-            console.log('Early return: no date and no mostRecent');
             return;
         }
 
         let isMounted = true;
 
         const fetchData = async () => {
-            console.log('Fetching period data');
-
             const category = await getCategoryById(user.id, categoryId);
             try {
                 setPeriodState(prev => ({
@@ -52,8 +42,6 @@ export function usePeriod({ categoryId, mostRecent, date}: UsePeriodProps) {
                     period: per,
                     loading: false
                 }))
-                console.log('Period fetched:', per);
-
             } catch (err) {
                 if (isMounted) {
                     setPeriodState(prev => ({

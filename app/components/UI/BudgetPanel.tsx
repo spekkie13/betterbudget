@@ -74,7 +74,9 @@ const BudgetPanel = () => {
     )
 
     return (
-        <View>
+        <View style={{
+            width: '100%'
+        }}>
             {pairs}
         </View>
     );

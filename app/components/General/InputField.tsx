@@ -23,7 +23,7 @@ const useInputStyles = (disabled: boolean = false) => {
     return useMemo(() => {
         const styleConfig = {
             backgroundColor: disabled
-                ? currentTheme.colors.accentMuted
+                ? currentTheme.colors.oppositeColor
                 : currentTheme.colors.oppositeColor,
             color: currentTheme.colors.textColor,
             placeholderColor: currentTheme.colors.textColor
@@ -67,7 +67,7 @@ export const InputField = React.memo(({
                 ref={inputRef}
                 style={computedStyles}
                 value={value}
-                onChangeText={handleChangeText}  // Dit was onChange, moet handleChangeText zijn
+                onChangeText={handleChangeText}
                 autoCapitalize="none"
                 label={label}
                 secureTextEntry={secure}

@@ -7,7 +7,7 @@ export function usePreferences() {
     const { setTheme } = useThemeContext()
 
     const [preferenceState, setPreferenceState] = useState({
-        cards: 0,
+        cards: '',
         valuta: '',
         themeSelection: '',
         startingAmount: 0,
@@ -27,7 +27,7 @@ export function usePreferences() {
         const startingAmountPref = preferenceStore.get('Starting Amount');
         if (cardsPref) setPreferenceState(prev => ({
             ...prev,
-            cards: cardsPref.numberValue ?? 0,
+            cards: cardsPref.numberValue.toString() ?? '0',
         }))
         if (valutaPref) setPreferenceState(prev => ({
             ...prev,
@@ -48,9 +48,8 @@ export function usePreferences() {
         const valutaPref = preferenceStore.get('valuta');
         const themePref = preferenceStore.get('colorScheme');
         const startingAmountPref = preferenceStore.get('Starting Amount');
-        if (!cardsPref || !valutaPref || !themePref || !startingAmountPref) return;
 
-        cardsPref.numberValue = preferenceState.cards;
+        cardsPref.numberValue = Number(preferenceState.cards);
         valutaPref.stringValue = preferenceState.valuta;
         themePref.stringValue = preferenceState.themeSelection;
         startingAmountPref.numberValue = preferenceState.startingAmount;

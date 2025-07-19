@@ -28,7 +28,9 @@ const EditBudgets = () => {
     return (
         <View style={styles.container}>
             <Title text="Edit Budgets" />
-            <ScrollView>
+            <ScrollView
+                style={{width: '100%'}}
+                contentContainerStyle={{alignItems: 'center'}}>
                 <BudgetPanel />
             </ScrollView>
             <Button

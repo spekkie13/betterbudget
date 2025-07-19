@@ -20,7 +20,7 @@ const AddNew = () => {
                 <View style={styles.itemView}>
                     <TouchableOpacity
                         style={styles.touchable}
-                        onPress={() => handleNavigation('/(tabs)/add/addCategory')}
+                        onPress={() => handleNavigation('/add/addCategory')}
                     >
                         <FontAwesome name="briefcase" size={32} color={currentTheme.colors.textColor}/>
                         <Text style={styles.item}>Add a category</Text>
