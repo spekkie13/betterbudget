@@ -7,7 +7,7 @@ import {updateUserPreference} from "@/api";
 import {preferenceStore} from "@/hooks";
 import {AuthContext} from "@/app/ctx";
 
-const StartingAmountDialog = React.memo(({ visible, onClose } : {visible: boolean, onClose: () => void}) => {
+const StartingAmountDialog = React.memo(({ visible, onClose, onSave } : {visible: boolean, onClose: () => void, onSave: () => void}) => {
     const [startingAmount, setStartingAmount] = useState('0')
     const { userState } = useContext(AuthContext)
     const user = userState.user
@@ -36,13 +36,13 @@ const StartingAmountDialog = React.memo(({ visible, onClose } : {visible: boolea
                 userId: user.id,
             })
 
-            // ✅ Optioneel ook meteen je lokale store bijwerken:
             const pref = preferenceStore.get('Starting Amount')
             if (pref) {
                 pref.numberValue = amountNumber
             }
 
-            onClose() // sluit de modal na opslaan
+            onSave()
+            onClose()
         } catch (err) {
             console.error('Opslaan mislukt:', err)
         }

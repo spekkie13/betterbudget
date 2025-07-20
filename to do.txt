@@ -1,3 +1,3 @@
 TO DO:
--> Introduce custom HTTP response object to more easily be able to also act on HTTP response codes
+-> Introduce a custom HTTP response object to more easily be able to also act on HTTP response codes
 -> expand error logging to include more precise error messages

@@ -7,11 +7,12 @@ import {useThemeContext} from "@/theme/ThemeContext";
 
 const CategoryCard: React.FC<CategoryCardProps> = ({ category } : CategoryCardProps) => {
     const { periodState } = usePeriod({ categoryId: category.id, mostRecent: true })
-
     const { categoryDetailsState, valuta } = useCategoryDetails({
         categoryId: category.id,
         fetchCategory: false,
         fetchExpenses: true,
+        fetchBudget: true,
+        fetchResult: true,
         period: periodState.period,
     })
 
@@ -22,6 +23,7 @@ const CategoryCard: React.FC<CategoryCardProps> = ({ category } : CategoryCardPr
     })
 
     const { currentTheme } = useThemeContext()
+    // Initialize styles without custom background color first
     const styles = useMemo(() => styles_categoryCard(currentTheme), [currentTheme])
 
     const periodId = periodState.period?.id
@@ -37,8 +39,6 @@ const CategoryCard: React.FC<CategoryCardProps> = ({ category } : CategoryCardPr
                 console.log(`Error updating category ${category.id}: ${err}`)
             )
         }
-        // we only want to update when the definitive data is available:
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [periodId, categoryId, expenses]);
 
     if (periodState.loading || categoryDetailsState.loading)
@@ -52,9 +52,19 @@ const CategoryCard: React.FC<CategoryCardProps> = ({ category } : CategoryCardPr
 
     const spent = categoryDetailsState?.result?.totalSpent ?? 0
     const percentageSpent = categoryDetailsState?.result?.percentageSpent ?? 0
+
+    // Calculate background color only after we have confirmed data
+    const backgroundColor =
+        percentageSpent < 33 ? 'green' :
+        percentageSpent < 66 ? 'yellow' :
+        percentageSpent < 100 ? 'orange' : 'red'
+
+    // Create styles with the background color
+    const cardStyles = styles_categoryCard(currentTheme, backgroundColor)
+
     return (
         <View style={styles.container}>
-            <View style={styles.categoryCard}>
+            <View style={cardStyles.categoryCard}>
                 <Text style={styles.categoryName}>{category.name}</Text>
                 <Text style={styles.spent}>
                     {valuta} {spent.toFixed(2)} / {valuta} {categoryDetailsState.budget?.amount?.toFixed(2) ?? "0.00"}

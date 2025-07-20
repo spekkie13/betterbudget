@@ -1,49 +1,31 @@
-import React, {useMemo} from "react"
-import {ActivityIndicator, Text, View} from "react-native"
-import {styles_categoryInfoPanel} from "@/styles/tabs/category/styles_categoryInfoPanel"
-import { SubTitle } from "@/app/components/General"
-import {useCategories} from "@/hooks"
-import CategoriesList from "@/app/components/UI/Category/CategoriesList"
-import {useThemeContext} from "@/theme/ThemeContext";
+import React, { useMemo } from 'react'
+import { View, Text } from 'react-native'
+import { styles_categoryInfoPanel } from '@/styles/tabs/category/styles_categoryInfoPanel'
+import { useThemeContext } from '@/theme/ThemeContext'
+import { Category } from '@/types/models'
+import {SubTitle} from "@/app/components/General";
+import CategoriesList from "@/app/components/UI/Category/CategoriesList";
 
-const CategoryInfoPanel = () => {
+interface CategoryInfoPanelProps {
+    categories: Category[]
+}
+
+const CategoryInfoPanel: React.FC<CategoryInfoPanelProps> = ({ categories }) => {
     const { currentTheme } = useThemeContext()
     const styles = useMemo(() => styles_categoryInfoPanel(currentTheme), [currentTheme])
 
-    let {categoriesState} = useCategories({selectedOnly: true})
-    if (categoriesState.cardsShown === undefined) {
-        categoriesState.cardsShown = 0
-    }
-
-    const title: string = 'Top ' + categoriesState.cardsShown + ' categories'
-
-    if (categoriesState.loading) {
-        return (
-            <View style={styles.container}>
-                <ActivityIndicator/>
-            </View>
-        )
-    }
-
-
-    if (categoriesState.error) {
-        return (
-            <View style={styles.container}>
-                <Text style={styles.errorText}>{categoriesState.error}</Text>
-            </View>
-        )
-    }
+    const title: string = 'Top ' + categories.length + ' categories'
 
     return (
         <View style={styles.container}>
             <SubTitle text={title}/>
             <View style={styles.categoryView}>
-                {categoriesState?.categories?.length === 0 ? (
+                {categories?.length === 0 ? (
                     <Text style={styles.notFoundText}>
                         No categories to display.
                     </Text>
                 ) : (
-                    <CategoriesList categories={categoriesState.categories} max={categoriesState.cardsShown}/>
+                    <CategoriesList categories={categories} max={categories.length}/>
                 )}
             </View>
         </View>

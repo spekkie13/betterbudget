@@ -31,6 +31,7 @@ export async function getSelectedCategories(userId: number, cardsShown: number):
     let userPreferences : UserPreference[] = preferenceStore.nameContains('category')
         .slice(0, cardsShown)
 
+    console.log(userPreferences)
     const fetchPromises : Promise<Category>[] = userPreferences.map((pref : UserPreference) : Promise<Category> =>
         getCategoryById(userId, pref.numberValue)
     )
@@ -39,6 +40,9 @@ export async function getSelectedCategories(userId: number, cardsShown: number):
 }
 
 export async function getCategoryById(userId: number, id: number): Promise<Category> {
+    console.log('fetching category: ', id)
+    if (id === undefined) return Category.empty()
+
     const url: string = `${CATEGORY_BASE_URL}?userId=${userId}&id=${encodeURIComponent(id)}`
     const request: RequestInfo = formRequestNoBody(url, "GET")
     const response : Response = await fetch(request)

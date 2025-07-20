@@ -3,7 +3,7 @@ import {useContext, useEffect, useState} from "react";
 import {determineSpendingRoom} from "@/api";
 import {useRouter} from "expo-router";
 
-export function useSpendingRoom() {
+export function useSpendingRoom(refreshTrigger?: number) {
     const { userState } = useContext(AuthContext)
     const user = userState.user
     const userId = user?.id
@@ -49,7 +49,7 @@ export function useSpendingRoom() {
         }
 
         fetchData()
-    }, [userId])
+    }, [userId, refreshTrigger])
 
     return {
         spendingRoomState,

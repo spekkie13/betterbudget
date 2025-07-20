@@ -5,8 +5,10 @@ import {Title, Button, InputField, MessageBanner} from '@/app/components/General
 import {AuthContext} from "@/app/ctx"
 import {genericFailureMessage, successCreateMessage, CATEGORY_WITH_BUDGET_BASE_URL} from "@/constants"
 import {styles_addCategory} from "@/styles/tabs/category/styles_addCategory"
-import { getNextPeriod, checkIfCategoryExists,  } from '@/api'
+import {getNextPeriod, checkIfCategoryExists, createNewPreference} from '@/api'
 import {useThemeContext} from "@/theme/ThemeContext"
+import {UserPreference} from "@/types/models";
+import {preferenceStore} from "@/hooks";
 
 const AddCategory = () => {
     const [categoryState, setCategoryState] = useState({
@@ -33,13 +35,23 @@ const AddCategory = () => {
 
     const handleAddCategory = async (): Promise<void> => {
         if (!categoryState.category || !categoryState.budget) {
-            showMessage("Please fill in the required information")
+            setCategoryState(prev => ({
+                ...prev,
+                message: "Please fill in the required information",
+                status: false,
+            }))
+            showMessage(categoryState.message)
             return
         }
 
         const exists = await checkIfCategoryExists(categoryState.category, userState?.user?.id)
         if (exists) {
-            showMessage("The category already exists!")
+            setCategoryState(prev => ({
+                ...prev,
+                message: "The category already exists!",
+                status: false,
+            }))
+            showMessage(categoryState.message)
         } else {
             const period = await getNextPeriod()
 
@@ -69,7 +81,6 @@ const AddCategory = () => {
                     headers: {'Content-Type': 'application/json'},
                     body: JSON.stringify(payload),
                 })
-
                 if (!response.ok) {
                     setCategoryState(prev => ({
                         ...prev,
@@ -78,13 +89,32 @@ const AddCategory = () => {
                     }))
                     console.error("Failed to create category and budget")
                 }
-
                 const data = await response.json()
-                console.log(data)
+
+                const categoryPrefs = preferenceStore.nameContains("category")
+                let highestPrefId: number;
+                if (categoryPrefs.length > 0) {
+                    highestPrefId = categoryPrefs.reduce((max, pref) => {
+                        const currentNumber = pref.numberValue || 0;
+                        return currentNumber > max ? currentNumber : max;
+                    }, 0) + 1
+                }else{
+                    highestPrefId = 1
+                }
+                const preferenceData = {
+                    id: 0,
+                    name: `category ${highestPrefId}`,
+                    numberValue: data.category.id,
+                    userId: userState.user.id,
+                }
+                await createNewPreference(new UserPreference(preferenceData))
+                preferenceStore.set(new UserPreference(preferenceData))
                 setCategoryState(prev => ({
                     ...prev,
                     message: successCreateMessage,
-                    status: true
+                    status: true,
+                    category: '',
+                    budget: '',
                 }))
             } catch (error) {
                 setCategoryState(prev => ({
@@ -107,10 +137,11 @@ const AddCategory = () => {
     const handleBack = useCallback(() => {
         router.replace('/(tabs)/add')
     }, [router])
+
     return (
         <View style={styles.container}>
             <Title text="Add category"/>
-            <MessageBanner message={categoryState.message} type={categoryState.status ? 'success' : 'error'}/>
+            <MessageBanner message={categoryState.message ?? ''} type={categoryState.status ? 'success' : 'error'}/>
             <View style={styles.textView}>
                 <InputField
                     label={'Category Name'}

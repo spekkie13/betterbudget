@@ -1,6 +1,6 @@
 import {StyleSheet} from 'react-native'
 
-export const styles_categoryCard = (theme : any) => StyleSheet.create({
+export const styles_categoryCard = (theme: any, backgroundColor?: string) => StyleSheet.create({
     categoryCard: {
         borderRadius: 5,
         borderWidth: 1,
@@ -10,7 +10,7 @@ export const styles_categoryCard = (theme : any) => StyleSheet.create({
         height: 100,
         alignItems: 'center',
         justifyContent: 'center',
-        backgroundColor: theme.colors.secondary,
+        backgroundColor: backgroundColor || theme.colors.secondary,
         borderColor: theme.colors.primary
     },
     container: {

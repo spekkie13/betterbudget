@@ -41,5 +41,9 @@ export const styles_home = (theme) => StyleSheet.create({
     },
     categoryPanel: {
         marginTop: 5
-    }
+    },
+    text: {
+        width: theme.spacing.xl,
+        color: theme.colors.text
+    },
 })

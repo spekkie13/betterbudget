@@ -7,15 +7,7 @@ export async function setupNewUserPrefs(userId: number): Promise<void> {
     const preferences : UserPreference[] = createDefaultPreferences(userId)
 
     await Promise.all(
-        preferences.map(async (pref) => {
-            const request : Request = formRequestWithBody(USER_PREFERENCES_BASE_URL, 'POST', pref)
-            const response : Response = await fetch(request)
-
-            if (!response.ok) {
-                console.error(`Failed to save preference ${pref.name}`, await response.text())
-                throw new Error(`Failed to save preference ${pref.name}`)
-            }
-        })
+        preferences.map((pref) => createNewPreference(pref))
     )
 }
 
@@ -91,6 +83,16 @@ export async function updateAllUserPreferences(preferences: UserPreference[]){
     await Promise.all(preferences.map(async (preference) => {
         await updateUserPreference(preference.id, preference)
     }))
+}
+
+export async function createNewPreference(pref: UserPreference): Promise<void> {
+    const request: Request = formRequestWithBody(USER_PREFERENCES_BASE_URL, 'POST', pref)
+    const response: Response = await fetch(request)
+
+    if (!response.ok) {
+        console.error(`Failed to save preference ${pref.name}`, await response.text())
+        throw new Error(`Failed to save preference ${pref.name}`)
+    }
 }
 
 export function formPreference(item: any): UserPreference {

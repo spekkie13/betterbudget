@@ -4,11 +4,11 @@ import {ThemeProvider} from "@/theme/ThemeContext"
 
 const RootLayout = () => {
     return (
-        <AuthProvider>
-            <ThemeProvider>
-                <Slot/>
-            </ThemeProvider>
-        </AuthProvider>
+        <ThemeProvider>
+            <AuthProvider>
+                <Slot />
+            </AuthProvider>
+        </ThemeProvider>
     )
 }
 

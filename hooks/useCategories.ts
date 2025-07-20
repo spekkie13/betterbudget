@@ -24,18 +24,19 @@ export const useCategories = ({selectedOnly = false, refreshTrigger = 0 }: Categ
             try {
                 const preferredCardCount = preferenceStore.get('cards')?.numberValue ?? 0
                 const prefs = preferenceStore.nameContains('category').length > 0
-
+                console.log(prefs)
                 if (!userId) return;
 
                 let categories: Category[];
-                let effectiveCardCount: number;
 
                 if (selectedOnly && prefs) {
                     categories = await getSelectedCategories(userId, preferredCardCount);
-                    effectiveCardCount = Math.min(preferredCardCount, categories.length);
+                    console.log(categories)
+                    console.log('Selected categories:', categories.length); // Add logging
                 } else {
                     categories = await getCategories(userId);
-                    effectiveCardCount = Math.min(preferredCardCount, categories.length);
+                    console.log(categories)
+                    console.log('All categories:', categories.length); // Add logging
                 }
 
                 if (!mounted) return;
@@ -45,7 +46,7 @@ export const useCategories = ({selectedOnly = false, refreshTrigger = 0 }: Categ
                     loading: false,
                     error: null,
                     categories,
-                    cardsShown: effectiveCardCount,
+                    cardsShown: categories.length, // Simplify this
                     categoryPreferences: prefs,
                 });
 
