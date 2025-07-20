@@ -15,6 +15,7 @@ export function useAuth() {
 
     const [loading, setLoading] = useState(false)
     const [message, setMessage] = useState<string | null>('')
+    const [status, setStatus] = useState<boolean>(true)
 
     function showMessage(msg: string) {
         setMessage(msg);
@@ -25,6 +26,7 @@ export function useAuth() {
     const signIn = useCallback(async (email: string, password: string) => {
         setLoading(true);
         if (!email || !password) {
+            setStatus(false)
             showMessage(errorLoginMessage);
             setLoading(false);
             return;
@@ -33,7 +35,9 @@ export function useAuth() {
         try {
             const { data, error } = await supabase.auth.signInWithPassword({ email, password });
             if (error || !data.user) {
+                setStatus(false)
                 showMessage(error.message)
+                setLoading(false);
                 return;
             }
 
@@ -46,6 +50,7 @@ export function useAuth() {
             router.replace('/home');
         } catch (err) {
             console.error('Error while signing in', err);
+            setStatus(false)
             showMessage(genericFailureMessage);
         } finally {
             setLoading(false);
@@ -56,6 +61,8 @@ export function useAuth() {
     const signUp = useCallback(async (name: string, username: string, email: string, password: string): Promise<void> => {
         setLoading(true)
         if (!name || !username || !email || !password) {
+            setStatus(false)
+            showMessage(errorLoginMessage)
             setLoading(false)
             return
         }
@@ -66,7 +73,9 @@ export function useAuth() {
             })
 
             if (error) {
-                alert('Registration failed: ' + error.message)
+                setStatus(false)
+                showMessage('Registration failed: ' + error.message)
+                setLoading(false)
                 return
             }
 
@@ -81,14 +90,18 @@ export function useAuth() {
             if (dbUser.name !== '') {
                 login(dbUser, team)
                 await setupNewUserPrefs(dbUser.id)
+                setStatus(true)
                 showMessage('Successfully registered user')
                 router.replace('/sign-in')
             } else {
-                alert(genericFailureMessage)
+                setStatus(false)
+                showMessage(genericFailureMessage)
+                setLoading(false)
             }
         } catch (e: any) {
-            console.error(e)
-            alert('An unexpected error occurred.')
+            setStatus(false)
+            showMessage(genericFailureMessage)
+            setLoading(false)
         } finally {
             setLoading(false)
         }
@@ -104,14 +117,16 @@ export function useAuth() {
             await logout();
             router.replace('/sign-in');
         } catch (err) {
-            console.error('Error while signing out', err);
+            setStatus(false)
             showMessage(genericFailureMessage);
+            setLoading(false);
         } finally {
             setLoading(false);
         }
     }, [router, refreshTheme])
 
     return {
+        status,
         signIn,
         signUp,
         signOut,

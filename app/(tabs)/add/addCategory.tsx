@@ -1,7 +1,7 @@
 import React, {useCallback, useContext, useMemo, useState} from "react"
-import {Text, View} from "react-native"
+import {View} from "react-native"
 import {useRouter} from "expo-router"
-import { Title, Button, InputField } from '@/app/components/General'
+import {Title, Button, InputField, MessageBanner} from '@/app/components/General'
 import {AuthContext} from "@/app/ctx"
 import {genericFailureMessage, successCreateMessage, CATEGORY_WITH_BUDGET_BASE_URL} from "@/constants"
 import {styles_addCategory} from "@/styles/tabs/category/styles_addCategory"
@@ -12,55 +12,34 @@ const AddCategory = () => {
     const [categoryState, setCategoryState] = useState({
         category: "",
         budget: "",
-        successMessage: "",
-        errorMessage: "",
-        showSuccess: false,
-        showError: false,
+        message: '',
+        status: false
     })
     const {userState} = useContext(AuthContext)
     const router = useRouter()
     const { currentTheme } = useThemeContext()
     const styles = useMemo(() => styles_addCategory(currentTheme), [currentTheme])
 
-    const showTemporaryMessage = (type: "success" | "error", message: string) => {
-        if (type === "success") {
-            setCategoryState({
-                ...categoryState,
-                successMessage: message,
-                showSuccess: true
-            })
-            setTimeout(() => setCategoryState({
-                ...categoryState,
-                showSuccess: false
-            }), 3000)
-
-            setCategoryState({
-                ...categoryState,
-                category: '',
-                budget: '',
-            })
-        } else {
-            setCategoryState({
-                ...categoryState,
-                errorMessage: message,
-                showError: true
-            })
-            setTimeout(() => setCategoryState({
-                ...categoryState,
-                showError: false
-            }), 3000)
-        }
+    const showMessage = (message: string) => {
+        setCategoryState({
+            ...categoryState,
+            message: message,
+        })
+        setTimeout(() => setCategoryState({
+            ...categoryState,
+            message: ''
+        }), 3000)
     }
 
     const handleAddCategory = async (): Promise<void> => {
         if (!categoryState.category || !categoryState.budget) {
-            showTemporaryMessage("error", "Please fill in the required information")
+            showMessage("Please fill in the required information")
             return
         }
 
         const exists = await checkIfCategoryExists(categoryState.category, userState?.user?.id)
         if (exists) {
-            showTemporaryMessage("error", "The category already exists!")
+            showMessage("The category already exists!")
         } else {
             const period = await getNextPeriod()
 
@@ -92,15 +71,28 @@ const AddCategory = () => {
                 })
 
                 if (!response.ok) {
+                    setCategoryState(prev => ({
+                        ...prev,
+                        message: genericFailureMessage,
+                        status: false
+                    }))
                     console.error("Failed to create category and budget")
                 }
 
                 const data = await response.json()
                 console.log(data)
-                showTemporaryMessage("success", successCreateMessage)
+                setCategoryState(prev => ({
+                    ...prev,
+                    message: successCreateMessage,
+                    status: true
+                }))
             } catch (error) {
+                setCategoryState(prev => ({
+                    ...prev,
+                    message: "Error in handleAddCategory",
+                    status: false,
+                }))
                 console.error("Error in handleAddCategory:", error)
-                showTemporaryMessage("error", genericFailureMessage)
             }
         }
     }
@@ -118,15 +110,7 @@ const AddCategory = () => {
     return (
         <View style={styles.container}>
             <Title text="Add category"/>
-
-            {categoryState.showSuccess && (
-                <Text style={styles.successMessage}>{categoryState.successMessage}</Text>
-            )}
-
-            {categoryState.showError && (
-                <Text style={styles.errorMessage}>{categoryState.errorMessage}</Text>
-            )}
-
+            <MessageBanner message={categoryState.message} type={categoryState.status ? 'success' : 'error'}/>
             <View style={styles.textView}>
                 <InputField
                     label={'Category Name'}

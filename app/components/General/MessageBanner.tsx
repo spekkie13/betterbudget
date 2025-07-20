@@ -1,16 +1,51 @@
 import { View, Text, StyleSheet } from 'react-native'
 
-export function MessageBanner ({ message } : { message: string }) {
-    if (!message) return null
+type MessageType = 'success' | 'error';
+
+interface MessageBannerProps {
+    message: string;
+    type?: MessageType;
+}
+
+export function MessageBanner({ message, type = 'error' }: MessageBannerProps) {
+    if (!message) return null;
 
     return (
-        <View style={styles.container}>
-            <Text style={styles.text}>{message}</Text>
+        <View style={[
+            styles.container,
+            type === 'success' ? styles.successContainer : styles.errorContainer
+        ]}>
+            <Text style={[
+                styles.text,
+                type === 'success' ? styles.successText : styles.errorText
+            ]}>
+                {message}
+            </Text>
         </View>
     )
 }
 
+
 const styles = StyleSheet.create({
-    container: { padding: 8, backgroundColor: '#fee2e2', borderRadius: 8 },
-    text: { color: '#b91c1c' },
+    container: {
+        alignItems: 'center',
+        padding: 8,
+        borderRadius: 8,
+    },
+    text: {
+        fontSize: 14,
+    },
+    errorContainer: {
+        backgroundColor: '#fee2e2',
+    },
+    errorText: {
+        color: '#b91c1c',
+    },
+    successContainer: {
+        backgroundColor: '#dcfce7',
+    },
+    successText: {
+        color: '#15803d',
+    },
 });
+

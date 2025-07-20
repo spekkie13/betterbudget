@@ -17,31 +17,32 @@ const AddExpense = () => {
     const handleBack = useCallback(() => {
         router.replace('/(tabs)/add')
     }, [router])
+
     return (
         <View style={styles.container}>
             <Title text={'Add Expense'}/>
 
-            <MessageBanner message={transactionState.message ?? ''} />
+            <MessageBanner message={transactionState.message ?? ''} type={transactionState.status ? 'success' : 'error'}/>
             <View style={styles.addView}>
                 <View style={styles.view}>
                     <InputField
                         label={'Date'}
                         placeholder={'dd-MM-yyyy'}
-                        onChange={updateField('Date')}
+                        onChange={updateField('date')}
                         value={transactionState.date}
                         secure={false}/>
                 </View>
                 <View style={styles.view}>
                     <InputField
                         label={'amount'}
-                        onChange={updateField('Amount')}
+                        onChange={updateField('amount')}
                         value={transactionState.amount}
                         secure={false}/>
                 </View>
                 <View style={styles.view}>
                     <InputField
                         label={'description'}
-                        onChange={updateField('Description')}
+                        onChange={updateField('description')}
                         value={transactionState.description}
                         secure={false}/>
                 </View>

@@ -1,5 +1,3 @@
 TO DO:
--> Fix category detail modal and starting amount modal styling
--> Add addIncome screen + button on general add screen
--> take into consideration any left-over spending room from previous periods
+-> Introduce custom HTTP response object to more easily be able to also act on HTTP response codes
 -> expand error logging to include more precise error messages

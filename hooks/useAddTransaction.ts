@@ -7,7 +7,7 @@ import {useCategories} from "@/hooks/useCategories";
 
 export function useAddTransaction() {
     const { userState } = useContext(AuthContext)
-    const { categoriesState } = useCategories({userId: userState?.user?.id})
+    const { categoriesState } = useCategories({selectedOnly: false})
 
     const [transactionState, setTransactionState] = useState({
         date: '',
@@ -16,6 +16,7 @@ export function useAddTransaction() {
         pickerItems: [],
         selectedValue: undefined,
         message: '',
+        status: true,
     })
 
     const updateField = useCallback((fieldName: string) => (value: string) => {
@@ -57,6 +58,10 @@ export function useAddTransaction() {
             !transactionState.description ||
             !transactionState.pickerItems
         ) {
+            setTransactionState(prev => ({
+                ...prev,
+                status: false
+            }))
             showMessage("Please fill in the required information")
             return
         } else {
@@ -74,15 +79,21 @@ export function useAddTransaction() {
             const success = await createNewExpense(expense)
 
             if (success) {
-                showMessage(successCreateMessage)
                 setTransactionState(prev => ({
                     ...prev,
                     selectedValue: '',
                     date: '',
                     description: '',
-                    amount: ''
+                    amount: '',
+                    status: success
                 }))
+                showMessage(successCreateMessage)
+
             } else {
+                setTransactionState(prev => ({
+                    ...prev,
+                    status: false
+                }))
                 showMessage(genericFailureMessage)
             }
         }
@@ -90,6 +101,10 @@ export function useAddTransaction() {
 
     const addNewIncome = async () => {
         if (!transactionState.date || !transactionState.amount || !userState?.user?.id) {
+            setTransactionState(prev => ({
+                ...prev,
+                status: false
+            }))
             showMessage("Please fill in the required information")
             return
         } else {
@@ -104,13 +119,18 @@ export function useAddTransaction() {
             const success = await createNewIncome(income)
 
             if (success) {
-                showMessage(successCreateMessage)
                 setTransactionState(prev => ({
                     ...prev,
                     date: '',
-                    amount: ''
+                    amount: '',
+                    status: success
                 }))
+                showMessage(successCreateMessage)
             } else {
+                setTransactionState(prev => ({
+                    ...prev,
+                    status: false
+                }))
                 showMessage(genericFailureMessage)
             }
         }

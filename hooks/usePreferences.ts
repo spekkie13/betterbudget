@@ -11,6 +11,8 @@ export function usePreferences() {
         valuta: '',
         themeSelection: '',
         startingAmount: 0,
+        message: '',
+        status: true
     })
 
     const handleUpdateField = useCallback((fieldName: string) => (value: string) => {
@@ -43,6 +45,17 @@ export function usePreferences() {
         }))
     }, []);
 
+    function showMessage(msg: string) {
+        setPreferenceState(prev => ({
+            ...prev,
+            message: msg,
+        }))
+        setTimeout(() => setPreferenceState(prev => ({
+            ...prev,
+            message: null,
+        })), 3000);
+    }
+
     async function updatePreferences() {
         const cardsPref = preferenceStore.get('cards');
         const valutaPref = preferenceStore.get('valuta');
@@ -64,6 +77,11 @@ export function usePreferences() {
         }
 
         await updateAllUserPreferences(preferenceStore.getAll());
+        setPreferenceState(prevState => ({
+            ...prevState,
+            status: true,
+        }))
+        showMessage('Preferences updated');
     }
 
     return {

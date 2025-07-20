@@ -25,7 +25,7 @@ const AddIncome = () => {
         <View style={styles.container}>
             <Title text='Add Income'/>
 
-            <MessageBanner message={transactionState.message ?? ''} />
+            <MessageBanner message={transactionState.message ?? ''} type={transactionState.status ? 'success' : 'error'}/>
             <View style={styles.addView}>
                 <View style={styles.view}>
                     <InputField

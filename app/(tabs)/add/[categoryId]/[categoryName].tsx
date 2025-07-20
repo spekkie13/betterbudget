@@ -42,7 +42,13 @@ const MonthSelection = () => {
                 <ActivityIndicator/>
             </View>
         )
-    if (periodsState.error) return <Text style={styles.errorMessage}>Error: {periodsState.error}</Text>
+
+    if (periodsState.error)
+        return(
+            <View style={styles.container}>
+                <Text style={styles.errorMessage}>Error: {periodsState.error}</Text>
+            </View>
+        )
 
     return (
         <View style={styles.container}>

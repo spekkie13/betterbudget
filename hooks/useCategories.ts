@@ -22,16 +22,20 @@ export const useCategories = ({selectedOnly = false, refreshTrigger = 0 }: Categ
 
         const fetchData = async () => {
             try {
-                const val = preferenceStore.get('cards')?.numberValue
+                const preferredCardCount = preferenceStore.get('cards')?.numberValue ?? 0
                 const prefs = preferenceStore.nameContains('category').length > 0
 
                 if (!userId) return;
 
                 let categories: Category[];
+                let effectiveCardCount: number;
+
                 if (selectedOnly && prefs) {
-                    categories = await getSelectedCategories(userId, val || 0);
+                    categories = await getSelectedCategories(userId, preferredCardCount);
+                    effectiveCardCount = Math.min(preferredCardCount, categories.length);
                 } else {
                     categories = await getCategories(userId);
+                    effectiveCardCount = Math.min(preferredCardCount, categories.length);
                 }
 
                 if (!mounted) return;
@@ -41,7 +45,7 @@ export const useCategories = ({selectedOnly = false, refreshTrigger = 0 }: Categ
                     loading: false,
                     error: null,
                     categories,
-                    cardsShown: val || 0,
+                    cardsShown: effectiveCardCount,
                     categoryPreferences: prefs,
                 });
 

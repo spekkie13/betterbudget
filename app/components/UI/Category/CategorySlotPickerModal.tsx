@@ -1,10 +1,9 @@
-import React, {useContext, useMemo, useState} from 'react'
+import React, {useMemo, useState} from 'react'
 import {FlatList, Modal, Text, TouchableOpacity, View} from 'react-native'
 import CategorySlotPicker from './CategorySlotPicker'
 import {saveCategorySlots} from "@/api"
 import {styles_categorySlotPickerModal} from "@/styles/tabs/profile/styles_categorySlotPickerModal"
 import {useCategories} from "@/hooks"
-import {AuthContext} from "@/app/ctx"
 import { CategorySlotPickerModalProps } from "@/types/props"
 import {Category} from "@/types/models"
 
@@ -13,9 +12,7 @@ const CategorySlotPickerModal: React.FC<CategorySlotPickerModalProps> = React.me
     const [activeSlot, setActiveSlot] = useState<number | null>(null)
 
     const styles = useMemo(() => styles_categorySlotPickerModal(theme), [theme])
-
-    const { userState } = useContext(AuthContext)
-    const { categoriesState } = useCategories({userId: userState.user.id})
+    const { categoriesState } = useCategories({selectedOnly: false})
 
     const handleSlotPress = (index: number) => {
         setActiveSlot(index)

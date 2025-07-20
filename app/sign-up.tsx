@@ -8,7 +8,7 @@ import {useThemeContext} from "@/theme/ThemeContext"
 import {useAuth} from "@/hooks"
 
 function Login(): React.JSX.Element {
-    const { message, loading, signUp } = useAuth()
+    const { status, message, loading, signUp } = useAuth()
     const { currentTheme } = useThemeContext()
     const styles = useMemo(() => styles_login(currentTheme), [currentTheme])
 
@@ -44,7 +44,7 @@ function Login(): React.JSX.Element {
                             <View style={styles.messageView}>
                                 <Text style={styles.signInText}>Sign up</Text>
 
-                                <MessageBanner message={message ?? ''} />
+                                <MessageBanner message={message ?? ''} type={status === true ? 'success' : 'error'}/>
                                 <KeyboardAvoidingView behavior={'padding'}>
                                     <InputField
                                         value={signUpState.name}

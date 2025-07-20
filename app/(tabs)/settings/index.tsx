@@ -2,7 +2,7 @@ import { Text, View } from 'react-native'
 import React, {useContext, useMemo} from 'react'
 import { router } from 'expo-router'
 import RNPickerSelect from 'react-native-picker-select'
-import {Logo, Title, Button} from '@/app/components/General'
+import {Logo, Title, Button, MessageBanner} from '@/app/components/General'
 import { AuthContext } from '@/app/ctx'
 import { pickerStyles, styles_settings } from '@/styles/tabs/settings/styles_settings'
 import { supabase } from "@/lib/supabase"
@@ -29,8 +29,6 @@ const Settings = () => {
         router.replace('/sign-in')
     }
 
-
-
     return (
         <View style={styles.container}>
             <Title text={'Settings'} />
@@ -42,6 +40,7 @@ const Settings = () => {
                 style={styles.signOutButton}/>
 
             <View>
+                <MessageBanner message={preferenceState.message} type={preferenceState.status === true ? 'success' : 'error'}/>
                 <View style={styles.view}>
                     <Text style={styles.text}>Categories Shown</Text>
                     <RNPickerSelect

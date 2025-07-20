@@ -17,7 +17,7 @@ const CategoryDetails = (): React.JSX.Element => {
 
     const { periodState } = usePeriod({date: date, categoryId: numericCategoryId})
 
-    const { categoryDetailsState, valuta, } = useCategoryDetails({ period: periodState.period, categoryId: numericCategoryId })
+    const { categoryDetailsState, valuta } = useCategoryDetails({ period: periodState.period, categoryId: numericCategoryId })
     const { updateResult } = useUpdateCategory({category: categoryDetailsState.category, expenses: categoryDetailsState.expenses, period: periodState.period})
 
     const { currentTheme } = useThemeContext()
@@ -29,6 +29,7 @@ const CategoryDetails = (): React.JSX.Element => {
                 <ActivityIndicator />
             </View>
         )
+
     if (periodState.error) return <Text style={styles.errorMessage}>{periodState.error}</Text>
     if (categoryDetailsState.error) return <Text style={styles.errorMessage}>{categoryDetailsState.error}</Text>
     if (!periodState?.period || !categoryDetailsState?.category || !categoryDetailsState?.result) {

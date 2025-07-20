@@ -9,7 +9,7 @@ import { useAuth } from "@/hooks"
 import {useThemeContext} from "@/theme/ThemeContext"
 
 function Login(): React.JSX.Element {
-    const { signIn, loading, message } = useAuth()
+    const { status, signIn, loading, message } = useAuth()
     const [loginState, setLoginState] = useState({
         email: '',
         password: ''
@@ -21,7 +21,6 @@ function Login(): React.JSX.Element {
             [fieldName]: value
         }))
     }, [])
-
 
     const router = useRouter()
 
@@ -47,17 +46,17 @@ function Login(): React.JSX.Element {
                         <View>
                             <View style={styles.messageView}>
                                 <Text style={styles.signInText}>Sign in</Text>
-                                <MessageBanner message={message ?? ''}/>
+                                <MessageBanner message={message ?? ''} type={status === true ? 'success' : 'error'}/>
                                 <KeyboardAvoidingView behavior={'padding'}>
                                     <InputField
                                         value={loginState.email}
-                                        onChange={handleUpdateField('email')}  // Update deze regel
+                                        onChange={handleUpdateField('email')}
                                         secure={false}
                                         label={'Email'}
                                     />
                                     <InputField
                                         value={loginState.password}
-                                        onChange={handleUpdateField('password')}  // Update deze regel
+                                        onChange={handleUpdateField('password')}
                                         secure={true}
                                         label={'Password'}
                                     />
